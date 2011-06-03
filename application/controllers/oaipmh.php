@@ -34,7 +34,7 @@ class OAIPMH extends skylight {
         if (true) {
             header('Content-type: text/xml');
             echo '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
-            echo '<?xml-stylesheet type="text/xsl" href="' . $home . 'xsl/oai.xsl" ?>' . "\n";
+            //echo '<?xml-stylesheet type="text/xsl" href="' . $home . 'xsl/oai.xsl" ? >' . "\n";
         }
 
         // Load some configuration variables

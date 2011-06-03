@@ -37,12 +37,10 @@
     </head>
     <body>
         <div id="header">
-            <div id="banner"><h1 class="site-title"><?php echo $site_title ?></h1>
-
-   </div>
+            <div id="banner"><h1 class="site-title"><?php echo $site_title ?></h1></div>
             <div id="trail">
                 <ul class="trail-links">
-                    <li><a href="http://www.library.auckland.ac.nz">University of Auckland Library</a></li>
+                    <li><a href="http://example.com/">Your organisation</a></li>
                     <li><a href="./"><?php echo $site_title ?></a></li>
                 </ul>
             </div>

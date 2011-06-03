@@ -1,18 +1,18 @@
 <?php
 
-    $config['skylight_appname'] = 'nzais';
+    $config['skylight_appname'] = 'Demo';
 
-    $config['skylight_theme'] = 'nzais';
+    $config['skylight_theme'] = 'default';
 
-    $config['skylight_fullname'] = 'New Zealand Asia Institute Information Service';
+    $config['skylight_fullname'] = 'Name of your collection';
 
-    $config['skylight_adminemail'] = 'bic.library@auckland.ac.nz';
+    $config['skylight_adminemail'] = 'example@example.com';
 
-    $config['skylight_oaipmhcollection'] = 'hdl_123456789_3';
+    $config['skylight_oaipmhcollection'] = 'hdl_123456789_1';
 
 
     // Container ID and the field used in solr index to store this ID. Used for restricting search/browse scope.
-    $config['skylight_container_id'] = '9';
+    $config['skylight_container_id'] = '1';
     $config['skylight_container_field'] = 'location.coll';
 
     $config['skylight_date_filters'] = array('Date' => 'dc.date.issued.year');
@@ -53,6 +53,5 @@
 
     $config['skylight_language_default'] = 'en';
     $config['skylight_language_options'] = array('en', 'ko', 'jp');
-
 
 ?>
