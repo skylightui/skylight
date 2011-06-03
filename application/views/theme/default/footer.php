@@ -1,6 +1,7 @@
         </div>
         <div id="footer">
-            <a href="./"><?php echo $site_title; ?></a> powered by <strong>SuperIndex</strong><br />
+            <a href="http://skylightui.org/"><?php echo $site_title; ?></a> powered by <strong>SkyLight</strong><br />
+            <a href="http://skylightui.org/"><img src="./theme/default/images/skylight.jpg"></a><br />
             <a href="./feedback">Get in touch</a>
         </div>
     </body>
