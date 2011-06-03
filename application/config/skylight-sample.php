@@ -15,6 +15,9 @@
     // The URL base for where digital objects can be proxied from
     $config['skylight_objectproxy_url'] = 'http://magnesio.lbr.auckland.ac.nz:8080/bitstream/123456789/';
 
+    // The URL base for where digital objects can be proxied from
+    $config['skylight_objectproxy_url'] = 'http://magnesio.lbr.auckland.ac.nz:8080/bitstream/123456789/';
+
     // Set to the number of minutes to cache pages for. Set to false for no caching.
     // This can be overridden in site-specific configuration files.
     $config['skylight_cache'] = false;
@@ -24,8 +27,8 @@
     $config['skylight_recaptcha_key_private'] = '6LfEH8QSAAAAANcNg6_0inIHSFf_IkgYuZYHJEfe';
 
     // Digital object management
-    $config['skylight_bitstream_field'] = 'skylight.bitstreams.original.en';
-    $config['skylight_thumbnail_field'] = 'skylight.bitstreams.thumbnail.en';
+    $config['skylight_bitstream_field'] = 'superindex.bitstreams.original.en';
+    $config['skylight_thumbnail_field'] = 'superindex.bitstreams.thumbnail.en';
     $config['skylight_display_thumbnail'] = false;
     $config['skylight_link_bitstream'] = false;
 
@@ -39,9 +42,9 @@
     // $config['skylight_debug'] = false;
 
     // Can configuration files be overwritten by the user ?config={vhostname}
-    $config['skylight_config_allowoverride'] = true;
+    // $config['skylight_config_allowoverride'] = false;
 
     // Can themes be overridden by the user using ?theme={themename}
-    $config['skylight_theme_allowoverride'] = true;
+    // $config['skylight_theme_allowoverride'] = false;
 
 ?>
