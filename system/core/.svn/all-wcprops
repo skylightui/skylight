@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core
+END
+CodeIgniter.php
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/CodeIgniter.php
+END
+Controller.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Controller.php
+END
+Benchmark.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Benchmark.php
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/index.html
+END
+Security.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Security.php
+END
+Output.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Output.php
+END
+Config.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Config.php
+END
+Exceptions.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Exceptions.php
+END
+Model.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Model.php
+END
+Router.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Router.php
+END
+Input.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Input.php
+END
+Common.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Common.php
+END
+URI.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/URI.php
+END
+Lang.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Lang.php
+END
+Hooks.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Hooks.php
+END
+Utf8.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Utf8.php
+END
+Loader.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/core/Loader.php
+END

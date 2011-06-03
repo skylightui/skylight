@@ -1,0 +1,40 @@
+.search_results ul li {
+    margin-top: 25px;
+}
+
+.sort_options ul {
+    padding: 0px;
+}
+
+.sort_options ul li {
+    border: none;
+    margin: 0px;
+}
+
+h3 {
+    font-size: 14px;
+}
+
+body {
+    margin: 0px auto;
+    text-align: center;
+}
+
+#header,#content,#footer {
+    margin: 0px auto;
+    text-align: left;
+    width: expression(document.body.clientWidth < 842? "840px" : document.body.clientWidth > 1202? "1200px" : "auto");
+}
+
+input.ui-autocomplete-input {
+    height: 29px;
+}
+
+div#trail {
+    padding: 15px;
+}
+
+#sidebar {
+    margin-top: 30px;
+}
+

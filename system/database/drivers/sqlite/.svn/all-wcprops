@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/database/drivers/sqlite
+END
+sqlite_utility.php
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/database/drivers/sqlite/sqlite_utility.php
+END
+sqlite_driver.php
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/database/drivers/sqlite/sqlite_driver.php
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/database/drivers/sqlite/index.html
+END
+sqlite_result.php
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/database/drivers/sqlite/sqlite_result.php
+END
+sqlite_forge.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/UoA.Library/!svn/ver/128/SuperIndex/webapp/trunk/system/database/drivers/sqlite/sqlite_forge.php
+END
