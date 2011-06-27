@@ -15,6 +15,7 @@
     $response = str_replace(' set="' . $oaipmhcollection . '">', '>', $response);
     $response = str_replace('<identifier>' . $oaipmhid, '<identifier>oai:skylight/' . $id . '/', $response);
     $response = str_replace('<dc:identifier>' . $oaipmhlink, '<dc:identifier>' . $record_url, $response);
+    $response = preg_replace("#<dc:identifier>(?:(?!".$record_url.").)*</dc:identifier>#",'', $response);
     $response = str_replace('<setSpec>' . $oaipmhcollection . '</setSpec>', '', $response);
     echo $response;
 
