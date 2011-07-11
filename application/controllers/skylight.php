@@ -48,8 +48,13 @@ class skylight extends CI_Controller {
         }
         else if (file_exists('./application/config/sites/' . $hostname . '.php')) {
             $this->config->load('sites/' .$hostname);
-        } else {
-            show_error('Unknown skylight virtual host: ' . $this->_clean($hostname), 500);
+        } else if (file_exists('./application/config/sites/default.php')) {
+            // Load the default config
+            $this->config->load('sites/default');
+        }
+        else {
+            show_error('Unknown skylight virtual host: application/config/sites/' . $this->_clean($hostname) .
+                       '.php or missing default configuration at application/config/sites.default.php', 500);
             die();
         }
 
