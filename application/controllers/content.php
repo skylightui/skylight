@@ -19,6 +19,8 @@ class content extends skylight {
         }
         $data['theme'] = $theme;
 
+        $data['base_parameters'] = '';
+
         // Is this the home page?
         if ($url == '') {
             if($this->config->item('homepage_title') !== '') {
@@ -30,7 +32,6 @@ class content extends skylight {
 
             //$recent_item_data = $this->solr_client->getRecentItems(5);
             $facet_data = $this->solr_client->getFacets();
-            $data['base_parameters'] = '';
 
             $this->view('header', $data);
             $this->view('div_main', $data);
