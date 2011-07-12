@@ -2,7 +2,11 @@
 
 class skylight extends CI_Controller {
 
-    public $lang;
+    // Whether this page is part of the administrative interface
+    var $adminInterface = false;
+
+    // The language being used in the user interface
+    public $uilang;
 
     function skylight() {
         // Initalise the parent
@@ -32,6 +36,17 @@ class skylight extends CI_Controller {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('<div class="error"><ul><li>', '</li></ul></div>');
 
+        // Check the user is logged in, else redirect them to the first step
+        if ($this->adminInterface)
+        {
+            // Check the user is logged in as an admin
+            if (empty($_SESSION['skylight-admin-isadmin-' . base_url()]))
+            {
+                redirect('/adminlogin');
+                die();
+            }
+        }
+
         // Load the host-specific configuration unless it is overridden in the URL or the session
         $hostname = $_SERVER['HTTP_HOST'];
         $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
@@ -59,7 +74,7 @@ class skylight extends CI_Controller {
         }
 
         // Set the language if ?local query string set
-        $this->lang = array();
+        $this->uilang = array();
         $get_lang = $this->input->get('lang');
         if (!empty($get_lang)) {
             if ($this->_is_valid_language($this->input->get('lang'))) {
@@ -122,7 +137,7 @@ class skylight extends CI_Controller {
 
     function _load_lang($lang_code) {
         require_once('./application/language/' . $lang_code . '/skylight_lang.php');
-        $this->lang = array_merge($this->lang, $lang);
+        $this->uilang = array_merge($this->uilang, $text);
     }
 
     function _is_valid_language($language) {
@@ -149,5 +164,10 @@ class skylight extends CI_Controller {
         // (not full urlencode)
         $in = preg_replace('#_#',' ',$in,-1);
         return $in;
+    }
+
+    function _adminInterface() {
+        // Set this for admin pages than need authenticating
+        $this->adminInterface = true;
     }
 }

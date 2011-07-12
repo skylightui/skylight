@@ -3,6 +3,16 @@
     // The URL of the parent solr server
     $config['skylight_solrbase'] = 'http://your.repository.org:8080/solr/search/';
 
+    // The main username and password (by default admin:admin)
+    $config['skylight_adminusername'] = 'admin';
+    $config['skylight_adminpassword'] = '21232f297a57a5a743894a0e4a801fc3';
+
+    // Whether to use LDAP for admin authentication
+    $config['skylight_adminldap'] = False;
+    $config['skylight_adminldap_server'] = "ldaps://ldap.example.com:636";
+    $config['skylight_adminldap_context'] = "ou=users,dc=example,dc=com";
+    $config['skylight_adminldap_allowed'] = array('id1', 'id2');
+
     // The OAI-PMH base for the parent server
     $config['skylight_oaipmhbase'] = 'http://your.repository.org:8080/oai/request?';
 

@@ -1,34 +1,44 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: kshe085
- * Date: 20/05/11
- * Time: 3:26 PM
- * To change this template use File | Settings | File Templates.
- */
- require_once("skylight.php");
+
+require_once("skylight.php");
 
 class Admin extends skylight {
 
     function Admin() {
+        // State that this is an authentication class
+        skylight::_adminInterface();
+
         // Initalise the parent
         parent::__construct();
-        $admins = $this->config->item('skylight_administrators');
-        if(!in_array($this->input->ip_address(),$admins)) {
-            echo $this->input->ip_address().' is not allowed here, sorry. Contact your administrator';
-            exit;
-        }
     }
 
-	public function index() {
-        $config_array = $this->config->config;
-
-        $data['config_array'] = $config_array;
-        $data['page_title'] = 'Admin: Dashboard: Configuration';
+    public function index() {
+        $data['page_title'] = 'Admin: Dashboard: Menu';
 
         $this->view("header", $data);
         $this->view('div_main', $data);
-        $this->view("admin_display_config", $data);
+        $this->view("admin/admin_home", $data);
+        $this->view('div_main_end');
+        $this->view("footer");
+    }
+
+    public function logout() {
+        // Unset the admin session variable
+        unset($_SESSION['skylight-admin-isadmin-' . base_url()]);
+
+        // Go to the home page
+        redirect('/');
+    }
+
+	public function displayconfig() {
+        $config_array = $this->config->config;
+
+        $data['config_array'] = $config_array;
+        $data['page_title'] = 'Admin: Dashboard: Display Configuration';
+
+        $this->view("header", $data);
+        $this->view('div_main', $data);
+        $this->view("admin/admin_display_config", $data);
         $this->view('div_main_end');
         $this->view("footer");
     }
