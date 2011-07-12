@@ -63,7 +63,7 @@ class content extends skylight {
         } else if (file_exists('./application/views/theme/' . $this->config->item('skylight_appname') . '/404.php')) {
             // Is there a custom 404 in this theme...
             $this->output->set_status_header('404');
-            $data['page_title'] = $this->lang['skylight_content_notfound'];
+            $data['page_title'] = $this->uilang['skylight_content_notfound'];
             $this->view('header', $data);
             $this->view('div_main', $data);
             $this->view('theme/' . $this->config->item('skylight_appname') . '/404');
@@ -75,7 +75,7 @@ class content extends skylight {
         } else {
             // Show a normal 404
             $this->output->set_status_header('404');
-            $data['page_title'] = $this->lang['skylight_content_notfound'];
+            $data['page_title'] = $this->uilang['skylight_content_notfound'];
             $this->view('header', $data);
             $this->view('div_main', $data);
             $this->view('404');

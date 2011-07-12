@@ -85,8 +85,9 @@ class skylight extends CI_Controller {
         // First load the default language file
         $this->_load_lang($this->config->item('skylight_language_default'));
 
-        // If it is set, load the language file from the session
-        if (isset($_SESSION['skylight_language'])) {
+        // If it is set (and not already loaded), load the language file from the session
+        if ((isset($_SESSION['skylight_language'])) &&
+            ($this->config->item('skylight_language_default') != $_SESSION['skylight_language'])) {
             $this->_load_lang($_SESSION['skylight_language']);
         } else {
             // TODO: Enable reading of browser locale
