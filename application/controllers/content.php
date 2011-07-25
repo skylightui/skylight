@@ -52,6 +52,21 @@ class content extends skylight {
             $this->view('search_facets',$facet_data);
             $this->view('div_sidebar_end');
             $this->view('footer');
+        } else if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php')) {
+            // If there a static file with this name in the local path...
+            $data['page_title'] = ucfirst($url);
+            $facet_data = $this->solr_client->getFacets();
+
+            $this->view('header', $data);
+            $this->view('div_main', $data);
+            $foreign['load'] = $local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php';
+            $this->view('foreign', $foreign);
+            $this->view('div_main_end');
+            $this->view('div_sidebar');
+            $this->view('search_box');
+            $this->view('search_facets', $facet_data);
+            $this->view('div_sidebar_end');
+            $this->view('footer');
         } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php')) {
             // If there a static file with this name...
             $data['page_title'] = ucfirst($url);
