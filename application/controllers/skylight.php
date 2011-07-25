@@ -50,25 +50,8 @@ class skylight extends CI_Controller {
         // Load the correct site configuration file
         $this->_load_site_config();
 
-        // Set the language if ?local query string set
-        $this->uilang = array();
-        $get_lang = $this->input->get('lang');
-        if (!empty($get_lang)) {
-            if ($this->_is_valid_language($this->input->get('lang'))) {
-                $_SESSION['skylight_language'] = $this->input->get('lang');
-            }
-        }
-
-        // First load the default language file
-        $this->_load_lang($this->config->item('skylight_language_default'));
-
-        // If it is set (and not already loaded), load the language file from the session
-        if ((isset($_SESSION['skylight_language'])) &&
-            ($this->config->item('skylight_language_default') != $_SESSION['skylight_language'])) {
-            $this->_load_lang($_SESSION['skylight_language']);
-        } else {
-            // TODO: Enable reading of browser locale
-        }
+        // Load any language files needed
+        $this->_load_languages();
 
         // Decide whether to enable caching, and if so, for how many minutes
         if (is_numeric($this->config->item('skylight_cache'))) {
@@ -164,6 +147,31 @@ class skylight extends CI_Controller {
         include($filename);
         foreach ($config as $key => $value) {
             $this->config->set_item($key, $value);
+        }
+    }
+
+    /**
+     * Load the correct language files for the interface
+     */
+    function _load_languages() {
+        // Set the language if ?locale query string set
+        $this->uilang = array();
+        $get_lang = $this->input->get('lang');
+        if (!empty($get_lang)) {
+            if ($this->_is_valid_language($this->input->get('lang'))) {
+                $_SESSION['skylight_language'] = $this->input->get('lang');
+            }
+        }
+
+        // First load the default language file
+        $this->_load_lang($this->config->item('skylight_language_default'));
+
+        // If it is set (and not already loaded), load the language file from the session
+        if ((isset($_SESSION['skylight_language'])) &&
+            ($this->config->item('skylight_language_default') != $_SESSION['skylight_language'])) {
+            $this->_load_lang($_SESSION['skylight_language']);
+        } else {
+            // TODO: Enable reading of browser locale
         }
     }
 
