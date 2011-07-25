@@ -118,8 +118,8 @@ class skylight extends CI_Controller {
         // - First check the override directory
         $local_path = $this->config->item('skylight_local_path');
         if ((!empty($local_path)) &&
-            (file_exists($local_path . '/config/sites/' . $hostname . '.php'))) {
-            $this->_load_config($local_path . '/config/sites/' . $hostname . '.php');
+            (file_exists($local_path . '/config/' . $hostname . '.php'))) {
+            $this->_load_config($local_path . '/config/' . $hostname . '.php');
         }
         // - Next check the application/sites directory
         else if (file_exists('./application/config/sites/' . $hostname . '.php')) {

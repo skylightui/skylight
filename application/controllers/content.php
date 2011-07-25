@@ -21,6 +21,9 @@ class content extends skylight {
 
         $data['base_parameters'] = '';
 
+        // Is there a theme override location?
+        $local_path = $this->config->item('skylight_local_path');
+
         // Is this the home page?
         if ($url == '') {
             if($this->config->item('homepage_title') !== '') {
@@ -35,7 +38,10 @@ class content extends skylight {
 
             $this->view('header', $data);
             $this->view('div_main', $data);
-            if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/index.php')) {
+            if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/index.php')) {
+                $foreign['load'] = $local_path . '/static/' . $this->config->item('skylight_appname') . '/index.php';
+                $this->view('foreign', $foreign);
+            } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/index.php')) {
                 $this->view('static/' . $this->config->item('skylight_appname') . '/index');
             } else {
                 $this->view('index', $data);
