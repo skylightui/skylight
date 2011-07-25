@@ -47,31 +47,8 @@ class skylight extends CI_Controller {
             }
         }
 
-        // Load the host-specific configuration unless it is overridden in the URL or the session
-        $hostname = $_SERVER['HTTP_HOST'];
-        $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
-        if (!empty($get_config)) {
-            $load_config = $get_config;
-        } else if (isset($_SESSION['skylight_config'])) {
-            $load_config = $_SESSION['skylight_config'];
-        }
-        if ((!empty($load_config)) &&
-            ($this->config->item('skylight_config_allowoverride') === TRUE) &&
-            (file_exists('./application/config/sites/' . $load_config . '.php'))) {
-            $this->config->load('sites/' . $load_config);
-            $_SESSION['skylight_config'] = $load_config;
-        }
-        else if (file_exists('./application/config/sites/' . $hostname . '.php')) {
-            $this->config->load('sites/' .$hostname);
-        } else if (file_exists('./application/config/sites/default.php')) {
-            // Load the default config
-            $this->config->load('sites/default');
-        }
-        else {
-            show_error('Unknown skylight virtual host: application/config/sites/' . $this->_clean($hostname) .
-                       '.php or missing default configuration at application/config/sites.default.php', 500);
-            die();
-        }
+        // Load the correct site configuration file
+        $this->_load_site_config();
 
         // Set the language if ?local query string set
         $this->uilang = array();
@@ -134,6 +111,60 @@ class skylight extends CI_Controller {
     {
         // Go home, nothing to do here
         redirect('/');
+    }
+
+    /**
+     * Load the host-specific configuration unless it is overridden in the URL or the session
+     */
+    function _load_site_config() {
+        // Load the correct config file - usually looked up using the hostname
+        $hostname = $_SERVER['HTTP_HOST'];
+
+        // Has a config file been specified using a query string parameter or in the session?
+        if ($this->config->item('skylight_config_allowoverride') === TRUE) {
+            $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
+            if (!empty($get_config)) {
+                $hostname = $get_config;
+                $_SESSION['skylight_config'] = $hostname;
+            } else if (isset($_SESSION['skylight_config'])) {
+                $hostname = $_SESSION['skylight_config'];
+            }
+        }
+
+        // Is there a specified config file to load?
+        // - First check the override directory
+        $local_path = $this->config->item('skylight_local_path');
+        if ((!empty($local_path)) &&
+            (file_exists($local_path . '/config/sites/' . $hostname . '.php'))) {
+            $this->_load_config($local_path . '/config/sites/' . $hostname . '.php');
+        }
+        // - Next check the application/sites directory
+        else if (file_exists('./application/config/sites/' . $hostname . '.php')) {
+            $this->config->load('sites/' .$hostname);
+        }
+        // - Try the default site configuration file
+        else if (file_exists('./application/config/sites/default.php')) {
+            // Load the default config
+            $this->config->load('sites/default');
+        }
+        // - For some reason the default site config was missing
+        else {
+            show_error('Unknown skylight virtual host: application/config/sites/' . $this->_clean($hostname) .
+                       '.php or missing default configuration at application/config/sites.default.php', 500);
+            die();
+        }
+    }
+
+    /**
+     * Load a configuration file - we can't use the standard CodeIgniter function here
+     * as this method is called when they exist outside of the normal application/config
+     * directory structure
+     */
+    function _load_config($filename) {
+        include($filename);
+        foreach ($config as $key => $value) {
+            $this->config->set_item($key, $value);
+        }
     }
 
     function _load_lang($lang_code) {

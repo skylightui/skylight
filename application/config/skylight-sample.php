@@ -3,6 +3,9 @@
     // The URL of the parent solr server
     $config['skylight_solrbase'] = 'http://your.repository.org:8080/solr/search/';
 
+    // The local path for theme and configuration overrides (if required)
+    // $config['skylight_local_path'] = '/superindex';
+
     // The main username and password (by default admin:admin)
     $config['skylight_adminusername'] = 'admin';
     $config['skylight_adminpassword'] = '21232f297a57a5a743894a0e4a801fc3';
