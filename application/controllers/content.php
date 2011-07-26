@@ -54,7 +54,11 @@ class content extends skylight {
             $this->view('footer');
         } else if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php')) {
             // If there a static file with this name in the local path...
-            $data['page_title'] = ucfirst($url);
+            $title = str_replace('-', ' ', $url);
+            $title = str_replace('/', ' > ', $title);
+            $title = ucwords($title);
+            $data['page_title'] = $title;
+            
             $facet_data = $this->solr_client->getFacets();
 
             $this->view('header', $data);
@@ -69,7 +73,11 @@ class content extends skylight {
             $this->view('footer');
         } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php')) {
             // If there a static file with this name...
-            $data['page_title'] = ucfirst($url);
+            $title = str_replace('-', ' ', $url);
+            $title = str_replace('/', ' > ', $title);
+            $title = ucwords($title);
+            $data['page_title'] = $title;
+
             $facet_data = $this->solr_client->getFacets();
 
             $this->view('header', $data);
