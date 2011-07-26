@@ -79,10 +79,17 @@ class skylight extends CI_Controller {
         }
 
         // Does the theme override this page?
-        if (file_exists('./application/views/theme/' . $theme . '/' . $view . '.php')) {
+        $local_path = $this->config->item('skylight_local_path');
+        //echo $local_path . '/theme/views/' . $theme . '/' . $view . '.php';
+        if ((!empty($local_path)) &&
+            (file_exists($local_path . '/theme/' . $theme . '/views/' . $view . '.php'))) {
+            $data['load'] = $local_path . '/theme/' . $theme . '/views/' . $view . '.php';
+            $this->view('foreign' , $data);
+        }
+        else if (file_exists('./application/views/theme/' . $theme . '/' . $view . '.php')) {
             $this->load->view('theme/' . $theme . '/' . $view, $data);
         }
-        elseif (file_exists('./application/views/theme/default/' . $view . '.php')) {
+        else if (file_exists('./application/views/theme/default/' . $view . '.php')) {
             $this->load->view('theme/default/' . $view, $data);
         }
          else {
