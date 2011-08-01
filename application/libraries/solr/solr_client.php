@@ -25,6 +25,7 @@ class Solr_client {
     var $bitstream_field = '';
     var $display_thumbnail = false;
     var $link_bitstream = false;
+    var $dictionary = 'default';
 
    /**
 	 * Constructor
@@ -50,6 +51,7 @@ class Solr_client {
         $this->delimiter = $CI->config->item('skylight_filter_delimiter');
         $this->bitstream_field = str_replace('.','',$CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.','',$CI->config->item('skylight_thumbnail_field'));
+        $this->dictionary = $CI->config->item('skylight_solr_dictionary');
         $date_fields = $this->configured_date_filters;
         if(count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
@@ -237,7 +239,7 @@ class Solr_client {
         // Set up spellcheck
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
-
+        $url .= '&spellcheck.dictionary=' . $this->dictionary;
        // print_r($url);
 
         $solr_xml = file_get_contents($url);
