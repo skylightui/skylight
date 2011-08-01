@@ -19,6 +19,7 @@ class Solr_client {
     var $recorddisplay  = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
+    var $date_field = 'dc.date.issued.year';
     var $delimiter      = '';
     var $thumbnail_field = '';
     var $bitstream_field = '';
@@ -49,6 +50,10 @@ class Solr_client {
         $this->delimiter = $CI->config->item('skylight_filter_delimiter');
         $this->bitstream_field = str_replace('.','',$CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.','',$CI->config->item('skylight_thumbnail_field'));
+        $date_fields = $this->configured_date_filters;
+        if(count($date_fields) > 0) {
+            $this->date_field = array_pop($date_fields);
+        }
 
 		log_message('debug', "skylight Solr Client Initialized");
 	}
@@ -127,13 +132,13 @@ class Solr_client {
             foreach($result->arr as $multivalue_field) {
                 $key = $multivalue_field['name'];
                     foreach($multivalue_field->str as $value) {
-                        $doc['solr_' . str_replace('.', '', $key)] = $value;
+                        $doc[str_replace('.', '', $key)] = $value;
                     }
                     foreach($multivalue_field->int as $value) {
-                            $doc['solr_' . str_replace('.', '', $key)] = $value;
+                            $doc[str_replace('.', '', $key)] = $value;
                         }
                     foreach($multivalue_field->date as $value) {
-                            $doc['solr_' . str_replace('.', '', $key)] = $value;
+                            $doc[str_replace('.', '', $key)] = $value;
                         }
 
             }
@@ -141,29 +146,29 @@ class Solr_client {
             foreach($result->str as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
 
             foreach($result->int as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
 
             foreach($result->date as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
 
 
-            $handle = preg_split('/\//',$doc['solr_handle'][0]);
+            $handle = preg_split('/\//',$doc['handle'][0]);
             $doc['id'] = $handle[1];
-            if(!array_key_exists('solr_'.$title,$doc)) {
-                $doc['solr_'.$title][] = 'No title';
+            if(!array_key_exists($title,$doc)) {
+                $doc[$title][] = 'No title';
             }
             $docs[] = $doc;
         }
@@ -200,7 +205,7 @@ class Solr_client {
         }
 
          */
-        $dates = $this->getDateRanges('dc.date.issued.year', $q, $fq);
+        $dates = $this->getDateRanges($this->date_field, $q, $fq);
         $ranges = $dates['ranges'];
         $datefqs = $dates['fq'];
 
@@ -215,12 +220,23 @@ class Solr_client {
 
         $url .= '&rows='.$this->rows.'&start='.$offset.'&facet.mincount=1';
         //$url .= '&rows=20&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=10&facet.field=dc.subject_filter&facet.field=dc.contributor.author_filter&facet.field=dc.contributor.illustrator_filter&facet.field=dc.type_filter';
-        $url .= '&facet.field=thesis.degree.grantor_filter&facet.field=thesis.degree.discipline_filter';
+        $url .= '&facet=true&facet.limit=10';
+        foreach($this->configured_filters as $filter_name => $filter) {
+            $url .= '&facet.field='.$filter;
+        }
+
+
         foreach($ranges as $range) {
             $url .= '&facet.query='.$range;
         }
         $url .= '&q.op='.$operator;
+
+        // Set up highlighting
+        $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
+
+        // Set up spellcheck
+
+        $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
 
        // print_r($url);
 
@@ -232,13 +248,12 @@ class Solr_client {
         $facets = array();
 
         // Build search results from solr response
-
         foreach ($search_xml->result->doc as $result) {
             $doc = array();
             foreach($result->arr as $multivalue_field) {
                 $key = $multivalue_field['name'];
                     foreach($multivalue_field->str as $value) {
-                        $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                        $doc[str_replace('.', '', $key)][] = $value;
                     }
 
             }
@@ -246,19 +261,33 @@ class Solr_client {
             foreach($result->str as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
 
 
-            $handle = preg_split('/\//',$doc['solr_handle'][0]);
+            // Build highlight results from solr response
+            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$doc['handle'][0]."']/arr/str") as $highlight) {
+                //echo $doc['handle'][0].': '.$highlight.'<br/>';
+                $doc['highlights'][] = $highlight;
+            }
+
+
+            $handle = preg_split('/\//',$doc['handle'][0]);
             $doc['id'] = $handle[1];
-            if(!array_key_exists('solr_'.$title,$doc)) {
-                $doc['solr_'.$title][] = 'No title';
+            if(!array_key_exists($title,$doc)) {
+                $doc[$title][] = 'No title';
             }
             $docs[] = $doc;
         }
-        
+
+        // get spellcheck collated suggestion
+        $suggestion = "";
+        $spellcheck = $search_xml->xpath("//lst[@name='spellcheck']/lst[@name='suggestions']/str[@name='collation']");
+        if($spellcheck != NULL && sizeof($spellcheck) > 0)
+            $suggestion = $spellcheck[0];
+
+        $data['suggestion'] = $suggestion;
         $data['docs'] = $docs;
         $data['rows'] = $search_xml->result['numFound'];
 
@@ -366,13 +395,16 @@ class Solr_client {
         }
 
          */
-        $dates = $this->getDateRanges('dc.date.issued.year', $q, $fq);
+        $dates = $this->getDateRanges($this->date_field, $q, $fq);
         $ranges = $dates['ranges'];
 
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=10&facet.field=dc.subject_filter&facet.field=dc.contributor.author_filter&facet.field=dc.contributor.illustrator_filter&facet.field=dc.type_filter';
-        $url .= '&facet.field=thesis.degree.grantor_filter&facet.field=thesis.degree.discipline_filter';
+        $url .= '&facet=true&facet.limit=10';
+        
+        foreach($this->configured_filters as $filter_name => $filter) {
+            $url .= '&facet.field='.$filter;
+        }
 
         foreach($ranges as $range) {
             $url .= '&facet.query='.$range;
@@ -435,8 +467,8 @@ class Solr_client {
             foreach($facet_xml as $facet_query) {
                 //print_r($facet_query);
                 $query_name = $facet_query->attributes();
-                //$query_norm_name = $query_name;
-                //$query_display_name = $query_name;
+                $query_norm_name = $query_name;
+                $query_display_name = $query_name;
                 preg_match_all('#\d{4}#',$query_name, $matches);
                 if(count($matches) > 0) {
                     if(count($matches[0]) > 0) {
@@ -447,6 +479,7 @@ class Solr_client {
                             $query_display_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','\1 - \2',$query_name);
                         }
                         $query_norm_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','[\1%20TO%20\2]',$query_name);
+                        
                     }
                 }
                 //$query_display_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','\1 - \2',$query_name);
@@ -473,17 +506,29 @@ class Solr_client {
         return $data;
     }
 
-    function getRecord($id = NULL)
+    function getRecord($id = NULL, $highlight = "")
     {
 
         $title_field = $this->recorddisplay['Title'];
         $subject_field = $this->recorddisplay['Subject'];
 
         $handle = $this->handle_prefix . '/' . $id;
-        $url = $this->base_url . 'select?q=handle:' . $handle;
+        $url = $this->base_url . 'select?q=';
+        // TODO: Implement highlighting for record pages
+        // the below works but only with snippets, not in context
+        // of the whole returned doc. Going with javascript now.
+        //if($highlight == "") {
+            $url .= 'handle:' . $handle;
+        //}
+        //else {
+        //    $url .= $highlight;
+        //}
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2';
         $url .= '&fq=handle:' . $handle;
+        /*if($highlight != "") {
+            $url .= '&hl=true&hl.fl=*.en';
+        }*/
 
         $solr_xml = file_get_contents($url);
 
@@ -514,6 +559,17 @@ class Solr_client {
                 $key = str_replace('.', '', $key);
                 $solr[$key][] = $value;
             }
+            // Build highlight results from solr response
+            // TODO: Implement this later. For now, highlighting in jquery
+            // TODO: on record page because that way, we can do our html bitstreams
+
+            /*
+            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst/arr/str") as $highlight) {
+                //echo $doc['handle'][0].': '.$highlight.'<br/>';
+                $solr['highlights'][] = $highlight;
+            }
+
+             */
         }
         
         // Related Items
@@ -537,40 +593,40 @@ class Solr_client {
             foreach($result->arr as $multivalue_field) {
                 $key = $multivalue_field['name'];
                     foreach($multivalue_field->str as $value) {
-                        $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                        $doc[str_replace('.', '', $key)][] = $value;
                     }
                     foreach($multivalue_field->int as $value) {
-                        $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                        $doc[str_replace('.', '', $key)][] = $value;
                     }
                     foreach($multivalue_field->date as $value) {
-                        $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                        $doc[str_replace('.', '', $key)][] = $value;
                     }
             }
 
             foreach($result->str as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
             foreach($result->int as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
             foreach($result->date as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
-                $doc['solr_' . str_replace('.', '', $key)]= $value;
+                $doc[str_replace('.', '', $key)]= $value;
 
             }
 
 
-            $handle = preg_split('/\//',$doc['solr_handle'][0]);
+            $handle = preg_split('/\//',$doc['handle'][0]);
             $doc['id'] = $handle[1];
-            if(!array_key_exists('solr_'.$title_field,$doc)) {
-                $doc['solr_'.$title_field][] = 'No title';
+            if(!array_key_exists($title_field,$doc)) {
+                $doc[$title_field][] = 'No title';
             }
             $related_items[] = $doc;
         }
@@ -643,26 +699,26 @@ class Solr_client {
                 foreach($result->arr as $multivalue_field) {
                     $key = $multivalue_field['name'];
                         foreach($multivalue_field->str as $value) {
-                            $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                            $doc[str_replace('.', '', $key)][] = $value;
                         }
                         foreach($multivalue_field->int as $value) {
-                            $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                            $doc[str_replace('.', '', $key)][] = $value;
                         }
                         foreach($multivalue_field->date as $value) {
-                            $doc['solr_' . str_replace('.', '', $key)][] = $value;
+                            $doc[str_replace('.', '', $key)][] = $value;
                         }
                 }
 
                 foreach($result->str as $unique_field) {
                     $key = $unique_field['name'];
                     $value = $unique_field;
-                    $doc['solr_' . str_replace('.', '', $key)]= $value;
+                    $doc[str_replace('.', '', $key)]= $value;
                 }
 
-                $handle = preg_split('/\//',$doc['solr_handle'][0]);
+                $handle = preg_split('/\//',$doc['handle'][0]);
                 $doc['id'] = $handle[1];
-                if(!array_key_exists('solr_'.$title_field,$doc)) {
-                    $doc['solr_'.$title_field][] = 'No title';
+                if(!array_key_exists($title_field,$doc)) {
+                    $doc[$title_field][] = 'No title';
                 }
 
                 $recent_items[] = $doc;
