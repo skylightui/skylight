@@ -41,8 +41,8 @@
                 $image = '';
                 $type = 'Unknown';
 
-                if(array_key_exists('solr_dctypeen', $doc)) {
-                        $type = implode(" ",$doc['solr_dctypeen']);
+                if(array_key_exists('dctypeen', $doc)) {
+                        $type = implode(" ",$doc['dctypeen']);
                 }
 
                 if($display_thumbnail) {
@@ -57,14 +57,14 @@
 
             ?>
 
-    <li class="<?php echo $type; ?>" <?php if($image !== '') { echo ' style="background-image: url(\''.$image.'\');"'; } ?>>
-        <h3><a href="./record/<?php echo $doc['id']?>"><?php echo $doc['solr_'.$title_field][0]; ?></a></h3>
-        <?php if(array_key_exists('solr_'.$author_field,$doc)) { ?>
+    <li class="<?php echo $type; ?>" <?php if($image !== '') { echo ' style="background-image: url(\''.$image.'\'); background-repeat: no-repeat";'; } ?>>
+        <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
+        <?php if(array_key_exists($author_field,$doc)) { ?>
         <span class="authors">
             <?php
 
             $num_authors = 0;
-            foreach ($doc['solr_'.$author_field] as $author) {
+            foreach ($doc[$author_field] as $author) {
                // test author linking
                // quick hack that only works if the filter key
                // and recorddisplay key match and the delimiter is :
@@ -74,7 +74,7 @@
                $lc_filter = preg_replace('/,/','%2C',$lc_filter, -1);
                echo '<a class=\'filter-link\' href=\'./search/*/Author:"'.$lc_filter.'|||'.$orig_filter.'"\'>'.$author.'</a>';
                 $num_authors++;
-                if($num_authors < sizeof($doc['solr_'.$author_field])) {
+                if($num_authors < sizeof($doc[$author_field])) {
                     echo '; ';
                 }
             }
@@ -83,12 +83,12 @@
             ?>
         </span><br/>
             <?php } ?>
-        <?php if(array_key_exists('solr_'.$artist_field,$doc)) { ?>
+        <?php if(array_key_exists($artist_field,$doc)) { ?>
         <span class="artists">
             <?php
 
             $num_artists = 0;
-            foreach ($doc['solr_'.$artist_field] as $artist) {
+            foreach ($doc[$artist_field] as $artist) {
                // test author linking
                // quick hack that only works if the filter key
                // and recorddisplay key match and the delimiter is :
@@ -98,7 +98,7 @@
                $lc_filter = preg_replace('/,/','%2C',$lc_filter, -1);
                echo '<a class=\'filter-link\' href=\'./search/*/Artist:"'.$lc_filter.'|||'.$orig_filter.'"\'>'.$artist.'</a>';
                 $num_artists++;
-                if($num_artists < sizeof($doc['solr_'.$artist_field])) {
+                if($num_artists < sizeof($doc[$artist_field])) {
                     echo '; ';
                 }
             }
@@ -108,13 +108,13 @@
         </span><br/>
             <?php } ?>
         <em>
-       <?php if(array_key_exists('solr_superindexnzaisdate', $doc)) { ?>
+       <?php if(array_key_exists('superindexnzaisdate', $doc)) { ?>
             <span class="date">
                 <?php
-                echo 'Published: ' . $doc['solr_superindexnzaisdate'][0];
+                echo 'Published: ' . $doc['superindexnzaisdate'][0];
           }
-                    elseif(array_key_exists('solr_dcdateissuedyear', $doc)) {
-                        echo 'Published: ' . $doc['solr_superindexnzaisdate'][0];
+                    elseif(array_key_exists('dcdateissuedyear', $doc)) {
+                        echo 'Published: ' . $doc['superindexnzaisdate'][0];
                     }
 
                 ?>
@@ -124,9 +124,19 @@
 
 
         <?php
-            if(array_key_exists('solr_dcdescriptionabstracten', $doc)) {
+        // TODO: Make highlighting configurable
+
+        if(array_key_exists('highlights',$doc)) {
+            ?> <p class="abstract"><?php
+            foreach($doc['highlights'] as $highlight) {
+                echo "...".$highlight."...".'<br/>';
+            }
+            ?></p><?php
+        }
+        else {
+            if(array_key_exists('dcdescriptionabstracten', $doc)) {
                 echo '<p class="abstract">';
-                $abstract =  $doc['solr_dcdescriptionabstracten'][0];
+                $abstract =  $doc['dcdescriptionabstracten'][0];
                 $abstract_words = explode(' ',$abstract);
                 $shortened = '';
                 $max = 40;
@@ -141,16 +151,17 @@
                 echo $shortened.$suffix;
                 echo '</p>';
             }
-        ?>
+        }
 
+        ?>
 
 
         <p class="read_item"><a class="record_list_links"  href="./record/<?php echo $doc['id']?>">Read more...</a></p>
     </li>
     <?php
 
-        if(array_key_exists('solr_exifgpscoordinates', $doc)) {
-            $coordinates[$doc['id']] = $doc['solr_exifgpscoordinates'];
+        if(array_key_exists('exifgpscoordinates', $doc)) {
+            $coordinates[$doc['id']] = $doc['exifgpscoordinates'];
         }
 
     } ?>
