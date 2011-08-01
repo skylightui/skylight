@@ -95,6 +95,7 @@ class Search extends skylight {
             $data['page_title'] = 'No search results found!';
             $this->view('header', $data);
             $this->view('div_main');
+            $this->view('search_suggestions', $data);
             $this->view('search_noresults');
             $this->view('div_main_end');
             $this->view('div_sidebar');
@@ -138,6 +139,7 @@ class Search extends skylight {
         $data['thumbnail_field'] = 'solr_'.str_replace('.','',$thumbnail_field);
         $this->view('header', $data);
         $this->view('div_main');
+        $this->view('search_suggestions', $data);
         $this->view('search_results', $data);
         $this->view('div_main_end');
         $this->view('div_sidebar');
