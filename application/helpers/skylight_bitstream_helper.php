@@ -24,6 +24,13 @@
         return $seq;
     }
 
+    function getBitstreamHandle($metadatavalue) {
+        $segments = parseBitstreamMetadata($metadatavalue);
+        $handle = $segments[3];
+        $handle = preg_replace('/^.*\//', '',$handle);
+        return $handle;
+    }
+
     function getBitstreamLength($bitstreams, $seq) {
         foreach ($bitstreams as $bitstream) {
             if (getBitstreamSequence($bitstream) == $seq) {
