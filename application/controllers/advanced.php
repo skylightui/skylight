@@ -203,6 +203,7 @@ class Advanced extends skylight {
         $data['title_field'] = $title;
         $data['author_field'] = $recorddisplay['Author'];
         $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
+        $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
 
         $data['display_thumbnail'] = $display_thumbnail;
         $data['thumbnail_field'] = $thumbnail_field;
