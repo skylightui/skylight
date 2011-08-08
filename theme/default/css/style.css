@@ -444,6 +444,14 @@ input.button {
     font-weight: bold;
 }
 
+label {
+    font-weight: bold;
+    display: block;
+    clear: both;
+    width: 90%;
+    text-align: left;
+}
+
 a.viewmore {
     font-weight: bold;
     text-align: right;
