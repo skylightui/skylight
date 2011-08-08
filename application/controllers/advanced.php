@@ -87,10 +87,19 @@ class Advanced extends skylight {
         }
         else if($path == 'search') {
 
-           $query = '';
-            $operator = $this->input->get('operator');
-            $offset = $this->input->get('offset');
-            $configured_filters = $this->config->item('skylight_filters');
+       $query = '';
+        $operator = $this->input->get('operator');
+        $offset = $this->input->get('offset');
+        $sort_by = $this->input->get('sort_by');
+
+        $base_parameters = '';
+        if($sort_by != "") {
+            $base_parameters .= '?sort_by='.$sort_by;
+        }
+
+
+
+        $configured_filters = $this->config->item('skylight_filters');
         $delimiter = $this->config->item('skylight_filter_delimiter');
         $rows = $this->config->item('skylight_results_per_page');
         $recorddisplay = $this->config->item('skylight_recorddisplay');
@@ -98,6 +107,7 @@ class Advanced extends skylight {
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
         $title = $recorddisplay['Title'];
         $search_fields = $this->config->item('skylight_search_fields');
+        $sort_options = $this->config->item('skylight_sort_fields');
         $saved_filters = array();
         $saved_search = array();
         $url_filters = array();
@@ -152,7 +162,8 @@ class Advanced extends skylight {
         $data['delimiter'] = $delimiter;
         $data['saved_search'] = $saved_search;
         $data['operator'] = $operator;
-
+        $data['base_parameters'] = $base_parameters;
+        $data['sort_options'] = $sort_options;
         // Variables to populate the search box
         $data['searchbox_query'] = $query;
         if (($data['searchbox_query'] == '*') || ($data['searchbox_query'] == '*:*')) $data['searchbox_query'] = '';
@@ -203,6 +214,7 @@ class Advanced extends skylight {
         $data['title_field'] = $title;
         $data['author_field'] = $recorddisplay['Author'];
         $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
+        $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
 
         $data['display_thumbnail'] = $display_thumbnail;
         $data['thumbnail_field'] = $thumbnail_field;
