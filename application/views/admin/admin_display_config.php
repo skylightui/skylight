@@ -1,4 +1,6 @@
-    <h3>skyLight Configuration</h3>
+<div class="content">
+    <p>
+    <h3>Skylight Configuration</h3>
     <p><em>Note: To change your local configuration options, edit the 'application/config/skylight.php' file by hand.</em></p>
         <table class="config">
             <?php
@@ -32,3 +34,5 @@
             }
                 ?>
         </table>
+    </p>
+</div>
