@@ -33,7 +33,13 @@ class content extends skylight {
                 $data['page_title'] = $this->config->item('skylight_fullname');
             }
 
-            //$recent_item_data = $this->solr_client->getRecentItems(5);
+            // Do we want to include recent items?
+            if ($this->config->item('skylight_homepage_recentitems') === TRUE) {
+                $data['recentitems'] = $this->solr_client->getRecentItems();
+                $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
+            }
+
+            // Get the facet data
             $facet_data = $this->solr_client->getFacets();
 
             $this->view('header', $data);

@@ -681,7 +681,6 @@ class Solr_client {
 
     function getRecentItems($rows = 5)
     {
-
         $title_field = $this->recorddisplay['Title'];
         $author_field =  $this->recorddisplay['Author'];
         $subject_field = $this->recorddisplay['Subject'];
@@ -695,43 +694,43 @@ class Solr_client {
         $solr_xml = file_get_contents($url);
 
         $recent_xml = @new SimpleXMLElement($solr_xml);
-            $recent_items = array();
-            foreach ($recent_xml->result->doc as $result) {
-                $doc = array();
-                foreach($result->arr as $multivalue_field) {
-                    $key = $multivalue_field['name'];
-                        foreach($multivalue_field->str as $value) {
-                            $doc[str_replace('.', '', $key)][] = $value;
-                        }
-                        foreach($multivalue_field->int as $value) {
-                            $doc[str_replace('.', '', $key)][] = $value;
-                        }
-                        foreach($multivalue_field->date as $value) {
-                            $doc[str_replace('.', '', $key)][] = $value;
-                        }
-                }
-
-                foreach($result->str as $unique_field) {
-                    $key = $unique_field['name'];
-                    $value = $unique_field;
-                    $doc[str_replace('.', '', $key)]= $value;
-                }
-
-                $handle = preg_split('/\//',$doc['handle'][0]);
-                $doc['id'] = $handle[1];
-                if(!array_key_exists($title_field,$doc)) {
-                    $doc[$title_field][] = 'No title';
-                }
-
-                $recent_items[] = $doc;
+        $recent_items = array();
+        foreach ($recent_xml->result->doc as $result) {
+            $doc = array();
+            foreach($result->arr as $multivalue_field) {
+                $key = $multivalue_field['name'];
+                    foreach($multivalue_field->str as $value) {
+                        $doc[str_replace('.', '', $key)][] = $value;
+                    }
+                    foreach($multivalue_field->int as $value) {
+                        $doc[str_replace('.', '', $key)][] = $value;
+                    }
+                    foreach($multivalue_field->date as $value) {
+                        $doc[str_replace('.', '', $key)][] = $value;
+                    }
             }
 
-            $data['title_field'] = $title_field;
-            $data['author_field'] = $author_field;
-            $data['subject_field'] = $subject_field;
-            $data['description_field'] = $description_field;
+            foreach($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+                $doc[str_replace('.', '', $key)]= $value;
+            }
 
-            $data['recent_items'] = $recent_items;
+            $handle = preg_split('/\//',$doc['handle'][0]);
+            $doc['id'] = $handle[1];
+            if(!array_key_exists($title_field,$doc)) {
+                $doc[$title_field][] = 'No title';
+            }
+
+            $recent_items[] = $doc;
+        }
+
+        $data['title_field'] = $title_field;
+        $data['author_field'] = $author_field;
+        $data['subject_field'] = $subject_field;
+        $data['description_field'] = $description_field;
+
+        $data['recent_items'] = $recent_items;
 
         return $data;
     }

@@ -45,6 +45,10 @@
     $config['skylight_display_thumbnail'] = false;
     $config['skylight_link_bitstream'] = false;
 
+    // Other options
+    $config['skylight_homepage_recentitems'] = false;
+
+
     /**
      * Debug / development options.
      *
