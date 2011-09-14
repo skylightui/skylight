@@ -3,6 +3,11 @@
     // The URL of the parent solr server
     $config['skylight_solrbase'] = 'http://your.repository.org:8080/solr/search/';
 
+    // The platform and version of your repository.
+    // Currently DSpace 1.7.1+ is the only supported repository
+    $config['skylight_repository_type'] = 'dspace'; // default 'dspace'
+    $config['skylight_repository_version'] = '171'; // default '171'
+
     // The local path for theme and configuration overrides (if required)
     // $config['skylight_local_path'] = '/superindex';
 
