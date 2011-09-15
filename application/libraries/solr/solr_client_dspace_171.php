@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
  
-class Solr_client {
+class Solr_client_dspace_171 {
 
     var $base_url       = 'http://localhost:8983/solr';  // Base URL. Typically not overridden in construct params. Get from config.
     var $max_rows       = 100; // Default to 100 rows maximum
