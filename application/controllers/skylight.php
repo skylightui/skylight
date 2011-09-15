@@ -12,19 +12,19 @@ class skylight extends CI_Controller {
         // Initalise the parent
         parent::__construct();
 
-        // Load the EasyDeposit config
-        $this->config->load('skylight');
+        // See if there is a skylight.php in the default 'local' location
+        if (file_exists('../skylight-local/config/sylight.php')) {
+            $this->_load_config('../skylight-local/config/skylight.php');
+        } else {
+            // Load the normal skylight config
+            $this->config->load('skylight');
+        }
 
         // Is there a skylight-local setup, and does it have a master skylight.php config?
         $local_path = $this->config->item('skylight_local_path');
         if (!empty($local_path)) {
             if (file_exists($local_path . '/config/skylight.php')) {
                 $this->_load_config($local_path . '/config/skylight.php');
-            }
-        } else {
-            // Even if a skylight-local isn't defined, see if there is one up a level
-            if (file_exists('../skylight-local/config/sylight.php')) {
-                $this->_load_config('../skylight-local/config/skylight.php');
             }
         }
 
