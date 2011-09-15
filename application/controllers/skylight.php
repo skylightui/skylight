@@ -15,6 +15,19 @@ class skylight extends CI_Controller {
         // Load the EasyDeposit config
         $this->config->load('skylight');
 
+        // Is there a skylight-local setup, and does it have a master skylight.php config?
+        $local_path = $this->config->item('skylight_local_path');
+        if (!empty($local_path)) {
+            if (file_exists($local_path . '/config/skylight.php')) {
+                $this->_load_config($local_path . '/config/skylight.php');
+            }
+        } else {
+            // Even if a skylight-local isn't defined, see if there is one up a level
+            if (file_exists('../skylight-local/config/sylight.php')) {
+                $this->_load_config('../skylight-local/config/skylight.php');
+            }
+        }
+
         // Decide whether to enable debug / profiling mode or not
         if ($this->config->item('skylight_debug') === TRUE) {
             $this->output->enable_profiler(TRUE);
@@ -59,7 +72,6 @@ class skylight extends CI_Controller {
         }
 
         // Load the solr library
-        //
         // Check for repo type and version, load accordingly
         $repository_type = $this->config->item('skylight_repository_type');
         $repository_version = $this->config->item('skylight_repository_version');
@@ -70,17 +82,8 @@ class skylight extends CI_Controller {
         // Load some globals
         $data['site_title'] = $this->config->item('skylight_fullname');
 
-        // The site's theme name
-        $theme = $this->config->item('skylight_theme');
-
-        // Has the user requested to override the theme?
-        $get_theme = $this->input->get('theme');
-        if ((!empty($get_theme)) && ($this->config->item('skylight_theme_allowoverride') === TRUE)) {
-            $theme = preg_replace('/[^A-Za-z0-9]/', '', $this->input->get('theme'));
-            $_SESSION['skylight_theme'] = $theme;
-        } else if (isset($_SESSION['skylight_theme'])) {
-            $theme = $_SESSION['skylight_theme'];
-        }
+        // Get the theme
+        $theme = $this->_get_theme();
 
         // Does the theme override this page?
         $local_path = $this->config->item('skylight_local_path');
@@ -101,8 +104,24 @@ class skylight extends CI_Controller {
         }
     }
 
-    function index()
-    {
+    function _get_theme() {
+        // The site's theme name
+        $theme = $this->config->item('skylight_theme');
+
+        // Has the user requested to override the theme?
+        $get_theme = $this->input->get('theme');
+        if ((!empty($get_theme)) && ($this->config->item('skylight_theme_allowoverride') === TRUE)) {
+            $theme = preg_replace('/[^A-Za-z0-9]/', '', $this->input->get('theme'));
+            $_SESSION['skylight_theme'] = $theme;
+        } else if (isset($_SESSION['skylight_theme'])) {
+            $theme = $_SESSION['skylight_theme'];
+        }
+
+        // Return the theme
+        return $theme;
+    }
+
+    function index() {
         // Go home, nothing to do here
         redirect('/');
     }
