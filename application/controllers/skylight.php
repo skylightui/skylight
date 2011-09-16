@@ -149,7 +149,6 @@ class skylight extends CI_Controller {
         $local_path = $this->config->item('skylight_local_path');
         if ((!empty($local_path)) &&
             (file_exists($local_path . '/config/' . $hostname . '.php'))) {
-            //echo $this->config->item('skylight_thumbnail_field');
             $this->_load_config($local_path . '/config/' . $hostname . '.php');
         }
         // - Next check the application/sites directory
