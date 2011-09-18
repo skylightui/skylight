@@ -8,6 +8,9 @@ class skylight extends CI_Controller {
     // The language being used in the user interface
     public $uilang;
 
+    // The output type - normally html, but could be RDF / ATOM / JSON etc
+    public $output_type = 'html';
+
     function skylight() {
         // Initalise the parent
         parent::__construct();
@@ -85,22 +88,30 @@ class skylight extends CI_Controller {
         // Get the theme
         $theme = $this->_get_theme();
 
-        // Does the theme override this page?
-        $local_path = $this->config->item('skylight_local_path');
-        //echo $local_path . '/theme/views/' . $theme . '/' . $view . '.php';
-        if ((!empty($local_path)) &&
-            (file_exists($local_path . '/theme/' . $theme . '/views/' . $view . '.php'))) {
-            $data['load'] = $local_path . '/theme/' . $theme . '/views/' . $view . '.php';
-            $this->view('foreign' , $data);
-        }
-        else if (file_exists('./application/views/theme/' . $theme . '/' . $view . '.php')) {
-            $this->load->view('theme/' . $theme . '/' . $view, $data);
-        }
-        else if (file_exists('./application/views/theme/default/' . $view . '.php')) {
-            $this->load->view('theme/default/' . $view, $data);
-        }
-         else {
-            $this->load->view($view, $data);
+        // Which output type to use?
+        switch ($this->output_type) {
+            case 'json':
+                if (file_exists('./application/views/formats/json/' . $view . '.php')) {
+                    $this->load->view('formats/json/' . $view, $data);
+                }
+                break;
+            default:
+                // Does the theme override this page?
+                $local_path = $this->config->item('skylight_local_path');
+                if ((!empty($local_path)) &&
+                    (file_exists($local_path . '/theme/' . $theme . '/views/' . $view . '.php'))) {
+                    $data['load'] = $local_path . '/theme/' . $theme . '/views/' . $view . '.php';
+                    $this->view('foreign' , $data);
+                }
+                else if (file_exists('./application/views/theme/' . $theme . '/' . $view . '.php')) {
+                    $this->load->view('theme/' . $theme . '/' . $view, $data);
+                }
+                else if (file_exists('./application/views/theme/default/' . $view . '.php')) {
+                    $this->load->view('theme/default/' . $view, $data);
+                }
+                 else {
+                    $this->load->view($view, $data);
+                }
         }
     }
 
@@ -214,6 +225,17 @@ class skylight extends CI_Controller {
         return in_array($language, $this->config->item('skylight_language_options'));
     }
 
+    function _conneg($in) {
+        if ($this->_endswith($in, '.json')) {
+            $this->output_type = 'json';
+            return substr($in, 0, strlen($in) - 5);
+        }
+
+        //TODO True content negotiation based on 'Accepts' header
+
+        return $in;
+    }
+
     function _clean($in) {
         // Clean up any input
         $in = strip_tags($in);
@@ -239,5 +261,9 @@ class skylight extends CI_Controller {
     function _adminInterface() {
         // Set this for admin pages than need authenticating
         $this->adminInterface = true;
+    }
+
+    function _endswith($haystack, $needle) {
+        return strrpos($haystack, $needle) === strlen($haystack) - strlen($needle);
     }
 }

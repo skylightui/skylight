@@ -15,7 +15,10 @@ class Record extends skylight {
 	}
 
     function _remap($id, $params = array()) {
-        
+
+        // Perform content negotiation on the record ID
+        $id = $this->_conneg($id);
+
         if ((empty($id)) || ($id == 'index')) {
             // No record ID, so go home
 		    redirect('/');
