@@ -3,7 +3,6 @@
     // JSON serialize a record
     $record = array();
 
-    $keyvalue = array();
     foreach($recorddisplay as $key => $element) {
         if (isset($solr[$element])) {
             $key = array();
@@ -16,9 +15,5 @@
 
     //TODO Put in digital objects
 
-    $top = array();
-    $top['record'] = $record;
-    // Display the record
-    //print_r($record);
-    echo json_encode($top);
+    echo json_encode(ARRAY('record' => $record));
 ?>
