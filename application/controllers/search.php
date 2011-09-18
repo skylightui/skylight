@@ -10,6 +10,10 @@ class Search extends skylight {
     }
 
     function _remap($query, $params = array()) {
+
+        // Perform content negotiation on the query
+        $query = $this->_conneg($query);
+
         if (uri_string() == 'search/index') {
             $query = 'index';
 
