@@ -15,5 +15,5 @@
 
     //TODO Put in digital objects
 
-    echo json_encode(ARRAY('record' => $record));
+    echo json_encode(array('record' => $record));
 ?>
