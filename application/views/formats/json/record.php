@@ -15,5 +15,6 @@
 
     //TODO Put in digital objects
 
+    header('Content-type: application/json');
     echo json_encode(array('record' => $record));
 ?>
