@@ -85,9 +85,6 @@ class skylight extends CI_Controller {
         // Load some globals
         $data['site_title'] = $this->config->item('skylight_fullname');
 
-        // Get the theme
-        $theme = $this->_get_theme();
-
         // Which output type to use?
         switch ($this->output_type) {
             case 'json':
@@ -95,7 +92,15 @@ class skylight extends CI_Controller {
                     $this->load->view('formats/json/' . $view, $data);
                 }
                 break;
+            case 'csv':
+                if (file_exists('./application/views/formats/csv/' . $view . '.php')) {
+                    $this->load->view('formats/csv/' . $view, $data);
+                }
+                break;
             default:
+                // Get the theme
+                $theme = $this->_get_theme();
+
                 // Does the theme override this page?
                 $local_path = $this->config->item('skylight_local_path');
                 if ((!empty($local_path)) &&
@@ -229,6 +234,9 @@ class skylight extends CI_Controller {
         if ($this->_endswith($in, '.json')) {
             $this->output_type = 'json';
             return substr($in, 0, strlen($in) - 5);
+        } else if ($this->_endswith($in, '.csv')) {
+            $this->output_type = 'csv';
+            return substr($in, 0, strlen($in) - 4);
         }
 
         //TODO True content negotiation based on 'Accepts' header
