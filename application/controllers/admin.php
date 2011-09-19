@@ -61,6 +61,23 @@ class Admin extends skylight {
 
         switch ($mode) {
             case 'edit':
+                $data['page_title'] = 'Admin: Edit - ' . $content;
+                $data['content'] = $content;
+
+                $local_path = $this->config->item('skylight_local_path');
+                if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php')) {
+                    $load = $local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php';
+                } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php')) {
+                    $load = './application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php';
+                }
+                    
+                $data['html'] = file_get_contents($load);
+
+                $this->view("admin/admin_header", $data);
+                $this->view('div_main', $data);
+                $this->view('admin/admin_content_editor', $data);
+                $this->view('div_main_end');
+                $this->view("footer");
                 break;
             case 'add':
                 break;
@@ -68,12 +85,12 @@ class Admin extends skylight {
                 echo 'Whoops - you just deleted ' . $content . '<p>Only kidding!';
                 break;
             default:
-                  $data['page_title'] = 'Admin: Invalid mode!';
+                $data['page_title'] = 'Admin: Invalid mode!';
 
-                  $this->view("header", $data);
-                  $this->view('div_main', $data);
-                  $this->view('div_main_end');
-                  $this->view("footer");
+                $this->view("header", $data);
+                $this->view('div_main', $data);
+                $this->view('div_main_end');
+                $this->view("footer");
         }
         //$local_path = $this->config->item('skylight_local_path');
         //$found = false;
