@@ -4,8 +4,45 @@
         <div class="section">
 
             <ul>
-                <li><a href="./admin/displayconfig">View the configuration</a></li>
-                <li><a href="./admin/logout">Logout of the administrative interface</a></li>
+                <li><strong><a href="./admin/displayconfig">View the configuration</a></strong></li>
+                <li><strong>Edit static content pages:</strong>
+                    <ul>
+                        <?php
+                            // List each static page
+                            $local_path = $this->config->item('skylight_local_path');
+                            if (file_exists($local_path . '/static/' . $theme)) {
+                                $handle = opendir($local_path . '/static/' . $theme);
+                            }
+
+                            while (false !== ($file = readdir($handle))) {
+                                if (!preg_match("/^\./", $file)) {
+                                    if (is_dir($local_path . '/static/' . $theme . '/' . $file)) {
+                                        ?><li><?php echo $file . '/'; ?><ul><?php
+                                        $handle2 = opendir($local_path . '/static/' . $theme . '/' . $file);
+                                        while (false !== ($file2 = readdir($handle2))) {
+                                            if (!preg_match("/^\./", $file2)) {
+                                                $file2 = substr($file2, 0, strlen($file2) - 4);
+                                                ?><li>
+                                                    <a href="<?php echo './admin/content?mode=edit&file=' . $file . '/' . $file2; ?>"><?php echo $file2; ?></a>
+                                                    (<a href="<?php echo './admin/content?mode=delete&file=' . $file . '/' . $file2; ?>">delete</a>)
+                                                </li><?php
+                                            }
+                                        }
+                                        ?><li><a href="<?php echo './admin/content?mode=add&file=' . $file; ?>">Add new...</a></li><?php
+                                        ?></ul></li><?php
+                                    } else {
+                                        $file = substr($file, 0, strlen($file) - 4);
+                                        ?><li>
+                                            <a href="<?php echo './admin/content?mode=edit&file=' . $file; ?>"><?php echo $file; ?></a>
+                                            (<a href="<?php echo './admin/content?mode=delete&file=' . $file; ?>">delete</a>)
+                                        </li><?php
+                                    }
+                                }
+                            }
+                        ?><li><a href="<?php echo './admin/content?mode=add&file=' . $file; ?>">Add new...</a></li><?php
+                        ?>
+                    </ul></li>
+                <li><strong><a href="./admin/logout">Logout of the administrative interface</a></strong></li>
             </ul>
 
         </div>

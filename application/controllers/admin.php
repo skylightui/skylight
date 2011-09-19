@@ -14,6 +14,7 @@ class Admin extends skylight {
 
     public function index() {
         $data['page_title'] = 'Admin: Dashboard: Menu';
+        $data['theme'] = $this->_get_theme();
 
         $this->view("header", $data);
         $this->view('div_main', $data);
@@ -41,6 +42,41 @@ class Admin extends skylight {
         $this->view("admin/admin_display_config", $data);
         $this->view('div_main_end');
         $this->view("footer");
+    }
+
+    public function content() {
+        $mode = $this->input->get('mode');
+        $content = $this->input->get('file');
+
+        // Check that there are no periods ('.') in the URL - possible hack attack?
+        // And ensure that the page exists
+        if (!(strpos($content, '.') === False)) {
+            $data['page_title'] = 'Admin: Invalid page!';
+
+            $this->view("header", $data);
+            $this->view('div_main', $data);
+            $this->view('div_main_end');
+            $this->view("footer");
+        }
+
+        switch ($mode) {
+            case 'edit':
+                break;
+            case 'add':
+                break;
+            case 'delete':
+                echo 'Whoops - you just deleted ' . $content . '<p>Only kidding!';
+                break;
+            default:
+                  $data['page_title'] = 'Admin: Invalid mode!';
+
+                  $this->view("header", $data);
+                  $this->view('div_main', $data);
+                  $this->view('div_main_end');
+                  $this->view("footer");
+        }
+        //$local_path = $this->config->item('skylight_local_path');
+        //$found = false;
     }
 
 }
