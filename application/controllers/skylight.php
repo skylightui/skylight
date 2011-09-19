@@ -97,6 +97,11 @@ class skylight extends CI_Controller {
                     $this->load->view('formats/csv/' . $view, $data);
                 }
                 break;
+            case 'xml':
+                if (file_exists('./application/views/formats/xml/' . $view . '.php')) {
+                    $this->load->view('formats/xml/' . $view, $data);
+                }
+                break;
             default:
                 // Get the theme
                 $theme = $this->_get_theme();
@@ -236,6 +241,9 @@ class skylight extends CI_Controller {
             return substr($in, 0, strlen($in) - 5);
         } else if ($this->_endswith($in, '.csv')) {
             $this->output_type = 'csv';
+            return substr($in, 0, strlen($in) - 4);
+        } else if ($this->_endswith($in, '.xml')) {
+            $this->output_type = 'xml';
             return substr($in, 0, strlen($in) - 4);
         }
 
