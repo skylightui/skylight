@@ -72,7 +72,8 @@
     <?php if(isset($solr[$bitstream_field]) && $link_bitstream) {
                                 ?><div class="record_bitstreams"><h3>Digital Objects</h3><?php
                                 foreach($solr[$bitstream_field] as $bitstream) {
-                                    ?><p><span class="label"></span><a class="bitstream_link" target="_blank" href="<?php echo getBitstreamUri($bitstream); ?>"><?php echo getBitstreamFilename($bitstream); ?></a>
+                                    $bitstreamLink = $this->skylight_utilities->getBitstreamLink($bitstream);
+                                    ?><p><span class="label"></span><?php echo $bitstreamLink ?>
                                     (<span class="bitstream_size"><?php echo getBitstreamSize($bitstream); ?></span>, <span class="bitstream_mime"><?php echo getBitstreamMimeType($bitstream); ?></span>, <span class="bitstream_description"><?php echo getBitstreamDescription($bitstream); ?></span>)</p>
                             <?php
                                 } ?></div> <?php

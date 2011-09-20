@@ -51,6 +51,11 @@
     $config['skylight_display_thumbnail'] = true;
     $config['skylight_link_bitstream'] = true;
 
+    // Display common image formats in "light box" gallery?
+    $config['skylight_lightbox'] = true;
+    $config['skylight_lightbox_mimes'] = array('image/jpeg', 'image/gif', 'image/png');
+
+    // Language and locale settings
     $config['skylight_language_default'] = 'en';
     $config['skylight_language_options'] = array('en', 'ko', 'jp');
 
