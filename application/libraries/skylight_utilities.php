@@ -40,21 +40,25 @@ class Skylight_utilities {
         $seq = getBitstreamSequence($metadatavalue);
 
         // old class: bitstream_link
-        $link ='<a class="cboxElement" ';
+        $link ='<a ';
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'rel="'.$seq.'" ';
+                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
-        }
+            $link .= 'href="'.$uri.'">'.$filename.'</a>';
 
-        $link .= 'href="'.$uri.'">'.$filename.'</a>';
-
-        $link .= '<script>$(document).ready(function(){
+            $link .= '<script>$(document).ready(function(){
                 $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
         });</script>';
+        }
+        else {
+            $link .= 'href="'.$uri.'">'.$filename.'</a>';
+        }
+
+
 
         return $link;
 

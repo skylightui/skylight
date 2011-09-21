@@ -6,7 +6,29 @@
 
        
     <?php foreach ($recent_items as $doc) { ?>
-    <li>
+
+            <?php
+                $image = '';
+                $type = 'Unknown';
+
+                if(array_key_exists('dctypeen', $doc)) {
+                        $type = implode(" ",$doc['dctypeen']);
+                }
+
+                if($display_thumbnail && array_key_exists($thumbnail_field, $doc)) {
+
+                        $image = getBitstreamUri($doc[$thumbnail_field][0]);
+                }
+                else if (file_exists('./assets/images/'.strtolower($type).'.png')) {
+                       $image = './assets/images/'.strtolower($type).'.png';
+                }
+                else {
+                    $image = './assets/images/unknown.png';
+                }
+
+            ?>
+
+    <li class="<?php echo $type; ?>" <?php if($image !== '') { echo ' style="background-image: url(\''.$image.'\'); background-repeat: no-repeat";'; } ?>>
         <h3><a href="./record/<?php echo $doc['id']?>"><?php echo $doc['solr_'.$title_field][0]; ?></a></h3>
         <?php if(array_key_exists('solr_'.$author_field,$doc)) { ?>
         <span class="authors">

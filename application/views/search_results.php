@@ -45,14 +45,15 @@
                         $type = implode(" ",$doc['dctypeen']);
                 }
 
-                if($display_thumbnail) {
-                    if(array_key_exists($thumbnail_field, $doc)) {
+                if($display_thumbnail && array_key_exists($thumbnail_field, $doc)) {
 
                         $image = getBitstreamUri($doc[$thumbnail_field][0]);
-                    }
+                }
+                else if (file_exists('./assets/images/'.strtolower($type).'.png')) {
+                       $image = './assets/images/'.strtolower($type).'.png';
                 }
                 else {
-                       $image = './theme/default/images/'.strtolower($type).'.png';
+                    $image = './assets/images/unknown.png';
                 }
 
             ?>

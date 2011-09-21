@@ -13,16 +13,18 @@
         <![endif]-->
         
         <!-- Load JQuery -->
-        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+        <script type='text/javascript' src="<?php echo base_url(); ?>assets/jquery/jquery-1.6.4.min.js"></script>
+
+        <!-- Load JQueryUI -->
+        <link href="<?php echo base_url(); ?>assets/jqueryui/css/ui-lightness/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css"/>
+        <script type='text/javascript' src="<?php echo base_url(); ?>assets/jqueryui/js/jquery-ui-1.8.16.custom.min.js"></script>
 
         <!-- Load Pingback -->
         <link rel="pingback" href="<?php echo base_url() . index_page(); if (index_page() !== '') { echo '/'; } echo 'pingback'; ?>" />
 
         <!-- Load Colorbox -->
-        <script type='text/javascript' src='<?php echo base_url(); ?>theme/default/js/jquery.colorbox-min.js'></script>
-        <link media="screen" rel="stylesheet" href="<?php echo base_url(); ?>theme/default/css/colorbox.css">
+        <script type='text/javascript' src='<?php echo base_url(); ?>assets/colorbox/jquery.colorbox-min.js'></script>
+        <link media="screen" rel="stylesheet" href="<?php echo base_url(); ?>assets/colorbox/colorbox.css">
 
         <?php if (isset($solr)) { ?><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
         <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
