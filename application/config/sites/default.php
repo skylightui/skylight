@@ -34,9 +34,21 @@
                                                 'Abstract' => 'dcdescriptionabstracten'
                                                 );
 
+    $config['skylight_searchresult_display'] = array('Title' => 'dctitleen',
+                                                'Author' => 'dccontributorauthoren',
+                                                'Subject' => 'dcsubjecten',
+                                                'Type' => 'dctypeen',
+                                                'Abstract' => 'dcdescriptionabstracten'
+                                                );
+
     $config['skylight_search_fields'] = array('Keywords' => 'text',
                                                   'Subject' => 'dc.subject',
                                                   'Type' => 'dc.type',
+                                                  'Author' => 'dc.contributor.author'
+                                                  );
+
+    $config['skylight_sort_fields'] = array('Title' => 'dc.title',
+                                                  'Date' => 'dc.date.issued',
                                                   'Author' => 'dc.contributor.author'
                                                   );
 

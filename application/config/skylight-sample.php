@@ -53,6 +53,10 @@
     // Other options
     $config['skylight_homepage_recentitems'] = false;
 
+    // Spellchecking / Spelling suggestions
+    // Dictionaries must be set up in your local solr configuration
+    $config['skylight_solr_dictionary'] = 'default';
+
 
     /**
      * Debug / development options.
