@@ -6,7 +6,7 @@
 
         <?php if(preg_match('/Date/',$base_search) && $facet['name'] == 'Date') {
 
-                $fpattern =  '#\/'.$facet['name'].$delimiter.'.*\]#';
+                $fpattern =  '#\/'.$facet['name'].'.*\]#';
                 $fremove = preg_replace($fpattern,'',$base_search, -1);
 
                 ?>
@@ -20,7 +20,7 @@
         <?php foreach($facet['terms'] as $term) {
 
                 if($term['active']) {
-                    $pattern =  '#\/'.$facet['name'].$delimiter.'%22'.preg_quote(preg_replace('/\|/','%7C',$term['name'],-1)).'%22#';
+                    $pattern =  '#\/'.$facet['name'].':%22'.preg_quote($term['name'],-1).'%22#';
                     $remove = preg_replace($pattern,'',$base_search, -1);
                     ?>
                    <li class="active">
@@ -31,19 +31,19 @@
                 else {
                     ?>
                 <li>
-                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?><?php echo $delimiter?>"<?php echo $term['name']; ?>"<?php echo $base_parameters ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
+                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:"<?php echo $term['name']; ?>"<?php echo $base_parameters ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
                     </a>
                 </li>
             <?php
                   }
                }
             foreach($facet['queries'] as $term) {
-                $pattern =  '#\/'.$facet['name'].$delimiter.'.*\]#';
+                $pattern =  '#\/'.$facet['name'].'.*\]#';
                 $remove = preg_replace($pattern,'',$base_search, -1);
                 if($term['count'] > 0) {
                 ?>
                 <li>
-                    <a href='<?php echo $remove; ?>/<?php echo $facet['name']; ?><?php echo $delimiter?><?php echo $term['name']; ?><?php if(isset($operator)) echo '?operator='.$operator; ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
+                    <a href='<?php echo $remove; ?>/<?php echo $facet['name']; ?>:<?php echo $term['name']; ?><?php if(isset($operator)) echo '?operator='.$operator; ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
                     </a>
                 </li>
               <?php

@@ -45,14 +45,15 @@
                         $type = implode(" ",$doc['dctypeen']);
                 }
 
-                if($display_thumbnail) {
-                    if(array_key_exists($thumbnail_field, $doc)) {
+                if($display_thumbnail && array_key_exists($thumbnail_field, $doc)) {
 
                         $image = getBitstreamUri($doc[$thumbnail_field][0]);
-                    }
+                }
+                else if (file_exists('./assets/images/'.strtolower($type).'.png')) {
+                       $image = './assets/images/'.strtolower($type).'.png';
                 }
                 else {
-                       $image = './theme/default/images/'.strtolower($type).'.png';
+                    $image = './assets/images/unknown.png';
                 }
 
             ?>
@@ -69,10 +70,8 @@
                // quick hack that only works if the filter key
                // and recorddisplay key match and the delimiter is :
                $orig_filter = preg_replace('/ /','+',$author, -1);
-               $lc_filter = strtolower($orig_filter);
                $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               $lc_filter = preg_replace('/,/','%2C',$lc_filter, -1);
-               echo '<a class=\'filter-link\' href=\'./search/*/Author:"'.$lc_filter.'|||'.$orig_filter.'"\'>'.$author.'</a>';
+               echo '<a class=\'filter-link\' href=\'./search/*/Author:"'.$orig_filter.'"\'>'.$author.'</a>';
                 $num_authors++;
                 if($num_authors < sizeof($doc[$author_field])) {
                     echo '; ';
@@ -93,10 +92,8 @@
                // quick hack that only works if the filter key
                // and recorddisplay key match and the delimiter is :
                $orig_filter = preg_replace('/ /','+',$artist, -1);
-               $lc_filter = strtolower($orig_filter);
                $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               $lc_filter = preg_replace('/,/','%2C',$lc_filter, -1);
-               echo '<a class=\'filter-link\' href=\'./search/*/Artist:"'.$lc_filter.'|||'.$orig_filter.'"\'>'.$artist.'</a>';
+               echo '<a class=\'filter-link\' href=\'./search/*/Artist:"'.$orig_filter.'"\'>'.$artist.'</a>';
                 $num_artists++;
                 if($num_artists < sizeof($doc[$artist_field])) {
                     echo '; ';

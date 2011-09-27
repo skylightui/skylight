@@ -79,6 +79,9 @@ class skylight extends CI_Controller {
         $repository_type = $this->config->item('skylight_repository_type');
         $repository_version = $this->config->item('skylight_repository_version');
         $this->load->library('solr/solr_client'.'_'.$repository_type.'_'.$repository_version, '', 'solr_client');
+
+        // Load the Skylight Utilities library
+        $this->load->library('skylight_utilities');
     }
 
     function view($view, $data = array()) {
