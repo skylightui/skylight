@@ -24,22 +24,18 @@
                                                 $file2 = substr($file2, 0, strlen($file2) - 4);
                                                 ?><li>
                                                     <a href="<?php echo './admin/content?mode=edit&file=' . $file . '/' . $file2; ?>"><?php echo $file2; ?></a>
-                                                    (<a href="<?php echo './admin/content?mode=delete&file=' . $file . '/' . $file2; ?>">delete</a>)
                                                 </li><?php
                                             }
                                         }
-                                        ?><li><a href="<?php echo './admin/content?mode=add&file=' . $file; ?>">Add new...</a></li><?php
                                         ?></ul></li><?php
                                     } else {
                                         $file = substr($file, 0, strlen($file) - 4);
                                         ?><li>
                                             <a href="<?php echo './admin/content?mode=edit&file=' . $file; ?>"><?php echo $file; ?></a>
-                                            (<a href="<?php echo './admin/content?mode=delete&file=' . $file; ?>">delete</a>)
                                         </li><?php
                                     }
                                 }
                             }
-                        ?><li><a href="<?php echo './admin/content?mode=add&file=' . $file; ?>">Add new...</a></li><?php
                         ?>
                     </ul></li>
                 <li><strong><a href="./admin/logout">Logout of the administrative interface</a></strong></li>

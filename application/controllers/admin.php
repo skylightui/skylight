@@ -57,43 +57,69 @@ class Admin extends skylight {
             $this->view('div_main', $data);
             $this->view('div_main_end');
             $this->view("footer");
+            return;
         }
 
-        switch ($mode) {
-            case 'edit':
-                $data['page_title'] = 'Admin: Edit - ' . $content;
-                $data['content'] = $content;
+        if ($mode != 'edit') {
+            $data['page_title'] = 'Admin: Invalid mode!';
 
-                $local_path = $this->config->item('skylight_local_path');
-                if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php')) {
-                    $load = $local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php';
-                } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php')) {
-                    $load = './application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php';
-                }
-                    
-                $data['html'] = file_get_contents($load);
-
-                $this->view("admin/admin_header", $data);
-                $this->view('div_main', $data);
-                $this->view('admin/admin_content_editor', $data);
-                $this->view('div_main_end');
-                $this->view("footer");
-                break;
-            case 'add':
-                break;
-            case 'delete':
-                echo 'Whoops - you just deleted ' . $content . '<p>Only kidding!';
-                break;
-            default:
-                $data['page_title'] = 'Admin: Invalid mode!';
-
-                $this->view("header", $data);
-                $this->view('div_main', $data);
-                $this->view('div_main_end');
-                $this->view("footer");
+            $this->view("header", $data);
+            $this->view('div_main', $data);
+            $this->view('div_main_end');
+            $this->view("footer");
+            return;
         }
-        //$local_path = $this->config->item('skylight_local_path');
-        //$found = false;
+
+        /**
+         * Might want this code in the future for deletes.
+        if ($mode == 'delete') {
+            $local_path = $this->config->item('skylight_local_path');
+            if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php')) {
+                $load = $local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php';
+            } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php')) {
+                $load = './application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php';
+            }
+
+            unlink($load);
+            redirect('/admin/');
+            return;
+        }
+        */
+
+        $data['page_title'] = 'Admin: Edit - ' . $content;
+        $data['content'] = $content;
+
+        $local_path = $this->config->item('skylight_local_path');
+        if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php')) {
+            $load = $local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php';
+        } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php')) {
+            $load = './application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php';
+        }
+
+        $data['html'] = file_get_contents($load);
+
+        $this->view("admin/admin_header", $data);
+        $this->view('div_main', $data);
+        $this->view('admin/admin_content_editor', $data);
+        $this->view('div_main_end');
+        $this->view("footer");
+    }
+
+    public function savecontent() {
+        $content = $_POST['content'];
+        $local_path = $this->config->item('skylight_local_path');
+        if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php')) {
+            $save = $local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $content . '.php';
+        } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php')) {
+            $save = './application/views/static/' . $this->config->item('skylight_appname') . '/' . $content. '.php';
+        }
+
+        $html = html_entity_decode($_POST['html']);
+        // Decode a second time to cope with the XSS protection applied by CodeIgniter
+        $html = html_entity_decode($html);
+        $html = str_replace('&#39;', "'", $html);
+        file_put_contents($save, $html);
+        redirect('/admin/');
     }
 
 }
