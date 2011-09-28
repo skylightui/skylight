@@ -25,7 +25,7 @@ class AdminLogin extends skylight {
         }
         else {
             // Record the fact they are logged in
-            $_SESSION['skylight-admin-isadmin-' . base_url()] = "true";
+            $_SESSION['skylight-admin-isadmin-' . base_url()] = true;
 
             // Go to the admin home page
             redirect('/admin');

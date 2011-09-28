@@ -10,11 +10,15 @@
                         <?php
                             // List each static page
                             $local_path = $this->config->item('skylight_local_path');
-                            if (file_exists($local_path . '/static/' . $theme)) {
+                            if (file_exists('../skylight-local/static/' . $theme)) {
+                                $handle = opendir('../skylight-local/static/' . $theme);
+                            } else if (file_exists($local_path . '/static/' . $theme)) {
                                 $handle = opendir($local_path . '/static/' . $theme);
+                            } else {
+                                $handle = false;
                             }
 
-                            while (false !== ($file = readdir($handle))) {
+                            while (($handle != false) && (false !== ($file = readdir($handle)))) {
                                 if (!preg_match("/^\./", $file)) {
                                     if (is_dir($local_path . '/static/' . $theme . '/' . $file)) {
                                         ?><li><?php echo $file . '/'; ?><ul><?php
