@@ -40,9 +40,14 @@
             <?php
                 $image = '';
                 $type = 'Unknown';
+                $typeField = 'dctype';
+                $searchResultFields = $this->config->item('skylight_searchresult_display');
+                if(isset($searchResultFields['Type'])) {
+                    $typeField = $searchResultFields['Type'];
+                }
 
-                if(array_key_exists('dctypeen', $doc)) {
-                        $type = implode(" ",$doc['dctypeen']);
+                if(array_key_exists($typeField, $doc)) {
+                        $type = implode(" ",$doc[$typeField]);
                 }
 
                 if($display_thumbnail && array_key_exists($thumbnail_field, $doc)) {

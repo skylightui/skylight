@@ -240,7 +240,7 @@ class Solr_client_dspace_uoa {
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-       // print_r($url);
+        //print_r($url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -286,6 +286,7 @@ class Solr_client_dspace_uoa {
         // get spellcheck collated suggestion
         $suggestion = "";
         $spellcheck = $search_xml->xpath("//lst[@name='spellcheck']/lst[@name='suggestions']/str[@name='collation']");
+        //print_r($spellcheck);
         if($spellcheck != NULL && sizeof($spellcheck) > 0)
             $suggestion = $spellcheck[0];
 
