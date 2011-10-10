@@ -7,6 +7,7 @@
 
         $title_field = $fielddisplay['Title'];
         $author_field = $fielddisplay['Author'];
+        $date_field = $fielddisplay['Date'];
         $artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
 
         $base_parameters = preg_replace("/[?&]sort_by=[_a-zA-Z+%20. ]+/","",$base_parameters);
@@ -18,13 +19,33 @@
         }
     ?>
     <div class="sort_options" style="position: relative; clear: both; float: left; display: block; width: 100%">
-        <p style="display: inline; float: left"><strong>Sort by:</strong></p><ul style="list-style: none;display: inline; float: left; clear: none;">
+    <span style="margin-right: 12px; font-weight: bold; float: left;">sort by: </span>
 
-    <?php foreach($sort_options as $label => $field) { ?>
-        <li><strong><?php echo $label ?></strong> ( <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">descending</a> |
-        <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">ascending</a> )</li>
-    <?php } ?>
-        </ul>
+    <?php foreach($sort_options as $label => $field) {
+        if($label == 'Date') {
+            ?>
+
+             <div class="sort_option"><strong><?php echo $label ?>: </strong> <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">newest</a> |
+        <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">oldest</a></div>
+
+            <?php
+        }
+
+        else if($label == 'Relevancy') {
+            ?>
+
+              <div class="sort_option"><a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">Relevancy</a></div>
+
+            <?php
+        }
+        else {
+        ?>
+        <div class="sort_option"><strong><?php echo $label ?>: </strong><a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">A-Z</a> |
+        <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">Z-A</a></div>
+    <?php }
+    }
+    ?>
+        
     </div>
 
     <div class="pagination">
@@ -85,43 +106,23 @@
 
 
             ?>
-        </span><br/>
+        </span>
             <?php } ?>
-        <?php if(array_key_exists($artist_field,$doc)) { ?>
-        <span class="artists">
-            <?php
-
-            $num_artists = 0;
-            foreach ($doc[$artist_field] as $artist) {
-               // test author linking
-               // quick hack that only works if the filter key
-               // and recorddisplay key match and the delimiter is :
-               $orig_filter = preg_replace('/ /','+',$artist, -1);
-               $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               echo '<a class=\'filter-link\' href=\'./search/*/Artist:"'.$orig_filter.'"\'>'.$artist.'</a>';
-                $num_artists++;
-                if($num_artists < sizeof($doc[$artist_field])) {
-                    echo '; ';
-                }
-            }
-
-
-            ?>
-        </span><br/>
-            <?php } ?>
+       
         <em>
-       <?php if(array_key_exists('superindexnzaisdate', $doc)) { ?>
+       <?php if(array_key_exists($date_field, $doc)) { ?>
             <span class="date">
                 <?php
-                echo 'Published: ' . $doc['superindexnzaisdate'][0];
+                echo '(' . $doc[$date_field][0] . ')';
           }
-                    elseif(array_key_exists('dcdateissuedyear', $doc)) {
-                        echo 'Published: ' . $doc['superindexnzaisdate'][0];
+                    elseif(array_key_exists('dateIssuedyear', $doc)) {
+                        echo '( ' . $doc['dateIssuedyear'][0] . ')';
                     }
 
                 ?>
                 </span>
         </em>
+        <br/>
         
 
 
