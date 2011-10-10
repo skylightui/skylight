@@ -2,6 +2,7 @@
 
         $title_field = $recorddisplay['Title'];
         $author_field = $recorddisplay['Author'];
+        $date_field = $recorddisplay['Date'];
         $artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
 
 ?>
@@ -62,50 +63,21 @@
             ?>
         </span><br/>
             <?php } ?>
-        <?php if(array_key_exists($artist_field,$doc)) { ?>
-        <span class="artists">
-            <?php
 
-            $num_artists = 0;
-            foreach ($doc[$artist_field] as $artist) {
-               // test author linking
-               // quick hack that only works if the filter key
-               // and recorddisplay key match and the delimiter is :
-               $orig_filter = preg_replace('/ /','+',$artist, -1);
-               $lc_filter = strtolower($orig_filter);
-               $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               $lc_filter = preg_replace('/,/','%2C',$lc_filter, -1);
-               echo '<a class=\'filter-link\' href=\'./search/*/Artist:"'.$lc_filter.'|||'.$orig_filter.'"\'>'.$artist.'</a>';
-                $num_artists++;
-                if($num_artists < sizeof($doc[$artist_field])) {
-                    echo '; ';
-                }
-            }
-
-
-            ?>
-        </span><br/>
-            <?php } ?>
         
-        <?php
-            if(array_key_exists('dcdescriptionabstracten', $doc)) {
-                echo '<p class="abstract">';
-                $abstract =  $doc['dcdescriptionabstracten'][0];
-                $abstract_words = explode(' ',$abstract);
-                $shortened = '';
-                $max = 15;
-                $suffix = '...';
-                if($max > sizeof($abstract_words)) {
-                    $max = sizeof($abstract_words);
-                    $suffix = '';
-                }
-                for ($i=0 ; $i<$max ; $i++){
-                    $shortened .= $abstract_words[$i] . ' ';
-                }
-                echo $shortened.$suffix;
-                echo '</p>';
-            }
-        ?>
+        <em>
+       <?php if(array_key_exists($date_field, $doc)) { ?>
+            <span class="date">
+                <?php
+                echo '(' . $doc[$date_field][0] . ')';
+          }
+                    elseif(array_key_exists('dateIssuedyear', $doc)) {
+                        echo '( ' . $doc['dateIssuedyear'][0] . ')';
+                    }
+
+                ?>
+                </span>
+        </em>
 
 
     </li>
