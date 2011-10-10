@@ -5,7 +5,9 @@
     <ul id="search_result_list">
 
        
-    <?php foreach ($recent_items as $doc) { ?>
+    <?php
+        $date_field = $recorddisplay['Date'];
+        foreach ($recent_items as $doc) { ?>
 
             <?php
                 $image = '';
@@ -56,14 +58,13 @@
             <?php } ?>
        
         <em>
+       <?php if(array_key_exists($date_field, $doc)) { ?>
             <span class="date">
-       <?php if(array_key_exists('solr_superindexdate', $doc)) { ?>
-
                 <?php
-                echo 'Published: ' . $doc['solr_superindexnzaisdate'][0];
-                  }
-                    elseif(array_key_exists('solr_dcdateissuedyear', $doc)) {
-                        echo 'Published: ' . $doc['solr_dcdateissuedyear'][0];
+                echo '(' . $doc[$date_field][0] . ')';
+          }
+                    elseif(array_key_exists('dateIssuedyear', $doc)) {
+                        echo '( ' . $doc['dateIssuedyear'][0] . ')';
                     }
 
                 ?>
