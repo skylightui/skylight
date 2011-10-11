@@ -17,6 +17,7 @@ class Solr_client_dspace_171 {
     var $scope          = '';
     var $rows           = 10;
     var $recorddisplay  = array();
+    var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
     var $date_field = 'dc.date.issued.year';
@@ -46,6 +47,7 @@ class Solr_client_dspace_171 {
         $this->container_field = $CI->config->item('skylight_container_field');
         $this->rows = $CI->config->item('skylight_results_per_page');
         $this->recorddisplay = $CI->config->item('skylight_recorddisplay');
+        $this->searchresultdisplay = $CI->config->item('skylight_searchresult_display');
         $this->configured_filters = $CI->config->item('skylight_filters');
         $this->configured_date_filters = $CI->config->item('skylight_date_filters');
         $this->delimiter = $CI->config->item('skylight_filter_delimiter');
@@ -681,10 +683,10 @@ class Solr_client_dspace_171 {
 
     function getRecentItems($rows = 5)
     {
-        $title_field = $this->recorddisplay['Title'];
-        $author_field =  $this->recorddisplay['Author'];
-        $subject_field = $this->recorddisplay['Subject'];
-        $description_field = $this->recorddisplay['Abstract'];
+        $title_field = $this->searchresultdisplay['Title'];
+        $author_field =  $this->searchresultdisplay['Author'];
+        $subject_field = $this->searchresultdisplay['Subject'];
+        $description_field = $this->searchresultdisplay['Abstract'];
         
         $url = $this->base_url . 'select?q=*:*';
         $url .= '&fq='.$this->container_field.':'.$this->container;
