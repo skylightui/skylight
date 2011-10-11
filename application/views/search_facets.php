@@ -2,7 +2,7 @@
      <div class="search_filters">
     
      <?php foreach ($facets as $facet) { ?>
-        <ul class="search_filter_list"><li class="heading"><strong><?php echo $facet['name']; ?></strong></li>
+        <ul class="search_filter_list"><li class="heading"><strong><?php echo $facet['name']; ?></strong><a class="viewmore" href='./browse/<?php echo $facet['name']; ?>'>MORE ></a></li>
 
         <?php if(preg_match('/Date/',$base_search) && $facet['name'] == 'Date') {
 
@@ -53,9 +53,7 @@
 
                 if(empty($facet['terms']) && empty($facet['queries'])) { ?>
                     <li>No matches</li>
-               <?php }
-                 elseif(!empty($facet['terms'])) {
-            ?> <li><a class="viewmore" href='./browse/<?php echo $facet['name']; ?>'>Browse <?php echo $facet['name']; ?>s</a><?php } ?>
+               <?php } ?>
             </ul>
         <?php } ?>
     </div>

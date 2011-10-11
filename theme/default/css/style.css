@@ -453,8 +453,7 @@ label {
 }
 
 a.viewmore {
-    font-weight: bold;
-    text-align: right;
+    float: right;
 }
 
 .record_thumbnail {
