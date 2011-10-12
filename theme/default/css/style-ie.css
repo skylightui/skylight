@@ -38,3 +38,7 @@ div#trail {
     margin-top: 30px;
 }
 
+li.heading strong {
+    clear: none;
+    float: left;
+}
