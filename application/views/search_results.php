@@ -6,7 +6,7 @@
         // in $config['skylight_searchresult_display']
 
         $title_field = $fielddisplay['Title'];
-        $author_field = $fielddisplay['Author'];
+       // $author_field = $fielddisplay['Author'];
         $date_field = $fielddisplay['Date'];
         $artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
 

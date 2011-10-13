@@ -1,9 +1,9 @@
 <?php
 
-        $title_field = $recorddisplay['Title'];
-        $author_field = $recorddisplay['Author'];
-        $date_field = $recorddisplay['Date'];
-        $artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
+        //$title_field = $recorddisplay['Title'];
+        //$author_field = $recorddisplay['Author'];
+      //  $date_field = $recorddisplay['Date'];
+        //$artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
 
 ?>
 

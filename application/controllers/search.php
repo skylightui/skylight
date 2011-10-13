@@ -129,6 +129,13 @@ class Search extends skylight {
 
         $data['sort_options'] = $sort_options;
 
+        if(array_key_exists('Author', $recorddisplay)) {
+            $data['author_field'] = $recorddisplay['Author'];
+        }
+        else {
+            $data['author_field'] = 'dccreator';
+        }
+
         // Set the page title to the record title
         $data['page_title'] = 'Search results for "'.urldecode($query).'"';
         $data['page_heading'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';

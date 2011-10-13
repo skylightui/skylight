@@ -98,8 +98,14 @@ class Record extends skylight {
         $data['page_title'] = $data['solr'][$title][0];
         $data['title_field'] = $title;
 
-        $data['author_field'] = $recorddisplay['Author'];
+        if(array_key_exists('Author', $recorddisplay)) {
+            $data['author_field'] = $recorddisplay['Author'];
+        }
+        else {
+            $data['author_field'] = 'dccreator';
+        }
         $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
+        $data['date_field'] = $recorddisplay['Date'];
 
         // Send the display options config value for this collection
         $data['recorddisplay'] = $recorddisplay;
