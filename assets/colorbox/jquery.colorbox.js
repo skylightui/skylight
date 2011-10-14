@@ -29,7 +29,7 @@
 		rel: false,
 		opacity: 0.9,
 		preloading: true,
-		current: "image {current} of {total}",
+		current: "Search Result {current} of {total}",
 		previous: "previous",
 		next: "next",
 		close: "close",

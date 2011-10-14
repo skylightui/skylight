@@ -64,4 +64,74 @@ class Skylight_utilities {
 
     }
 
+    function getBitstreamThumbLink($metadatavalue, $thumbmetadatavalue, $desc) {
+
+        $uri = getBitstreamUri($metadatavalue);
+        $mime = getBitstreamMimeType($metadatavalue);
+        $filename = getBitstreamFilename($metadatavalue);
+        //$desc = getBitstreamDescription($metadatavalue);
+        $seq = getBitstreamSequence($metadatavalue);
+
+        $thumburi = getBitstreamUri($thumbmetadatavalue);
+
+        // old class: bitstream_link
+        $link ='<a ';
+
+        if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
+            // Lightbox is enabled and this is a valid mime type to show in a light box
+                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                    if($desc != '' && $desc != null) {
+                        $link .= 'title="'.$desc.'" ';
+                    }
+            $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
+
+            $link .= '<script>$(document).ready(function(){
+                $("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
+        });</script>';
+        }
+        else {
+            $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
+        }
+
+
+
+        return $link;
+
+    }
+
+        function getGalleryLink($metadatavalue, $thumbmetadatavalue, $desc, $index) {
+
+        $uri = getBitstreamUri($metadatavalue);
+        $mime = getBitstreamMimeType($metadatavalue);
+        $filename = getBitstreamFilename($metadatavalue);
+        //$desc = getBitstreamDescription($metadatavalue);
+        $seq = getBitstreamSequence($metadatavalue); 
+
+        $thumburi = getBitstreamUri($thumbmetadatavalue);
+
+        // old class: bitstream_link
+        $link ='<div style="float: right;"><a ';
+
+        if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
+            // Lightbox is enabled and this is a valid mime type to show in a light box
+                   $link .= 'class="cboxElement" rel="1" ';
+                    if($desc != '' && $desc != null) {
+                        $link .= 'title="'.$desc.'" ';
+                    }
+            $link .= 'href="'.$uri.'"><img style="float:left;" src="'.$thumburi.'"/></a></div>';
+
+            $link .= '<script>$(document).ready(function(){
+                $("a[rel=\'1\']").colorbox({width: "400px", top: "100px"});
+        });</script>';
+        }
+        else {
+            $link .= 'href="'.$uri.'"><img style="float:left;" src="'.$thumburi.'"/></a>';
+        }
+
+
+
+        return $link;
+
+    }
+
 }
