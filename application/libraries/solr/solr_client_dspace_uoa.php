@@ -688,10 +688,10 @@ class Solr_client_dspace_uoa {
     function getRecentItems($rows = 5)
     {
 
-        $title_field = $this->searchresultdisplay['Title'];
-        $author_field =  $this->searchresultdisplay['Author'];
-        $subject_field = $this->searchresultdisplay['Subject'];
-        $description_field = $this->searchresultdisplay['Abstract'];
+        $title_field = $this->fields['Title'];
+        $author_field =  $this->fields['Author'];
+        $subject_field = $this->fields['Subject'];
+        $description_field = $this->fields['Abstract'];
         
         $url = $this->base_url . 'select?q=*:*';
         $url .= '&fq='.$this->container_field.':'.$this->container;
