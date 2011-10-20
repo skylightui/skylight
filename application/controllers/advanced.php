@@ -79,19 +79,22 @@ class Advanced extends skylight {
             $filters = '';
             $filterurl = '';
 
-            $delimiter = $this->config->item('skylight_filter_delimiter');
-            $recorddisplay = $this->config->item('skylight_recorddisplay');
-            $rows = $this->config->item('skylight_results_per_page');
-            $title = $recorddisplay['Title'];
+           // $delimiter = $this->config->item('skylight_filter_delimiter');
+          //  $recorddisplay = $this->config->item('skylight_recorddisplay');
+           // $rows = $this->config->item('skylight_results_per_page');
+           // $title = $recorddisplay['Title'];
 
+            //print_r($search_fields);
 
-            foreach($search_fields as $label) {
+            foreach($search_fields as $label => $type) {
                 $field = $this->skylight_utilities->getField($label);
+
                 $val = $this->input->post($this->_escape($label));
                 if(isset($val) && $val != '') {
                     $filters .= '&fq='.$field.':'.$val.'';
                     $filterurl .= '/'.$label.':'.$val;
                 }
+
             }
             $operator = $this->input->post('operator');
             // Base search URL
@@ -226,7 +229,6 @@ class Advanced extends skylight {
         $data['page_title'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
         $data['title_field'] = $title;
         $data['author_field'] =  $title = $this->skylight_utilities->getField('Author');
-        $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
         $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
 
         $data['display_thumbnail'] = $display_thumbnail;
