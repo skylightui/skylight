@@ -12,10 +12,11 @@ class Advanced extends skylight {
     function _remap($path, $params = array()) {
 
             $form = form_open('advanced/post');
-            $fields = $this->config->item('skylight_search_fields');
+
+            $search_fields = $this->config->item('skylight_search_fields');
             $dropdown_lists = $this->config->item('skylight_search_dropdowns');
 
-            foreach($fields as $key => $value) {
+            foreach($search_fields as $key => $value) {
 
                   if(array_key_exists($key, $dropdown_lists)) {
                     $type = 'dropdown';
@@ -83,8 +84,9 @@ class Advanced extends skylight {
             $rows = $this->config->item('skylight_results_per_page');
             $title = $recorddisplay['Title'];
 
-            $search_fields = $this->config->item('skylight_search_fields');
-            foreach($search_fields as $label => $field) {
+
+            foreach($search_fields as $label) {
+                $field = $this->skylight_utilities->getField($label);
                 $val = $this->input->post($this->_escape($label));
                 if(isset($val) && $val != '') {
                     $filters .= '&fq='.$field.':'.$val.'';
