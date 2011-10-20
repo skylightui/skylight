@@ -18,23 +18,13 @@ class Advanced extends skylight {
 
             foreach($search_fields as $key => $value) {
 
-                  if(array_key_exists($key, $dropdown_lists)) {
-                    $type = 'dropdown';
-                  }
-                  else {
-                      $type = 'input';
-                  }
                   $escaped_key = $this->_escape($key);
-                  if($type == 'input') {
+
                        $input_data = array(
                           'name'        => $escaped_key,
                           'id'          => $escaped_key,
                           'style'       => 'margin-left: 15px;'
                         );
-
-                       $options = array(
-                           
-                       );
 
                         $form .= '<p>';
 
@@ -42,7 +32,7 @@ class Advanced extends skylight {
                         $form .= form_input($input_data);
 
                         $form .= '</p>';
-                  }
+
             }
             $form .= '<p>'.form_label('Default search operator', 'operators', array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
             $operators = array('AND' => 'AND (all terms must match)', 'OR' => 'OR (any terms may match)');
@@ -86,16 +76,17 @@ class Advanced extends skylight {
 
             //print_r($search_fields);
 
-            foreach($search_fields as $label => $type) {
-                $field = $this->skylight_utilities->getField($label);
+            foreach($search_fields as $label => $field) {
+              //  print_r($label);
+              //  $field = $this->skylight_utilities->getRawField($label);
 
                 $val = $this->input->post($this->_escape($label));
                 if(isset($val) && $val != '') {
                     $filters .= '&fq='.$field.':'.$val.'';
                     $filterurl .= '/'.$label.':'.$val;
                 }
-
             }
+            
             $operator = $this->input->post('operator');
             // Base search URL
             redirect($base_search = './advanced/search'.$filterurl.'?operator='.$operator);

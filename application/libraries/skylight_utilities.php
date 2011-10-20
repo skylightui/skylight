@@ -180,4 +180,14 @@ class Skylight_utilities {
         }
     }
 
+    function getRawField($label) {
+        $configured_fields = $this->fields;
+        if(array_key_exists($label,$configured_fields)) {
+            return $configured_fields[$label];
+        }
+        else {
+            return null;
+        }
+    }
+
 }
