@@ -11,7 +11,8 @@
                 } ?></div> <?php
             }
 
-            foreach($recorddisplay as $key => $element) {
+            foreach($recorddisplay as $key) {
+                $element = $this->skylight_utilities->getField($key);
                 if (isset($solr[$element])) {
                     ?>
                     <ul class="metadatafield">

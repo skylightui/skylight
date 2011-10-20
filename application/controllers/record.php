@@ -31,7 +31,7 @@ class Record extends skylight {
         $thumbnail_field = str_replace('.','',$this->config->item('skylight_thumbnail_field'));
         $bitstream_field = str_replace('.','',$this->config->item('skylight_bitstream_field'));
 
-        $title = $recorddisplay['Title'];
+        $title = $this->skylight_utilities->getField('Title');
 
         // GET RECORD
         // Solr query business moved to solr_client library
@@ -104,8 +104,8 @@ class Record extends skylight {
         else {
             $data['author_field'] = 'dccreator';
         }
-        $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
-        $data['date_field'] = $recorddisplay['Date'];
+        
+        $data['date_field'] = $this->skylight_utilities->getField('Date');
 
         // Send the display options config value for this collection
         $data['recorddisplay'] = $recorddisplay;

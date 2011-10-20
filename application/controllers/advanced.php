@@ -13,24 +13,35 @@ class Advanced extends skylight {
 
             $form = form_open('advanced/post');
             $fields = $this->config->item('skylight_search_fields');
+            $dropdown_lists = $this->config->item('skylight_search_dropdowns');
 
             foreach($fields as $key => $value) {
+
+                  if(array_key_exists($key, $dropdown_lists)) {
+                    $type = 'dropdown';
+                  }
+                  else {
+                      $type = 'input';
+                  }
                   $escaped_key = $this->_escape($key);
-                  $input_data = array(
-                      'name'        => $escaped_key,
-                      'id'          => $escaped_key,
-                      'value'       => '',
-                      'maxlength'   => '50',
-                      'size'        => '50',
-                      'style'       => 'margin-left: 15px;'
-                    );
+                  if($type == 'input') {
+                       $input_data = array(
+                          'name'        => $escaped_key,
+                          'id'          => $escaped_key,
+                          'style'       => 'margin-left: 15px;'
+                        );
 
-                $form .= '<p>';
+                       $options = array(
+                           
+                       );
 
-                $form .= form_label($key, $escaped_key, array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
-                $form .= form_input($input_data);
+                        $form .= '<p>';
 
-                $form .= '</p>';
+                        $form .= form_label($key, $escaped_key, array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
+                        $form .= form_input($input_data);
+
+                        $form .= '</p>';
+                  }
             }
             $form .= '<p>'.form_label('Default search operator', 'operators', array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
             $operators = array('AND' => 'AND (all terms must match)', 'OR' => 'OR (any terms may match)');

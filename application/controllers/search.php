@@ -4,6 +4,8 @@ require_once('skylight.php');
 
 class Search extends skylight {
 
+
+
     function Search() {
         // Initalise the parent
         parent::__construct();
@@ -26,6 +28,7 @@ class Search extends skylight {
 
         }
 
+        $configured_fields = $this->config->item('skylight_fields');
         $configured_filters = $this->config->item('skylight_filters');
         $configured_date_filters = $this->config->item('skylight_date_filters');
         $delimiter = $this->config->item('skylight_filter_delimiter');
@@ -36,7 +39,7 @@ class Search extends skylight {
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
 
         // TODO: get rid of this, it's bad
-        $title = $recorddisplay['Title'];
+        $title = $this->skylight_utilities->getField('Title');
 
         $saved_filters = array();
         $url_filters = array();
@@ -159,4 +162,6 @@ class Search extends skylight {
         $this->view('div_sidebar_end');
         $this->view('footer');
     }
+
+
 }

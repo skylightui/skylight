@@ -11,6 +11,7 @@ class Skylight_utilities {
 
     var $lightBox = false;
     var $lightBoxMimes = array('image/jpeg', 'image/gif', 'image/png');
+    var $fields = array('');
 
     public function __construct($params = array())
 	{
@@ -22,6 +23,7 @@ class Skylight_utilities {
         $CI =& get_instance();
         $this->lightBox = $CI->config->item('skylight_lightbox');
         $this->lightBoxMimes = $CI->config->item('skylight_lightbox_mimes');
+        $this->fields = $CI->config->item('skylight_fields');
 
 		log_message('debug', "skylight Solr Client Initialized");
 	}
@@ -166,6 +168,16 @@ class Skylight_utilities {
 
         return $link;
 
+    }
+
+    function getField($label) {
+        $configured_fields = $this->fields;
+        if(array_key_exists($label,$configured_fields)) {
+            return str_replace('.','',$configured_fields[$label]);
+        }
+        else {
+            return null;
+        }
     }
 
 }

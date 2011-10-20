@@ -5,10 +5,9 @@
         // Set up some variables to easily refer to particular fields you've configured
         // in $config['skylight_searchresult_display']
 
-        $title_field = $fielddisplay['Title'];
-       // $author_field = $fielddisplay['Author'];
-        $date_field = $fielddisplay['Date'];
-        $artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
+        $title_field = $this->skylight_utilities->getField('Title');
+        $author_field = $this->skylight_utilities->getField('Author');
+        $date_field = $this->skylight_utilities->getField('Date');
 
         $base_parameters = preg_replace("/[?&]sort_by=[_a-zA-Z+%20. ]+/","",$base_parameters);
         if($base_parameters == "") {

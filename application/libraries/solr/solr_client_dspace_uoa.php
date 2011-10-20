@@ -27,6 +27,7 @@ class Solr_client_dspace_uoa {
     var $display_thumbnail = false;
     var $link_bitstream = false;
     var $dictionary = 'default';
+    var $fields = array();
 
    /**
 	 * Constructor
@@ -54,6 +55,7 @@ class Solr_client_dspace_uoa {
         $this->bitstream_field = str_replace('.','',$CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.','',$CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
+        $this->fields = $CI->config->item('skylight_fields');
         $date_fields = $this->configured_date_filters;
         if(count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
@@ -191,7 +193,7 @@ class Solr_client_dspace_uoa {
         // Returns $data containing search results and facets
         // See search.php controller for example of usage
 
-        $title = $this->recorddisplay['Title'];
+        $title = 'dctitle';
 
         if($q == '*' || $q == '') {
             $q = '*:*';
@@ -513,8 +515,8 @@ class Solr_client_dspace_uoa {
     function getRecord($id = NULL, $highlight = "")
     {
 
-        $title_field = $this->recorddisplay['Title'];
-        $subject_field = $this->recorddisplay['Subject'];
+        $title_field = $this->fields['Title'];
+        $subject_field = $this->fields['Subject'];
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
