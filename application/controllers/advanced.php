@@ -116,7 +116,7 @@ class Advanced extends skylight {
         $recorddisplay = $this->config->item('skylight_recorddisplay');
         $display_thumbnail = $this->config->item('skylight_display_thumbnail');
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
-        $title = $recorddisplay['Title'];
+        $title = $this->skylight_utilities->getField('Title');
         $search_fields = $this->config->item('skylight_search_fields');
         $sort_options = $this->config->item('skylight_sort_fields');
         $saved_filters = array();
@@ -223,7 +223,7 @@ class Advanced extends skylight {
         // Set the page title to the record title
         $data['page_title'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
         $data['title_field'] = $title;
-        $data['author_field'] = $recorddisplay['Author'];
+        $data['author_field'] =  $title = $this->skylight_utilities->getField('Author');
         $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
         $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
 
