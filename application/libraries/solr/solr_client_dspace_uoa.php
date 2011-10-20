@@ -515,8 +515,8 @@ class Solr_client_dspace_uoa {
     function getRecord($id = NULL, $highlight = "")
     {
 
-        $title_field = $this->fields['Title'];
-        $subject_field = $this->fields['Subject'];
+        $title_field = 'dctitle';
+        $subject_field = 'dcsubject';
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
