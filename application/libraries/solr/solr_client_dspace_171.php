@@ -661,6 +661,8 @@ class Solr_client_dspace_171 {
            $metadatavalue = preg_replace('/\]/','\\]',$metadatavalue,-1);
            $metadatavalue = preg_replace('/\(/','\\(',$metadatavalue,-1);
            $metadatavalue = preg_replace('/\)/','\\)',$metadatavalue,-1);
+           $metadatavalue = preg_replace('/\+/','\\+',$metadatavalue,-1);
+           $metadatavalue = preg_replace('/\-/','\\-',$metadatavalue,-1);
 
            if($counter == 0) {
                 $query_string .= $metadatavalue;
