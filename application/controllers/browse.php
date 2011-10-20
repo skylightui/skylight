@@ -18,7 +18,7 @@ class Browse extends skylight {
         $delimiter = $this->config->item('skylight_filter_delimiter');
         $rows = 30;
         $recorddisplay = $this->config->item('skylight_recorddisplay');
-        $title = $recorddisplay['Title'];
+     //   $title = $recorddisplay['Title'];
 
         $saved_filters = array();
         $url_filters = array();
