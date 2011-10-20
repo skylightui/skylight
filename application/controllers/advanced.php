@@ -169,6 +169,7 @@ class Advanced extends skylight {
             $base_search .= '/'.$url_filter;
         }
 
+
         // Solr query business moved to solr_client library
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, $operator);
 

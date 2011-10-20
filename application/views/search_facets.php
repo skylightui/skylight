@@ -1,4 +1,5 @@
- <?php if (isset($facets)) { ?>
+ <?php if (isset($facets)) {?>
+
      <div class="search_filters">
     
      <?php foreach ($facets as $facet) { ?>

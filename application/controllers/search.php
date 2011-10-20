@@ -77,6 +77,8 @@ class Search extends skylight {
             $base_search .= '/'.$url_filter;
             $event_search .= '/'.$url_filter;
         }
+        print_r($url_filters);
+
         if($sort_by != "") {
             $base_parameters .= '?sort_by='.$sort_by;
         }
