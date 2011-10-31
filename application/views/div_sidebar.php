@@ -1,1 +1,1 @@
-<div id="sidebar">
+<div class="col-sidebar">

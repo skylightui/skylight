@@ -1,8 +1,10 @@
-        </div>
-        <div id="footer">
-            <a href="http://skylightui.org/"><?php echo $site_title; ?></a> powered by <strong>SkyLight</strong><br />
-            <a href="http://skylightui.org/"><img src="<?php echo base_url(); ?>assets/images/skylight.jpg"></a><br />
-            <a href="./feedback">Get in touch</a>
-        </div>
+
+        </div> <!-- close main -->
+        </div> <!-- close container -->
+
+    <script src="js/libs/jquery-1.6.2.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/script.js"></script>
+
     </body>
 </html>

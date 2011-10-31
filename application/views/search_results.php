@@ -1,5 +1,3 @@
-<div class="search_results">
-
     <?php
 
         // Set up some variables to easily refer to particular fields you've configured
@@ -17,42 +15,30 @@
             $sort = '&sort_by=';
         }
     ?>
-    <div class="sort_options" style="position: relative; clear: both; float: left; display: block; width: 100%">
-    <span style="margin-right: 12px; font-weight: bold; float: left;">sort by: </span>
+    <div class="listing-filter">
+        <span class="no-results">
+        <strong><?php echo $startrow ?>-<?php echo $endrow ?></strong> of
+            <strong><?php echo $rows ?></strong> results
+        </span>
 
-    <?php foreach($sort_options as $label => $field) {
-        if($label == 'Date') {
-            ?>
+        <span class="sort">
+            <strong>Sort by</strong>
+            <?php foreach($sort_options as $label => $field) { ?>
+                <em><?php echo $label ?></em>
+                <?php if($label != "Date") { ?>
+                <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">A-Z</a> |
+                <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">Z-A</a>
+            <?php } else { ?>
+                <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">newest</a> |
+                <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">oldest</a>
+          <?php } }  ?>
+            
+        </span>
 
-             <div class="sort_option"><strong><?php echo $label ?>: </strong> <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">newest</a> |
-        <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">oldest</a></div>
-
-            <?php
-        }
-
-        else if($label == 'Relevancy') {
-            ?>
-
-              <div class="sort_option"><a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">Relevancy</a></div>
-
-            <?php
-        }
-        else {
-        ?>
-        <div class="sort_option"><strong><?php echo $label ?>: </strong><a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">A-Z</a> |
-        <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">Z-A</a></div>
-    <?php }
-    }
-    ?>
-        
     </div>
 
-    <div class="pagination">
-        Results <strong><?php echo $startrow.' - '.$endrow ?></strong> of <strong><?php echo $rows; ?></strong><br/>
-        <?php echo $pagelinks ?>
-    </div>
 
-    <ul id="search_result_list">
+    <ul class="listing">
 
        
     <?php foreach ($docs as $doc) { ?>
@@ -83,7 +69,8 @@
 
             ?>
 
-    <li class="<?php echo $type; ?>" <?php if($image !== '') { echo ' style="background-image: url(\''.$image.'\'); background-repeat: no-repeat";'; } ?>>
+    <li>
+        <span class="icon media-doc"></span>
         <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
         <?php if(array_key_exists($author_field,$doc)) { ?>
         <span class="authors">
@@ -172,5 +159,3 @@
     <div class="pagination">
        <?php echo $pagelinks ?>
     </div>
-
-</div>
