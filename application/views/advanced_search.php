@@ -1,4 +1,6 @@
 
+<h1>Advanced Search</h1>
+
 <script type="text/javascript">
      $(document).ready(function() {
         $("input#Subject").autocomplete({
