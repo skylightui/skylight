@@ -171,7 +171,9 @@ class Solr_client_dspace_uoa {
             }
 
 
-            $handle = preg_split('/\//',$doc['handle'][0]);
+            $raw_hdl = $doc['handle'] . ' ';
+
+            $handle = preg_split('/\//',$raw_hdl);
             $doc['id'] = $handle[1];
             if(!array_key_exists($title,$doc)) {
                 $doc[$title][] = 'No title';
@@ -279,7 +281,9 @@ class Solr_client_dspace_uoa {
             }
 
 
-            $handle = preg_split('/\//',$doc['handle'][0]);
+            $raw_hdl = $doc['handle'] . ' ';
+
+            $handle = preg_split('/\//',$raw_hdl);
             $doc['id'] = $handle[1];
             if(!array_key_exists($title,$doc)) {
                 $doc[$title][] = 'No title';
@@ -628,8 +632,10 @@ class Solr_client_dspace_uoa {
 
             }
 
+            $raw_hdl = $doc['handle'] . ' ';
 
-            $handle = preg_split('/\//',$doc['handle'][0]);
+            $handle = preg_split('/\//',$raw_hdl);
+
             $doc['id'] = $handle[1];
             if(!array_key_exists($title_field,$doc)) {
                 $doc[$title_field][] = 'No title';
@@ -723,7 +729,9 @@ class Solr_client_dspace_uoa {
                     $doc[str_replace('.', '', $key)]= $value;
                 }
 
-                $handle = preg_split('/\//',$doc['handle'][0]);
+                $raw_hdl = $doc['handle'] . ' ';
+
+                $handle = preg_split('/\//',$raw_hdl);
                 $doc['id'] = $handle[1];
                 if(!array_key_exists($title_field,$doc)) {
                     $doc[$title_field][] = 'No title';
