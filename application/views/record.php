@@ -1,4 +1,5 @@
 <?php
+
     $author_field = $this->skylight_utilities->getField("Author");
     $type_field = $this->skylight_utilities->getField("Type");
 
