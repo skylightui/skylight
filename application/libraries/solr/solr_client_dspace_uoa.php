@@ -661,8 +661,8 @@ class Solr_client_dspace_uoa {
 
            $metadatavalue = preg_replace('/\[/','\\[',$metadatavalue,-1);
            $metadatavalue = preg_replace('/\]/','\\]',$metadatavalue,-1);
-           $metadatavalue = preg_replace('/\(/','\\(',$metadatavalue,-1);
-           $metadatavalue = preg_replace('/\)/','\\)',$metadatavalue,-1);
+        //   $metadatavalue = preg_replace('/\(/','\\(',$metadatavalue,-1);
+        //   $metadatavalue = preg_replace('/\)/','\\)',$metadatavalue,-1);
            $metadatavalue = preg_replace('/\+/','\\+',$metadatavalue,-1);
            $metadatavalue = preg_replace('/\-/','\\-',$metadatavalue,-1);
 

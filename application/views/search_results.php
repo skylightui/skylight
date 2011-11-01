@@ -6,6 +6,7 @@
         $title_field = $this->skylight_utilities->getField('Title');
         $author_field = $this->skylight_utilities->getField('Author');
         $date_field = $this->skylight_utilities->getField('Date');
+        $type_field = $this->skylight_utilities->getField('Type');
 
         $base_parameters = preg_replace("/[?&]sort_by=[_a-zA-Z+%20. ]+/","",$base_parameters);
         if($base_parameters == "") {
@@ -41,36 +42,17 @@
     <ul class="listing">
 
        
-    <?php foreach ($docs as $doc) { ?>
+    <?php foreach ($docs as $doc) {
+        $type = 'Unknown';
 
-            <?php
-                $image = '';
-                $type = 'Unknown';
-                $typeField = 'dctype';
-                $searchResultFields = $this->config->item('skylight_searchresult_display');
-                if(isset($searchResultFields['Type'])) {
-                    $typeField = $searchResultFields['Type'];
+        if(isset($doc[$type_field])) {
+                    $type = "media-" . strtolower(str_replace(' ','-',$doc[$type_field][0]));
                 }
 
-                if(array_key_exists($typeField, $doc)) {
-                        $type = implode(" ",$doc[$typeField]);
-                }
-
-                if($display_thumbnail && array_key_exists($thumbnail_field, $doc)) {
-
-                        $image = getBitstreamUri($doc[$thumbnail_field][0]);
-                }
-                else if (file_exists('./assets/images/'.strtolower($type).'.png')) {
-                       $image = './assets/images/'.strtolower($type).'.png';
-                }
-                else {
-                    $image = './assets/images/unknown.png';
-                }
-
-            ?>
+        ?>
 
     <li>
-        <span class="icon media-doc"></span>
+        <span class="icon <?php echo $type?>"></span>
         <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
         <div class="tags">
             
@@ -86,7 +68,7 @@
                // and recorddisplay key match and the delimiter is :
                $orig_filter = preg_replace('/ /','+',$author, -1);
                $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               echo '<a href=\'./search/*/Author:"'.$orig_filter.'"\'>'.$author.'</a>';
+               echo '<a href="./search/*/Author:%22'.$orig_filter.'%22">'.$author.'</a>';
                 $num_authors++;
                 if($num_authors < sizeof($doc[$author_field])) {
                     echo ' ';
@@ -97,8 +79,7 @@
             ?>
         
             <?php } ?>
-       
-        <em>
+
        <?php if(array_key_exists($date_field, $doc)) { ?>
             <span>
                 <?php
@@ -110,8 +91,6 @@
 
                 ?>
                 </span>
-        </em>
-        <br/>
         
 
 

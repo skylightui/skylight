@@ -1,65 +1,47 @@
-<div class="search_results">
+    <h3>Recently added items</h3>
 
-    <h1>Recently Added</h1>
+    <ul class="listing">
 
-    <ul id="search_result_list">
+    <?php foreach ($docs as $doc) {
 
-       
-    <?php
-        $date_field = $recorddisplay['Date'];
-        foreach ($recent_items as $doc) { ?>
+        $type = 'Unknown';
 
-            <?php
-                $image = '';
-                $type = 'Unknown';
-
-                if(array_key_exists('dctypeen', $doc)) {
-                        $type = implode(" ",$doc['dctypeen']);
+        if(isset($doc[$type_field])) {
+                    $type = "media-" . strtolower(str_replace(' ','-',$doc[$type_field][0]));
                 }
+        ?>
 
-                if($display_thumbnail && array_key_exists($thumbnail_field, $doc)) {
+    <li>
+        <span class="icon <?php echo $type ?>"></span>
+        <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
+        <div class="tags">
 
-                        $image = getBitstreamUri($doc[$thumbnail_field][0]);
-                }
-                else if (file_exists('./assets/images/'.strtolower($type).'.png')) {
-                       $image = './assets/images/'.strtolower($type).'.png';
-                }
-                else {
-                    $image = './assets/images/unknown.png';
-                }
 
-            ?>
+        <?php if(array_key_exists($author_field,$doc)) { ?>
 
-    <li class="<?php echo $type; ?>" <?php if($image !== '') { echo ' style="background-image: url(\''.$image.'\'); background-repeat: no-repeat";'; } ?>>
-        <h3><a href="./record/<?php echo $doc['id']?>"><?php echo $doc['solr_'.$title_field][0]; ?></a></h3>
-        <?php if(array_key_exists('solr_'.$author_field,$doc)) { ?>
-        <span class="authors">
             <?php
 
             $num_authors = 0;
-            foreach ($doc['solr_'.$author_field] as $author) {
+            foreach ($doc[$author_field] as $author) {
                // test author linking
                // quick hack that only works if the filter key
                // and recorddisplay key match and the delimiter is :
                $orig_filter = preg_replace('/ /','+',$author, -1);
-               $lc_filter = strtolower($orig_filter);
                $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               $lc_filter = preg_replace('/,/','%2C',$lc_filter, -1);
-               echo '<a class=\'filter-link\' href=\'./search/*/Author:"'.$lc_filter.'|||'.$orig_filter.'"\'>'.$author.'</a>';
+               echo '<a href=\'./search/*/Author:"'.$orig_filter.'"\'>'.$author.'</a>';
                 $num_authors++;
-                if($num_authors < sizeof($doc['solr_'.$author_field])) {
-                    echo '; ';
+                if($num_authors < sizeof($doc[$author_field])) {
+                    echo ' ';
                 }
             }
 
 
             ?>
-        </span><br/>
+
             <?php } ?>
-       
-        <em>
+
        <?php if(array_key_exists($date_field, $doc)) { ?>
-            <span class="date">
+            <span>
                 <?php
                 echo '(' . $doc[$date_field][0] . ')';
           }
@@ -69,14 +51,23 @@
 
                 ?>
                 </span>
-        </em>
-        
+
 
 
         <?php
-            if(array_key_exists('solr_dcdescriptionabstracten', $doc)) {
-                echo '<p class="abstract">';
-                $abstract =  $doc['solr_dcdescriptionabstracten'][0];
+        // TODO: Make highlighting configurable
+
+        if(array_key_exists('highlights',$doc)) {
+            ?> <p><?php
+            foreach($doc['highlights'] as $highlight) {
+                echo "...".$highlight."...".'<br/>';
+            }
+            ?></p><?php
+        }
+        else {
+            if(array_key_exists('dcdescriptionabstract', $doc)) {
+                echo '<p>';
+                $abstract =  $doc['dcdescriptionabstract'][0];
                 $abstract_words = explode(' ',$abstract);
                 $shortened = '';
                 $max = 40;
@@ -91,14 +82,12 @@
                 echo $shortened.$suffix;
                 echo '</p>';
             }
+        }
+
         ?>
 
-
-
-        <p class="read_item">Added to index at <?php echo $doc['solr_dcdateaccessioned_dt'][0]?></p>
+        </div> <!-- close tags div -->
 
     </li>
-    <?php } ?>
+        <?php } ?>
     </ul>
-
-</div>
