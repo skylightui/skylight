@@ -171,7 +171,9 @@ class Solr_client_dspace_uoa {
             }
 
 
-            $handle = preg_split('/\//',$doc['handle'][0]);
+            $raw_hdl = $doc['handle'] . '';
+
+            $handle = preg_split('/\//',$raw_hdl);
             $doc['id'] = $handle[1];
             if(!array_key_exists($title,$doc)) {
                 $doc[$title][] = 'No title';
@@ -271,15 +273,19 @@ class Solr_client_dspace_uoa {
 
             }
 
+            $raw_hdl = $doc['handle'] . '';
+            $handle = preg_split('/\//',$raw_hdl);
 
             // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$doc['handle'][0]."']/arr/str") as $highlight) {
+            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$raw_hdl."']/arr/str") as $highlight) {
                 //echo $doc['handle'][0].': '.$highlight.'<br/>';
                 $doc['highlights'][] = $highlight;
             }
 
 
-            $handle = preg_split('/\//',$doc['handle'][0]);
+            $raw_hdl = $doc['handle'] . '';
+
+            $handle = preg_split('/\//',$raw_hdl);
             $doc['id'] = $handle[1];
             if(!array_key_exists($title,$doc)) {
                 $doc[$title][] = 'No title';
@@ -628,8 +634,10 @@ class Solr_client_dspace_uoa {
 
             }
 
+            $raw_hdl = $doc['handle'] . ' ';
 
-            $handle = preg_split('/\//',$doc['handle'][0]);
+            $handle = preg_split('/\//',$raw_hdl);
+
             $doc['id'] = $handle[1];
             if(!array_key_exists($title_field,$doc)) {
                 $doc[$title_field][] = 'No title';
@@ -723,7 +731,9 @@ class Solr_client_dspace_uoa {
                     $doc[str_replace('.', '', $key)]= $value;
                 }
 
-                $handle = preg_split('/\//',$doc['handle'][0]);
+                $raw_hdl = $doc['handle'] . ' ';
+
+                $handle = preg_split('/\//',$raw_hdl);
                 $doc['id'] = $handle[1];
                 if(!array_key_exists($title_field,$doc)) {
                     $doc[$title_field][] = 'No title';
