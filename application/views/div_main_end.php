@@ -1,8 +1,10 @@
 
-        <div id="footer">
-            <a href="http://skylightui.org/"><?php echo $site_title; ?></a> powered by <strong>SkyLight</strong><br />
-            <a href="http://skylightui.org/"><img src="<?php echo base_url(); ?>assets/images/skylight.jpg"></a><br />
-            <a href="./feedback">Get in touch</a>
-        </div>
+        <footer>
+            <a href="./"><?php echo $site_title; ?></a>
+            <a href="./about">About this site</a>
+            <a href="./feedback" class="last">Feedback</a><br />
+            <a href="http://skylightui.org/">Powered by Skylight</a>
+            <img src="./assets/images/skylight.jpg" />
+        </footer>
     
 </div>
