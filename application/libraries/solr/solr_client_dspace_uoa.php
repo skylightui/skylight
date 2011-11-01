@@ -171,7 +171,7 @@ class Solr_client_dspace_uoa {
             }
 
 
-            $raw_hdl = $doc['handle'] . ' ';
+            $raw_hdl = $doc['handle'] . '';
 
             $handle = preg_split('/\//',$raw_hdl);
             $doc['id'] = $handle[1];
@@ -273,15 +273,17 @@ class Solr_client_dspace_uoa {
 
             }
 
+            $raw_hdl = $doc['handle'] . '';
+            $handle = preg_split('/\//',$raw_hdl);
 
             // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$doc['handle'][0]."']/arr/str") as $highlight) {
+            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$handle."']/arr/str") as $highlight) {
                 //echo $doc['handle'][0].': '.$highlight.'<br/>';
                 $doc['highlights'][] = $highlight;
             }
 
 
-            $raw_hdl = $doc['handle'] . ' ';
+            $raw_hdl = $doc['handle'] . '';
 
             $handle = preg_split('/\//',$raw_hdl);
             $doc['id'] = $handle[1];
