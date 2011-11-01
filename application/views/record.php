@@ -13,7 +13,7 @@
 ?>
 
 
-<h1><span class="icon <?php echo $type ?>"></span><?php echo $page_title ?></h1>
+<h1 class="itemtitle"><span class="icon <?php echo $type ?>"></span><?php echo $page_title ?></h1>
     <div class="tags">
         <?php
 
