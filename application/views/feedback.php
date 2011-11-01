@@ -22,6 +22,6 @@
 
         <p>&nbsp;</p>
 
-        <input type="submit" value="Send feedback..." />
+        <input type="submit" class="btn" value="Send feedback..." />
     </form>
 </div>
