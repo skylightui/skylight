@@ -22,7 +22,7 @@
 </script>
 
 <?php if($formhidden) {
-    // We're hiding ht eform in search results
+    // We're hiding the form in search results
     ?>
     <p><strong><a href="#" id="showform">Change Advanced Search options</a></strong></p>
 <?php } ?>
