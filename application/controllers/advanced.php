@@ -38,7 +38,7 @@ class Advanced extends skylight {
             $operators = array('AND' => 'AND (all terms must match)', 'OR' => 'OR (any terms may match)');
             $form .= form_dropdown('operator',$operators,'AND','style="margin-left:15px;"').'</p>';
             $form .= '<p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p>';
-            $form .= form_submit('search', 'Search', 'style="margin-left: 120px"');
+            $form .= form_submit('search', 'Search', 'style="margin-left: 120px" class="btn"');
             $form .= '</form>';
 
 
