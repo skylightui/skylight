@@ -45,7 +45,6 @@ class Record extends skylight {
             $this->view('record_invalid');
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('div_sidebar_end');
             $this->view('footer');
             return;
@@ -116,7 +115,6 @@ class Record extends skylight {
         $this->view('record', $data);
         $this->view('div_main_end');
         $this->view('div_sidebar');
-        $this->view('search_box');
         $this->view('related_items', $data);
         $this->view('div_sidebar_end');
 

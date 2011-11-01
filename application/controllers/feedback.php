@@ -40,7 +40,6 @@ class Feedback extends skylight {
 
         $this->view('div_main_end');
         $this->view('div_sidebar');
-        $this->view('search_box');
         $this->view('div_sidebar_end');
         $this->view('footer');        
     }

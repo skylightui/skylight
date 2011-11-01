@@ -72,8 +72,11 @@
     <li>
         <span class="icon media-doc"></span>
         <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
+        <div class="tags">
+            
+
         <?php if(array_key_exists($author_field,$doc)) { ?>
-        <span class="authors">
+
             <?php
 
             $num_authors = 0;
@@ -83,21 +86,21 @@
                // and recorddisplay key match and the delimiter is :
                $orig_filter = preg_replace('/ /','+',$author, -1);
                $orig_filter = preg_replace('/,/','%2C',$orig_filter, -1);
-               echo '<a class=\'filter-link\' href=\'./search/*/Author:"'.$orig_filter.'"\'>'.$author.'</a>';
+               echo '<a href=\'./search/*/Author:"'.$orig_filter.'"\'>'.$author.'</a>';
                 $num_authors++;
                 if($num_authors < sizeof($doc[$author_field])) {
-                    echo '; ';
+                    echo ' ';
                 }
             }
 
 
             ?>
-        </span>
+        
             <?php } ?>
        
         <em>
        <?php if(array_key_exists($date_field, $doc)) { ?>
-            <span class="date">
+            <span>
                 <?php
                 echo '(' . $doc[$date_field][0] . ')';
           }
@@ -116,16 +119,16 @@
         // TODO: Make highlighting configurable
 
         if(array_key_exists('highlights',$doc)) {
-            ?> <p class="abstract"><?php
+            ?> <p><?php
             foreach($doc['highlights'] as $highlight) {
                 echo "...".$highlight."...".'<br/>';
             }
             ?></p><?php
         }
         else {
-            if(array_key_exists('dcdescriptionabstracten', $doc)) {
-                echo '<p class="abstract">';
-                $abstract =  $doc['dcdescriptionabstracten'][0];
+            if(array_key_exists('dcdescriptionabstract', $doc)) {
+                echo '<p>';
+                $abstract =  $doc['dcdescriptionabstract'][0];
                 $abstract_words = explode(' ',$abstract);
                 $shortened = '';
                 $max = 40;
@@ -144,16 +147,10 @@
 
         ?>
 
+        </div> <!-- close tags div -->
 
-        <p class="read_item"><a class="record_list_links"  href="./record/<?php echo $doc['id']?>">Read more...</a></p>
     </li>
-    <?php
-
-        if(array_key_exists('exifgpscoordinates', $doc)) {
-            $coordinates[$doc['id']] = $doc['exifgpscoordinates'];
-        }
-
-    } ?>
+        <?php } ?>
     </ul>
 
     <div class="pagination">

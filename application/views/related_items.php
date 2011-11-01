@@ -1,17 +1,6 @@
-<?php
+    <h4>Related Items</h4>
 
-        //$title_field = $recorddisplay['Title'];
-        //$author_field = $recorddisplay['Author'];
-      //  $date_field = $recorddisplay['Date'];
-        //$artist_field = "dc.contributor.illustrator"; // hardcoded values are OK too
-
-?>
-
-<div class="related_items">
-
-    <h1>Related Items</h1>
-
-    <ul id="search_result_list">
+    <ul class="related">
 
        
     <?php foreach ($related_items as $doc) { ?>

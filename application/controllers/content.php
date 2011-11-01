@@ -54,7 +54,6 @@ class content extends skylight {
             }
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('search_facets',$facet_data);
             $this->view('div_sidebar_end');
             $this->view('footer');
@@ -73,7 +72,6 @@ class content extends skylight {
             $this->view('foreign', $foreign);
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('search_facets', $facet_data);
             $this->view('div_sidebar_end');
             $this->view('footer');
@@ -91,7 +89,6 @@ class content extends skylight {
             $this->view('static/' . $this->config->item('skylight_appname') . '/' . $url);
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('search_facets', $facet_data);
             $this->view('div_sidebar_end');
             $this->view('footer');
@@ -104,7 +101,6 @@ class content extends skylight {
             $this->view('theme/' . $this->config->item('skylight_appname') . '/404');
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('div_sidebar_end');
             $this->view('footer');
         } else {
@@ -116,7 +112,6 @@ class content extends skylight {
             $this->view('404');
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('div_sidebar_end');
             $this->view('footer');
         }

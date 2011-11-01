@@ -58,7 +58,6 @@ class Advanced extends skylight {
             $this->view('advanced_search',$formdata);
             $this->view('div_main_end');
             $this->view('div_sidebar');
-            $this->view('search_box');
             $this->view('div_sidebar_end');
             $this->view('footer');
         }
