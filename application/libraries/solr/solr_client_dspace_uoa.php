@@ -277,7 +277,7 @@ class Solr_client_dspace_uoa {
             $handle = preg_split('/\//',$raw_hdl);
 
             // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$handle."']/arr/str") as $highlight) {
+            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='".$raw_hdl."']/arr/str") as $highlight) {
                 //echo $doc['handle'][0].': '.$highlight.'<br/>';
                 $doc['highlights'][] = $highlight;
             }
