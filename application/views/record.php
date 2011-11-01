@@ -1,7 +1,21 @@
+<?php
+    $author_field = $this->skylight_utilities->getField("Author");
+    $type_field = $this->skylight_utilities->getField("Type");
+
+    $type = 'Unknown';
+
+        if(isset($solr[$type_field])) {
+                    $type = "media-" . strtolower(str_replace(' ','-',$solr[$type_field][0]));
+        }
+
+
+?>
+
+
 <h1><span class="icon media-img"></span><?php echo $page_title ?></h1>
     <div class="tags">
         <?php
-            $author_field = $this->skylight_utilities->getField("Author");
+
             if (isset($solr[$author_field])) {
                foreach($solr[$author_field] as $author) {
                    $orig_filter = preg_replace('/ /','+',$author, -1);
