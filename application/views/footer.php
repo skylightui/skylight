@@ -2,9 +2,9 @@
         </div> <!-- close main -->
         </div> <!-- close container -->
 
-    <script src="js/libs/jquery-1.6.2.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/script.js"></script>
+    <script src="./assets/jquery/jquery-1.6.4.min.js"></script>
+    <script src="./assets/plugins/plugins.js"></script>
+    <script src="./assets/script/script.js"></script>
 
     </body>
 </html>
