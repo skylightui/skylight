@@ -2,7 +2,7 @@
 
     <ul class="listing">
 
-    <?php foreach ($docs as $doc) {
+    <?php foreach ($docs as $index => $doc) {
 
         $type = 'Unknown';
 
@@ -11,7 +11,7 @@
                 }
         ?>
 
-    <li>
+    <li<?php if($index == 0) { echo ' class="first"'; } elseif($index == sizeof($docs) - 1) { echo ' class="last"'; } ?>>
         <span class="icon <?php echo $type ?>"></span>
         <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
         <div class="tags">

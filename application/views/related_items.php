@@ -6,7 +6,7 @@
     <?php
         $type_field = $this->skylight_utilities->getField('Type');
 
-        foreach ($related_items as $doc) {
+        foreach ($related_items as $index => $doc) {
 
             $type = 'Unknown';
 
@@ -16,7 +16,7 @@
 
             ?>
 
-    <li>
+    <li<?php if($index == 0) { echo ' class="first"'; } elseif($index == sizeof($related_items) - 1) { echo ' class="last"'; } ?>>
         <span class="small-icon <?php echo $type ?>"></span>
         <a href="./record/<?php echo $doc['id']?>"><?php echo $doc[$title_field][0]; ?></a>
         <div class="tags">
