@@ -273,7 +273,7 @@ class Solr_client_dspace_uoa {
 
             }
 
-            $raw_hdl = $doc['handle'] . '';
+            $raw_hdl = (string) $doc['handle'];
             $handle = preg_split('/\//',$raw_hdl);
 
             // Build highlight results from solr response
