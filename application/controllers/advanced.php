@@ -233,7 +233,6 @@ class Advanced extends skylight {
         $this->view('search_results', $data);
         $this->view('div_main_end');
         $this->view('div_sidebar');
-        $this->view('search_box');
         $this->view('search_facets', $data);
 
         $this->view('div_sidebar_end');
