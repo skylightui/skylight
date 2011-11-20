@@ -1,518 +1,319 @@
-body {
-    background-color: #fff;
-    margin: 40px;
-    font-family: 'Trebuchet MS', 'Arial', sans-serif;
-    font-size: 12px;
-    line-height: 16px;
-    color: #4F5155;
-}
-
-a {
-    color: #369;
-    background-color: transparent;
-    font-weight: normal;
-}
-
-h1 {
-    color: #666;
-    background-color: transparent;
-    border-bottom: 2px solid #D0D0D0;
-    font-family: 'Trebuchet MS','Arial',sans-serif;
-    font-size: 180%;
-    font-weight:100;
-    letter-spacing: 0;
-    line-height: 44px;
-    margin: 24px 0 2px 0;
-    padding: 5px 0 6px 0;
-    margin-bottom: 7px;
-}
-
-br {
-    clear: left;
-    margin-bottom: 10px;
-}
-
-code {
-    font-family: Monaco, Verdana, Sans-serif;
-    font-size: 12px;
-    background-color: #f9f9f9;
-    border: 1px solid #D0D0D0;
-    color: #002166;
-    display: block;
-    margin: 14px 0 14px 0;
-    padding: 12px 10px 12px 10px;
-}
-
-label {
-    text-align: right;
-    display: block;
-    float: left;
-    font-weight: bold;
-    padding-right: 5px;
-}
-
-label.fixedwidthlabel {
-    padding-right: 20px;
-    width: 225px;    
-}
-
-#footer {
-    border-top: 1px solid #D0D0D0;
-    text-align: center;
-    font-size: 10px;
-    position: relative;
-    clear: both;
-   padding-top: 50px;
-}
-
-div.positive {
-    border: 2px solid #063;
-    background-color: #cec;
-    margin: 10px 150px 10px 150px;
-    padding: 5px;
-    text-align: center;
-}
-
-div.error {
-    border: 2px solid #600;
-    background-color: #f99;
-    margin: 10px 150px 10px 150px;
-    padding: 5px;
-    text-align: center;
-}
-
-div.rightdiv {
-    float: right;
-    padding-top: 10px;
-    padding-right: 10px;
-}
-
-div.section {
-    background-color: #eee;
-    border: 1px solid #ccc;
-    color: #34322c;
-    position: relative;
-    padding: 5px;
-    margin: 5px;
-    line-height: 1.5;
-    font-size: 12px;
-    overflow: auto;
-    width: 100%;
-}
-
-div.formtext {
-    float: left;
-    margin-right: 1.5em;
-    margin-bottom: 0.5em;
-}
-
-div.formtextnext {
-    float: left;
-    margin-right: 1.5em;
-    margin-bottom: 0.5em;
-}
-
-li.showmore {
-    color: #369;
-    font-size: 10px;
-    font-style: italic;
-}
-
-input.smallbutton {
-    font-size: 8px;
-}
-
-.search_results {
-    position: relative;
-    float: left;
-    clear: left;
-    width: 100%;
-}
-
-.search_results ul {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-    width: 100%;
-}
-
-.search_results ul li {
-    border-bottom: solid 1px #ccc;
-    padding: 0px;
-    margin: 0px;
-    width: 100%;
-}
-
-.search_results ul li h3 {
-    margin-bottom: 3px;
-}
-
-.search_results ul li h3 a {
-    color: #369;
-    font-weight: bold;
-    line-height: 18px;
-}
-
-.search_results ul li p a {
-    color: #369;
-}
-
-span.authors a {
-}
-
-span.artists a {
-    color: #708090;
-}
-
-span.searched {
-    color: black;
-}
-
-.related_items {
-    position: relative;
-    float: left;
-    clear: left;
-    margin-left: 15px;
-    width: 100%;
-}
-
-.related_items ul {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-    width: 100%
-}
-
-.related_items ul li {
-    border-bottom: solid 1px #ccc;
-    padding: 0px;
-    margin: 0px;
-    width: 100%
-}
-
-.related_items ul li h3 {
-    margin-bottom: 3px;
-    width: 100%
-}
-
-.related_items ul li h3 a {
-    color: #369;
-    font-weight: bold;
-    line-height: 18px;
-}
-
-.related_items ul li p a {
-    color: #369;
-}
-
-.search_filters {
-    position: relative;
-    float: left;
-    clear: left;
-    margin-left: 15px;
-    /* border: 1px solid red; */
-    width: 100%;
-}
-
-ul.search_filter_list, ul.browse_facet_list {
-    list-style-type: none;
-    margin: 0px;
-    padding: 0px;
-    margin-bottom: 7px;
-}
-
-ul.search_filter_list li, ul.browse_facet_list li {
-    margin: 0px;
-    padding: 0px;
-    margin-left: 10px;
-}
-
-ul.search_filter_list li.active {
-    color: black;
-}
-
-ul.search_filter_list li.heading {
-    color: black;
-    margin-left: 0px;
-}
-
-ul.browse_facet_list {
-    font-size: 13px;
-    line-height: 20px;
-}
-
-div.pagination {
-    text-align: center;
-}
-
-div.pagination a {
-     color: #369;
-}
-
-.record {
-    position: relative;
-    float: left;
-    clear: left;
-    font-size: 14px;
-    width: 100%;
-}
-
-.record ul {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
+/*  
+Site Name: ---
+Site URI: ---
+Description: ---
+Version: 1.0
+
+UPDATE INFO ---------------------------------------
+
+Revision number: 1.0
+Last updated: 
+Last update made by: Adam Wright (@rike) for big-backyard.co.nz
+
+CONVENTIONS ---------------------------------------
+
+hyphenate class / id names - #my-id-name, .my-class-name
+class / id names to start with lower case letter (ID's reserved for .net use will start with Upper case letter)
+
+CREDITS -------------------------------------------
+this file adapted from the fantastic resources at http://html5boilerplate.com/
+html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
+other relevant credits have been left inline
+*/
+
+/* Reset -----------------------------------------------------------------------------------------------------------------*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after,
+q:before, q:after { content: ""; content: none; }
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+del { text-decoration: line-through; }
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+table { border-collapse: collapse; border-spacing: 0; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+input, select { vertical-align: middle; }
+
+
+/* Font normalization inspired by YUI Library's fonts.css: developer.yahoo.com/yui/ */
+body 								{ font:13px/1.231 sans-serif; *font-size:small; } /* Hack retained to preserve specificity */
+select, input, textarea, button 	{ font:99% sans-serif; }
+
+pre, code, kbd, samp 				{ font-family: monospace, sans-serif; } /* Normalize monospace sizing: en.wikipedia.org/wiki/MediaWiki_talk:Common.css/Archive_11#Teletype_style_fix_for_Chrome */
+
+/* Minimal base styles -----------------------------------------------------------------------------------------------------------------*/
+
+html 				{ overflow-y: scroll; } /* Always force a scrollbar in non-IE */
+a:hover, a:active 	{ outline: none; } /* Accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
+ul, ol 				{ margin-left: 2em; }
+ol 					{ list-style-type: decimal; }
+nav ul, nav li 		{ margin: 0; list-style: none; list-style-image: none; } /* Remove margins for navigation lists */
+small 				{ font-size: 85%; }
+strong, th 			{ font-weight: bold; }
+td 					{ vertical-align: top; }
+sub, sup 			{ font-size: 75%; line-height: 0; position: relative; } /* Set sub, sup without affecting line-height: gist.github.com/413930 */
+sup 				{ top: -0.5em; }
+sub 				{ bottom: -0.25em; }
+pre 				{ white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 15px; }
+textarea 			{ overflow: auto; } /* www.sitepoint.com/blogs/2010/08/20/ie-remove-textarea-scrollbars/ */
+.ie6 legend, 
+.ie7 legend 		{ margin-left: -7px; } 
+
+input[type="radio"] 		{ vertical-align: text-bottom; } /* Align checkboxes, radios, text inputs with their label by: Thierry Koblentz tjkdesign.com/ez-css/css/base.css  */
+input[type="checkbox"] 		{ vertical-align: bottom; }
+.ie7 input[type="checkbox"] { vertical-align: baseline; }
+.ie6 input 					{ vertical-align: text-bottom; }
+
+label, input[type="button"], input[type="submit"], input[type="image"], button { cursor: pointer; } /* Hand cursor on clickable input elements */
+
+button, input, select, textarea { margin: 0; } /* Webkit browsers add a 2px margin outside the chrome of form elements */
+
+input:valid, textarea:valid   								{  } /* Colors for form validity */
+input:invalid, textarea:invalid 							{ border-radius: 1px; -moz-box-shadow: 0px 0px 5px red; -webkit-box-shadow: 0px 0px 5px red; box-shadow: 0px 0px 5px red; }
+.no-boxshadow input:invalid, .no-boxshadow textarea:invalid { background-color: #f0dddd; }
+
+::-moz-selection 	{ background: #00548e; color: #fff; text-shadow: none; } /* These selection declarations have to be separate No text-shadow: twitter.com/miketaylr/status/12228805301 Also: hot pink! */
+::selection 		{ background: #00548e; color: #fff; text-shadow: none; }
+a:link 				{ -webkit-tap-highlight-color: #FF5E99; } /* j.mp/webkit-tap-highlight-color */
+
+button 				{  width: auto; overflow: visible; } /* Make buttons play nice in IE: www.viget.com/inspire/styling-the-button-element-in-internet-explorer/ */
+.ie7 img 			{ -ms-interpolation-mode: bicubic; } /* Bicubic resizing for non-native sized IMG: code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/ */
+
+/* Default Styles --------------------------------------------------------------------------------------------------------*/
+
+html 							{ -webkit-font-smoothing: antialiased; }
+body 							{ background: #fff url(../images/bg-body.jpg) no-repeat 50% 0px; }
+body, select, input, textarea 	{ color: #555; line-height: 18px; font-family: Arial, Helvetica, sans-serif; }
+
+h1, h2, h3, h4, h5, h6 			{ text-rendering: optimizeLegibility; color: #00548e; font-weight: bold; }
+h1 								{ font-size: 18px; line-height: 24px; margin: 30px 0 17px 0px; position: relative; }
+h2 								{ font-size: 16px; line-height: 36px; margin: 0 0 0 0; }
+h3 								{ font-size: 14px; line-height: 18px; margin: 0 0 9px 0; }
+
+h1.itemtitle 					{ font-size: 18px; line-height: 24px; margin: 30px 0 17px 54px; position: relative; }
+
+p 								{ font-size: 13px; margin-bottom: 18px; }
+
+a, a:active, a:visited 			{ color: #00548e; }
+a:hover 						{ color: #033a5f; }
+
+input[type=text]				{
+	border: 1px solid #bbbbbc; font-size: 13px; height: 28px; padding: 0 10px;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
+}
+input.btn						{
+	background: #196599; border: none; height: 28px; color: #fff; text-transform: uppercase; font-size: 14px; margin-left: 8px; font-weight: bold; padding: 0 18px;
+	-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; text-shadow: rgba(0,0,0,0.3) 0px -1px 0px;
+}
+input.btn:hover					{ background: #033a5f; }
+
+
+
+/* Site Css ///////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/* Structure -------------------------------------------------------------------------------------------------------------*/
+#container 			{ width: 940px; margin: auto auto; }
+header				{ position: relative; }
+.col-main			{ float: left; margin-right: 40px; width: 660px; }
+.col-sidebar		{ float: left; width: 240px; margin-top: -66px; background: #def5fb; position: relative; z-index: 2; }
+.ie7 .col-sidebar	{ padding-bottom: 30px; }
+
+/* Common Containers & Subclasses ----------------------------------------------------------------------------------------*/
+.logo				{ display: block; text-indent: -9999px; width: 259px; height: 109px; background: url(../images/skylight.png) no-repeat 0px 0px; position: absolute; top: 0; right: 0; }
+.ie7 .logo 			{ top: -40px; }
+.collection-title	{ color: #00548e; font-size: 28px; line-height: 88px; padding-top: 20px; text-shadow: rgba(255,255,255,0.3) 0px 1px 0px; margin: 0; }
+
+.search							{ padding-bottom: 36px; border-bottom: 1px solid #b8baba; width: 660px; }
+.search input[type=text]		{ 
+	box-shadow: 0px 0px 9px rgba(178,179,180, 0.3); -moz-box-shadow: 0px 0px 9px rgba(178,179,180, 0.75); -webkit-box-shadow: 0px 0px 9px rgba(178,179,180, 0.3); 
+	font-size: 16px; color: #00548e; font-weight: bold; padding-left: 33px; width: 390px;
+	background: #fff url(../images/bg-search.png) no-repeat 0px 0px;
+}
+.ie7 .search input[type=text]	{ width: 355px; }
+.search input.btn				{ margin-right: 8px; }
+.search .advanced 				{ text-transform: uppercase; font-size: 10px; text-decoration: none; }
+.search .advanced:hover			{ text-decoration: underline; }
+
+.header-links 					{ position: absolute; top: 16px; left: 0; overflow: hidden; }
+.header-links a 				{ font-size: 10px; text-transform: uppercase; float: left; text-decoration: none; padding-right: 10px; margin-right: 10px; border-right: 1px solid #b8c1c6; line-height: 12px;  }
+.header-links a:hover			{ text-decoration: underline; }
+.header-links a.last			{ border: none; }
+
+.col-sidebar h4						{ color: #fff; line-height: 26px; font-weight: bold; text-transform: uppercase; font-size: 12px; margin-bottom: 17px; background: #196599; padding: 0 17px; }
+.col-sidebar h4 a 					{ 
+	background: #196599 url(../images/bg-arrows.png) no-repeat 100% -92px;
+	display: block; color: #fff; text-decoration: none; width: 223px; padding-left: 17px; position: relative; left: -17px;
+}
+.col-sidebar h4 a:hover				{ background: #033a5f url(../images/bg-arrows.png) no-repeat 100% -92px; }
+.col-sidebar ul 					{ list-style-type: none; margin: 0 0 17px 0; font-size: 12px; }
+.col-sidebar ul li 					{ line-height: 16px; }
+.col-sidebar ul a 					{ text-decoration: none; display: block; padding: 0 17px; }
+.col-sidebar ul a:hover				{ text-decoration: underline; }
+
+.col-sidebar ul.selected					{ background: #ffffff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding: 7px 9px; margin: 0 17px 4px 17px; }
+.col-sidebar ul.selected li 				{ position: relative; }
+.col-sidebar ul.selected a					{ color: #333; padding: 0; }
+.col-sidebar ul.selected a:hover			{ background: none; }
+.col-sidebar ul.selected a.deselect			{ display: block; width: 13px; height: 13px; background: url(../images/bg-deselect.png) no-repeat 0px 0px; text-indent: -9999px; position: absolute; top: 0; right: 0; }
+.col-sidebar ul.selected a.deselect:hover	{ background-position: 0px -15px; }
+
+.col-sidebar ul.related li 					{ padding: 0 17px 0 46px; position: relative; margin-bottom: 18px; zoom: 1; }
+.col-sidebar ul.related li a 				{ padding: 0; }
+.col-sidebar ul.related li a:hover			{ background: none; text-decoration: underline; }
+.col-sidebar ul.related .tags				{ margin: 4px 0 0 0; }
+.col-sidebar ul.related .tags a 			{ padding: 2px 5px; display: inline; background: #ffffff; }
+.col-sidebar ul.related .tags a:hover		{ text-decoration: none; background: #00548e; }
+
+.tags					{ margin: 0 0 0 54px; }
+.tags a 				{ font-size: 13px; background: #def5fb; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding: 2px 6px; line-height: 20px; margin-right: 8px; text-decoration: none; }
+.tags a.bold			{ font-weight: bold; }
+.tags a:hover			{ background: #00548e; color: #fff; }
+
+footer 								{ margin-top: 40px; }
+footer a 							{ font-size: 10px; text-transform: uppercase; color: #666 !important; text-decoration: none; font-weight: bold; border-right: 1px solid #cecece; padding-right: 9px; margin-right: 5px; }
+footer a.last						{ border: none; }
+footer a:hover						{ color: #333 !important; text-decoration: underline; }
+
+/* Custom Containers & Subclasses ----------------------------------------------------------------------------------------*/
+
+.listing 							{ list-style-type: none; margin: 0; }
+.listing li 						{ padding: 10px 0 10px 24px; border-left: 54px solid #edeff0; position: relative; }
+.listing li.first					{ padding-top: 30px; }
+.listing li.last					{ padding-bottom: 30px; }
+.listing li a 						{ text-decoration: none; }
+.listing li a:hover					{ text-decoration: underline; }
 
-.record ul li {
-    padding: 0px;
-    margin: 0px;
+.listing li h3 						{ margin-bottom: 8px; }
+.listing li .tags					{ margin: 0 0 8px 0; }
+.listing li .tags a 				{ font-size: 12px; }
+.listing li .tags a:hover			{ text-decoration: none; }
+.listing li p 						{ font-size: 12px; margin: 0; }
+
+.listing-filter						{ padding: 0; border: none; border-bottom: 1px solid #b8baba; line-height: 33px; text-align: right; position: relative; }
+.listing-filter .no-results			{ position: absolute; top: 0; left: 0; }
+.ie7 .listing-filter .no-results	{ top: -10px; }
+.listing-filter .sort				{ font-size: 10px; text-transform: uppercase; color: #666; padding-right: 10px; }
+.listing-filter .sort a 			{ text-decoration: none; }
+.listing-filter .sort a:hover		{ text-decoration: underline; }
+.listing-filter .sort strong		{ color: #333; }
+.listing-filter .sort em			{ padding-left: 10px; font-style: normal; }
+
+.icon 								{ display: block; width: 54px; height: 32px; background: url(../images/bg-icons.png) no-repeat 0px 0px; position: absolute; top: 0; left: -54px; background-position: -908px 0; }
+h1 .icon							{ top: -5px; left: -65px; }
+.listing li .icon					{ top: 10px; }
+.listing li.first .icon				{ top: 30px; }
+.media-artwork{ background-position: 0 0; width: 32px; height: 22px; }
+.media-audiovisual-material, .media-filmorbroadcast, .media-movingimage, .media-video{ background-position: -72px 0; }
+.media-book-section, .media-book, .media-conference-proceedings, media-edited-book, .media-electronic-book{ background-position: -154px 0; }
+.media-conference-paper, .media-electronic-article{ background-position: -246px 0; }
+.media-journal-article{ background-position: -318px 0; }
+.media-magazine-article, .media-newspaper-article, .media-newspaper{ background-position: -400px 0; }
+.media-online-multimedia, .media-web-page{ background-position: -480px 0; }
+.media-presentation{ background-position: -564px 0; }
+.media-report{ background-position: -646px 0; }
+.media-serial{ background-position: -728px 0; }
+.media-thesis{ background-position: -818px 0; height: 50px; }
+.media-unknown{ background-position: -908px 0; }
+
+.small-icon 						{ display: block; width: 22px; height: 20px; background: url(../images/bg-icons-small.png) no-repeat 0px 0px; position: absolute; top: 0; left: 12px; }
+.ie7 .small-icon					{ }
+.small-icon.media-film				{ background-position: 0px 0px; }
+.small-icon.media-doc				{ background-position: 0px -20px; }
+.small-icon.media-img				{ background-position: 0px -40px; }
+.small-icon.media-book				{ background-position: 0px -60px; }
+
+.pagination							{ border-bottom: 1px solid #b8baba; border-top: 1px solid #b8baba; line-height: 33px; text-align: center; position: relative; font-size: 11px; font-weight: bold; }
+.pagination a 						{ color: #666; text-decoration: none; display: inline-block; padding: 0 5px; }
+.pagination a.selected 				{ background: #e8e8e8; color: #333; }
+.pagination a:hover					{ color: #333; text-decoration: underline; }
+.pagination .prev,
+.pagination .next					{ display: block; position: absolute; top: 0; font-size: 11px; background: url(../images/bg-arrows.png) no-repeat 0px 0px; }
+.pagination .prev					{ left: 0; padding: 0 10px 0 25px; }
+.pagination .next					{ right: 0; padding: 0 25px 0 10px; background-position: 100% -33px !important; }
+.pagination .prev:hover,
+.pagination .next:hover 			{ background: #def5fb url(../images/bg-arrows.png) no-repeat; }
+
+.content 							{ margin-top: 30px; }
+.content ul 						{ margin: 0 0 18px 1.2em; }
+
+table								{ width: 100%; background: #f1f1f2; }
+table caption						{ text-align: left; background: #677077; color: #fff; font-size: 12px; text-transform: uppercase; font-weight: bold; padding: 8px 17px; border-bottom: 1px solid #fff;  }
+table td,
+table th							{ padding: 8px 17px; }
+table th							{ text-align: left; border-right: 1px solid #fff;  }
+table tr:nth-child(2n)				{ background: #e7e8ea; }
+
+
+/* <END> Site Css \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+
+
+
+
+
+/* Non-semantic Helper Classes --------------------------------------------------------------------------------------------------------*/
+
+.ir 			{ display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; } /* For image replacement */
+.hidden 		{ display: none; visibility: hidden; } /* Hide for both screenreaders and browsers: css-discuss.incutio.com/wiki/Screenreader_Visibility */
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; } /* Hide only visually, but have it available for screenreaders: by Jon Neal.*/
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; } /* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: drupal.org/node/897638 */
+.invisible 		{ visibility: hidden; } /* Hide visually and from screenreaders, but maintain layout */
+.clearfix:before, .clearfix:after 	{ content: "\0020"; display: block; height: 0; overflow: hidden; } /* The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.j.mp/bestclearfix */
+.clearfix:after 					{ clear: both; }
+.clearfix 							{ zoom: 1; } /* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
+
+
+/* Media queries for responsive design --------------------------------------------------------------------------------------------------------*/
+
+@media all and (orientation:portrait) {
+	/* Style adjustments for portrait mode goes here */
+}
+
+@media all and (orientation:landscape) {
+	/* Style adjustments for landscape mode goes here */
+}
+
+@media screen and (max-device-width: 480px) {
+	/* Grade-A Mobile Browsers (Opera Mobile, Mobile Safari, Android Chrome) consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
+	/* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you: j.mp/textsizeadjust */
+	/* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
+}
+
+
+/* Print styles --------------------------------------------------------------------------------------------------------*/
+
+@media print {
+  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
+  -ms-filter: none !important; } /* Black prints faster: sanbeiji.com/archives/953 */
+  a, a:visited { color: #444 !important; text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */
+  tr, img { page-break-inside: avoid; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3{ page-break-after: avoid; }
 }
 
-.record .social {
-    text-align: center;
-    margin-top: 20px;
-}
-
-ul.metadatafield {
-    margin-bottom: 15px;
-}
-ul.metadatafield li {
-    font-weight: bold;
-}
-ul.metadatafield span.field {
-    width: 100%;
-    display: block;
-   /* border-bottom: 1px solid #ccc; */
-    margin-bottom: 3px;
-}
-
-ul.metadatavalue {
-   margin-left: 5px;
-}
-ul.metadatavalue li {
-    font-weight: normal;
-    display: inline;
-    border: none;
-}
-ul.metadatavalue li:before {
-    content: "; ";
-}
-ul.metadatavalue li.first:before {
-    content: "";
-}
-
-/* IE7 and below */
-ul.metadatavalue li {
-    scrollbar-face-color: expression(!this.isInserted==true ? this.isInserted=(this.innerHTML = '; ' + this.innerHTML) : '');
-}
-
-ul.metadatavalue li.first {
-    scrollbar-face-color: expression(!this.isInserted==true ? this.isInserted=(this.innerHTML = '' + this.innerHTML) : '');
-}
-
-span.search_box_label {
-    font-weight: bold;
-    display: block;
-    color: black;
-}
-
-.search_box {
-    position: relative;
-    float: left;
-    clear: left;
-    margin-left: 15px;
-    margin-bottom: 15px;
-    color: #666;
-}
-
-.search_box form {
-    margin-bottom: 0px;
-}
-
-.search_box a {
-    margin-left: 5px;
-    font-weight: bold;
-}
-
-#header {
-    min-width: 843px;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-    clear: both;
-}
-
-#content {
-    min-width: 843px;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-    clear: both;
-    background: #fff;
-}
-
-#main {
-    position: relative;
-    float: left;
-    clear: left;
-    margin-bottom: 30px;
-    margin-left: 20px;
-    width: 66%;
-    background: #fff;
-}
-
-#sidebar {
-    position: relative;
-    float: left;
-    clear: right;
-    width: 30%;
-    min-width: 230px;
-    margin-top: 15px;
-    margin-left: 15px;
-    /* border: 1px solid blue; */
-}
-
-#banner {
-    width: 100%;
-    border: 1px solid #666;
-    background-color: #369;
-    background-repeat:no-repeat;
-    background-position: center;
-    position: relative;
-    clear: both;
-}
-
-#banner .logo {
-    margin: 5px;
-    margin-top: 0px;
-}
-
-h1.site-title {
-    color: #fff;
-    margin-top: 10px;
-    margin-left: 20px;
-    border: none;
-    font-size: 220%;
-    font-weight: bold;
-    padding: 0px;
-}
-
-#trail {
-    width: 100%;
-    height: 30px;
-    border: 1px solid #ccc;
-    border-top: none;
-    padding-top: 10px;
-}
-
-.trail-links {
-    list-style-type: none;
-    margin: 0px;
-}
-
-.trail-links li {
-    display: inline;
-}
-
-.trail-links li:after {
-    content: ' > ';
-}
-
-/* cool IE7 and below :after hack i found */
-
-.trail-links li {
-    scrollbar-face-color: expression(!this.isInserted==true ? this.isInserted=(this.innerHTML = '' + this.innerHTML + ' > ') : '');
-}
-
-.trail-links li.last {
-scrollbar-face-color: expression(!this.isInserted==true ? this.isInserted=(this.innerHTML = '' + this.innerHTML + '') : '');
-}
-
-input, select, textarea {
-    padding:6px;
-    background:#FFFFFF;
-    border:solid 1px #ccc;
-    font:normal 11px Verdana, Arial, Helvetica, sans-serif;
-    color:#000;
-}
-
-input:hover, select:hover, textarea:hover { border-color:#369; }
-
-input.button {
-    background: #369;
-    color: #fff;
-    font-weight: bold;
-}
-
-label {
-    font-weight: bold;
-    display: block;
-    clear: both;
-    width: 90%;
-    text-align: left;
-}
-
-a.viewmore {
-    float: right;
-}
-
-.record_thumbnail {
-    position: relative;
-    float: right;
-    margin: 6px;
-}
-
-.record_bitstreams {
-    
-}
-
-.record_bitstreams h3 {
-    color: #b73;
-}
-
-.record_bitstreams p {
-    margin-left: 15px;
-}
-
-ul#search_result_list {
-    position: relative;
-    float: left;
-    width: 95%;
-}
-
-ul#search_result_list li {
-    position: relative;
-    float: left;
-    display: block;
-    clear: left;
-    padding-left: 55px;
-    background-position: 0px 17px;
-    background-repeat: no-repeat;
-    border: none;
-}
-
-a.viewmore {
-    font-style: italic;
-    margin-left: 15px;
-    color: #666;
-}
-
-table.config {
-    font-size: 12px;
-}
-
-table.config tr.odd {
-    background: #fff;
-}
-
-table.config tr.even {
-    background: #eee;
-}
-
-table.config td.configfield {
-    font-weight: bold;
-}
-
-div.sort_options ul li {
-    border: none;
-}
