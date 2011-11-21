@@ -117,7 +117,7 @@ p 								{ font-size: 13px; margin-bottom: 18px; }
 a, a:active, a:visited 			{ color: #00548e; }
 a:hover 						{ color: #033a5f; }
 
-input[type=text]				{
+input[type=text], input[type=password]				{
 	border: 1px solid #bbbbbc; font-size: 13px; height: 28px; padding: 0 10px;
 	-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
 }
