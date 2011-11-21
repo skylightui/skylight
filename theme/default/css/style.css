@@ -225,7 +225,7 @@ h1 .icon							{ top: -5px; left: -65px; }
 .media-artwork{ background-position: 0 0; width: 32px; height: 22px; }
 .media-audiovisual-material, .media-filmorbroadcast, .media-movingimage, .media-video{ background-position: -72px 0; }
 .media-book-section, .media-book, .media-conference-proceedings, media-edited-book, .media-electronic-book{ background-position: -154px 0; }
-.media-conference-paper, .media-electronic-article{ background-position: -246px 0; }
+.media-conference-paper, .media-electronic-article{ background-position: -232px 0; }
 .media-journal-article{ background-position: -318px 0; }
 .media-magazine-article, .media-newspaper-article, .media-newspaper{ background-position: -400px 0; }
 .media-online-multimedia, .media-web-page{ background-position: -480px 0; }
