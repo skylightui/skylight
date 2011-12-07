@@ -88,18 +88,19 @@ class Advanced extends skylight {
            // $title = $recorddisplay['Title'];
 
             //print_r($search_fields);
-
             foreach($search_fields as $label => $field) {
               //  print_r($label);
-              //  $field = $this->skylight_utilities->getRawField($label);
+                $dcfield = $this->skylight_utilities->getRawField($label);
 
                 $val = $this->input->post($this->_escape($label));
                 if(isset($val) && $val != '') {
-                    $filters .= '&fq='.$field.':'.$val.'';
+                    $filters .= '&fq='.$dcfield.':'.$val.'';
                     $filterurl .= '/'.$label.':'.$val;
                 }
             }
-            
+
+            echo $filterurl;
+
             $operator = $this->input->post('operator');
             // Base search URL
             redirect($base_search = './advanced/search'.$filterurl.'?operator='.$operator);
@@ -127,6 +128,7 @@ class Advanced extends skylight {
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
         $title = $this->skylight_utilities->getField('Title');
         $search_fields = $this->config->item('skylight_search_fields');
+        $fields = $this->config->item('skylight_fields');
         $sort_options = $this->config->item('skylight_sort_fields');
         $saved_filters = array();
         $saved_search = array();
@@ -151,8 +153,8 @@ class Advanced extends skylight {
                     $url_filters[] = $test_filter;
                     $test_filter = urldecode($test_filter);
                     $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
-                    if(array_key_exists($filter_segments[0], $search_fields)) {
-                        $saved_filters[] = $search_fields[$filter_segments[0]].$delimiter.$filter_segments[1];
+                    if(array_key_exists($filter_segments[0], $configured_filters)) {
+                        $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
                         $saved_search[$filter_segments[0]] = $filter_segments[1];
                         $message .= '<strong>'.$filter_segments[0].'</strong> : '.urldecode($filter_segments[1]).'<br/>';
                     }
