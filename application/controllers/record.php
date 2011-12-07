@@ -97,6 +97,8 @@ class Record extends skylight {
         $data['page_title'] = $data['solr'][$title][0];
         $data['title_field'] = $title;
 
+        $data['id'] = $id;
+
         if(array_key_exists('Author', $recorddisplay)) {
             $data['author_field'] = $recorddisplay['Author'];
         }
