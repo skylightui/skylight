@@ -259,7 +259,7 @@ h1 .icon							{ top: -5px; left: -65px; }
 table								{ width: 100%; background: #f1f1f2; }
 table caption						{ text-align: left; background: #677077; color: #fff; font-size: 12px; text-transform: uppercase; font-weight: bold; padding: 8px 17px; border-bottom: 1px solid #fff;  }
 table td,
-table th							{ padding: 8px 17px; }
+table thx							{ padding: 8px 17px; }
 table th							{ text-align: left; border-right: 1px solid #fff;  }
 table tr:nth-child(2n)				{ background: #e7e8ea; }
 
