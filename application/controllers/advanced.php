@@ -14,25 +14,39 @@ class Advanced extends skylight {
             $form = form_open('advanced/post');
 
             $search_fields = $this->config->item('skylight_search_fields');
-            $dropdown_lists = $this->config->item('skylight_search_dropdowns');
 
             foreach($search_fields as $key => $value) {
 
                   $escaped_key = $this->_escape($key);
 
-                       $input_data = array(
-                          'name'        => $escaped_key,
-                          'id'          => $escaped_key,
-                          'style'       => 'margin-left: 15px;'
-                        );
+                  $input_data = array(
+                                  'name'        => $escaped_key,
+                                  'id'          => $escaped_key,
+                                  'style'       => 'margin-left: 15px;'
+                                );
 
-                        $form .= '<p>';
+                  $form .= '<p>';
 
-                        $form .= form_label($key, $escaped_key, array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
-                        $form .= form_input($input_data);
+                  $form .= form_label($key, $escaped_key, array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
 
-                        $form .= '</p>';
+                  if (substr($value, 0, 8) === 'dropdown') {
+                       if (isset($_SESSION['skylight_language'])) {
+                           $lang = $_SESSION['skylight_language'];
+                       } else {
+                           $lang = '';
+                       }
 
+                       if (($lang != '') && (is_array($this->config->item($value . '.' . $lang)))) {
+                           $options = $this->config->item($value . '.' . $lang);
+                       } else {
+                            $options = $this->config->item($value);
+                       }
+                       $form .= form_dropdown($escaped_key, $options, '', 'style="margin-left:15px;"');
+                  } else {
+                       $form .= form_input($input_data);
+                  }
+
+                  $form .= '</p>';
             }
             $form .= '<p>'.form_label('Default search operator', 'operators', array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
             $operators = array('AND' => 'AND (all terms must match)', 'OR' => 'OR (any terms may match)');
