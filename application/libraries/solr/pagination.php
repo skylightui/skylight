@@ -46,7 +46,7 @@ class Pagination {
 	var $last_tag_open		= '&nbsp;';
 	var $last_tag_close		= '';
 	var $first_url			= ''; // Alternative URL for the First Page.
-	var $cur_tag_open		= '&nbsp;<strong>';
+	var $cur_tag_open		= '&nbsp;<strong class="selected">';
 	var $cur_tag_close		= '</strong>';
 	var $next_tag_open		= '&nbsp;';
 	var $next_tag_close		= '&nbsp;';

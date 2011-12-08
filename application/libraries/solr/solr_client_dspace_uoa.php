@@ -757,7 +757,7 @@ class Solr_client_dspace_uoa {
     function browseTerms($field = 'Subject', $rows = 10, $offset = 0, $prefix = '') {
 
         $prefix = $this->solrEscape(strtolower($prefix));
-
+        $rows++;
         $url = $this->base_url . "select?q=*:*";
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
@@ -796,6 +796,7 @@ class Solr_client_dspace_uoa {
         }
 
         $facet['terms'] = $terms;
+        $facet['termcount'] = sizeof($terms);
 
         $data['facet'] = $facet;
         $data['rows'] = $search_xml->result['numFound'];

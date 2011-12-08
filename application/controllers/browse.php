@@ -52,6 +52,8 @@ class Browse extends skylight {
 
         // Check for zero results
         $result_count = $data['rows'];
+        $facet_count = $data['facet']['termcount'];
+
         if ($result_count == 0) {
             $data['page_title'] = 'No search results found!';
             $this->view('header', $data);
@@ -69,21 +71,9 @@ class Browse extends skylight {
             $browse_url .= '?prefix='.$prefix;
         }
 
-        // Load and initialise pagination
-        $this->load->library('solr/pagination');
-        $config['page_query_string'] = TRUE;
-        $config['num_links'] = 3;
-        $config['total_rows'] = $result_count;
-        $config['per_page'] = $rows;
-        $config['base_url'] = $browse_url;
-        $this->pagination->initialize($config);
-
-
-        $data['pagelinks'] = $this->pagination->create_links();
-
         $data['startrow'] = $offset + 1;
-        if($data['startrow'] + ($rows - 1 )  > $result_count)
-            $data['endrow'] = $result_count;
+        if($data['startrow'] + ($rows - 1 )  > $facet_count)
+            $data['endrow'] = $offset + $facet_count;
         else
             $data['endrow'] = $data['startrow'] + ($rows - 1);
 
@@ -92,6 +82,17 @@ class Browse extends skylight {
         $data['browse_url'] = $browse_url;
         $data['field'] = $field;
         $data['offset'] = $offset;
+
+        // Load and initialise pagination
+        $this->load->library('solr/pagination');
+        $config['page_query_string'] = TRUE;
+        $config['num_links'] = 1;
+        $config['total_rows'] = $facet_count + $offset;
+        $config['per_page'] = $rows;
+        $config['base_url'] = $browse_url;
+
+        $this->pagination->initialize($config);
+        $data['pagelinks'] = $this->pagination->create_links();
         
         $this->view('header', $data);
         $this->view('div_main');
