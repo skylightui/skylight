@@ -24,7 +24,16 @@
 
         <span class="sort">
             <strong>Sort by</strong>
-            <?php foreach($sort_options as $label => $field) { ?>
+            <?php foreach($sort_options as $label => $field) {
+                if($label == 'Relevancy')
+                {
+                    ?>
+                    <em><a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc'?>"><?php echo $label ?></a></em>
+                    <?php
+                }
+                else {
+            ?>
+
                 <em><?php echo $label ?></em>
                 <?php if($label != "Date") { ?>
                 <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">A-Z</a> |
@@ -32,7 +41,7 @@
             <?php } else { ?>
                 <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+desc' ?>">newest</a> |
                 <a href="<?php echo $base_search.$base_parameters.$sort.$field.'+asc' ?>">oldest</a>
-          <?php } }  ?>
+          <?php } } } ?>
             
         </span>
 
