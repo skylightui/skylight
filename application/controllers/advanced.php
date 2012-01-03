@@ -158,6 +158,11 @@ class Advanced extends skylight {
                         $saved_search[$filter_segments[0]] = $filter_segments[1];
                         $message .= '<strong>'.$filter_segments[0].'</strong> : '.urldecode($filter_segments[1]).'<br/>';
                     }
+                    else {
+                        // If it's not a filter/facet, we'll just treat it as fulltext search
+                        $query = $filter_segments[1];
+                    }
+
                 }
             }
 
@@ -175,6 +180,7 @@ class Advanced extends skylight {
             $base_search .= '/'.$url_filter;
         }
 
+        
 
         // Solr query business moved to solr_client library
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, $operator);
