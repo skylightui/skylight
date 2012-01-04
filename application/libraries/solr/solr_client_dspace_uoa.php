@@ -733,6 +733,12 @@ class Solr_client_dspace_uoa {
                     $doc[str_replace('.', '', $key)]= $value;
                 }
 
+                foreach($result->date as $unique_field) {
+                    $key = $unique_field['name'];
+                    $value = $unique_field;
+                    $doc[str_replace('.', '', $key)]= $value;
+                }
+
                 $raw_hdl = $doc['handle'] . ' ';
 
                 $handle = preg_split('/\//',$raw_hdl);

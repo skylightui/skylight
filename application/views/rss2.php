@@ -10,13 +10,14 @@
 
 <?php
     
-    $titlefield = $this->skylight_utilities->getRawField($feed_fields['Title']);
-    $authorfield = $this->skylight_utilities->getRawField($feed_fields['Author']);
-    $subjectfield = $this->skylight_utilities->getRawField($feed_fields['Subject']);
-    $descriptionfield = $this->skylight_utilities->getRawField($feed_fields['Description']);
-    $datefield = $this->skylight_utilities->getRawField($feed_fields['Date']);
+   $titlefield = $this->skylight_utilities->getField($feed_fields['Title']);
+   $authorfield = $this->skylight_utilities->getField($feed_fields['Author']);
+   $subjectfield = $this->skylight_utilities->getField($feed_fields['Subject']);
+   $descriptionfield = $this->skylight_utilities->getField($feed_fields['Description']);
+   $datefield = $this->skylight_utilities->getField($feed_fields['Date']);
 
-    foreach ($feed_items['recent_items'] as $item) { ?>
+
+    foreach ($feed_items['recent_items'] as $item) {  ?>
     <item>
         <title><?php echo $item[$titlefield][0]; ?></title>
         <link><?php echo $feed_base . 'record/' . $item['id']; ?></link>
