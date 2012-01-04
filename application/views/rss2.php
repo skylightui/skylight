@@ -9,15 +9,18 @@
     <description><?php echo $feed_description; ?></description>
 
 <?php
-    $titlefield = 'solr_' . $feed_items['title_field'];
-    $authorfield = 'solr_' . $feed_items['author_field'];
-    $subjectfield = 'solr_' . $feed_items['subject_field'];
-    $descriptionfield = 'solr_' . $feed_items['description_field'];
+    
+    $titlefield = $this->skylight_utilities->getRawField($feed_fields['Title']);
+    $authorfield = $this->skylight_utilities->getRawField($feed_fields['Author']);
+    $subjectfield = $this->skylight_utilities->getRawField($feed_fields['Subject']);
+    $descriptionfield = $this->skylight_utilities->getRawField($feed_fields['Description']);
+    $datefield = $this->skylight_utilities->getRawField($feed_fields['Date']);
+
     foreach ($feed_items['recent_items'] as $item) { ?>
     <item>
         <title><?php echo $item[$titlefield][0]; ?></title>
         <link><?php echo $feed_base . 'record/' . $item['id']; ?></link>
-        <pubDate><?php echo $item['solr_dcdateaccessioned_dt'][0]; ?></pubDate>
+        <pubDate><?php echo $item[$datefield][0]; ?></pubDate>
         <?php if (isset($item[$authorfield])) foreach ($item[$authorfield] as $author) { ?>
             <dc:creator><?php echo $author; ?></dc:creator>
         <?php } ?>

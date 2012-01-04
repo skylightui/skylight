@@ -38,6 +38,7 @@ class Browse extends skylight {
 
         $offset = $this->input->get('offset');
         $prefix = $this->input->get('prefix');
+        echo "PREFIX IS $prefix";
 
 
         // Base search URL

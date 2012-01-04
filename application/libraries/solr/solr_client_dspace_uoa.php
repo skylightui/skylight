@@ -756,14 +756,14 @@ class Solr_client_dspace_uoa {
 
     function browseTerms($field = 'Subject', $rows = 10, $offset = 0, $prefix = '') {
 
-        $prefix = $this->solrEscape(strtolower($prefix));
+        $prefix = $this->solrEscape($prefix);
         $rows++;
         $url = $this->base_url . "select?q=*:*";
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
         $url .= '&facet=true&facet.sort=index&facet.field='.$this->configured_filters[$field].'&facet.limit='.$rows.'&facet.offset='.$offset;
         if($prefix !== '') {
-            $url .= '&facet.prefix='.$this->solrEscape($prefix);
+            $url .= '&facet.prefix='.$prefix;
         }
 
 

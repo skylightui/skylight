@@ -20,7 +20,8 @@
                                         'Subject' => 'dc.subject',
                                         'Type' => 'dc.type',
                                         'Abstract' => 'dc.description.abstract',
-                                        'Date' => 'dc.date.issued'
+                                        'Date' => 'dc.date.issued',
+                                        'Accession Date' => 'dc.date.accessioned_dt'
                                         );
 
     $config['skylight_date_filters'] = array('Date' => 'dc.date.issued.year');
@@ -48,6 +49,12 @@
                                                   'Date' => 'dc.date.issued',
                                                   'Author' => 'dc.creator'
                                                   );
+
+    $config['skylight_feed_fields'] = array('Title' => 'Title',
+                                            'Author' => 'Author',
+                                            'Subject' => 'Subject',
+                                            'Description' => 'Abstract',
+                                            'Date' => 'Date');
 
     $config['skylight_results_per_page'] = 10;
     $config['skylight_share_buttons'] = false;

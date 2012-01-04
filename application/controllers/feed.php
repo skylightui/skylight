@@ -21,6 +21,8 @@ class Feed extends skylight {
 
         // Get the variables
         $data['feed_title'] = $this->config->item('skylight_fullname');
+        $data['feed_fields'] = $this->config->item('skylight_feed_fields');
+
         $data['feed_description'] = 'Feed for the ' . $this->config->item('skylight_fullname');
         $data['feed_home'] = $home;
         $data['feed_base'] = $base;
