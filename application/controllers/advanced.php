@@ -160,7 +160,8 @@ class Advanced extends skylight {
                     }
                     else {
                         // If it's not a filter/facet, we'll just treat it as fulltext search
-                        $query = $filter_segments[1];
+                        if(count($filter_segments) > 0)
+                            $query = $filter_segments[1];
                     }
 
                 }
