@@ -16,7 +16,7 @@
 
         <p>&nbsp;</p>
 
-        <label>Please enter the following verification words into the box:</label> <?php
+        <p>Please enter the following verification words into the box:</p> <?php
             echo recaptcha_get_html($recaptcha_key_public);
         ?>
 

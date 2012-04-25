@@ -52,6 +52,10 @@
 
        
     <?php foreach ($docs as $index => $doc) {
+        ?>
+
+
+        <?php
         $type = 'Unknown';
 
         if(isset($doc[$type_field])) {
