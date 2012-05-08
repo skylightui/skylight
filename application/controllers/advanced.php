@@ -2,7 +2,12 @@
 
 require_once('skylight.php');
 
+
+
+
 class Advanced extends skylight {
+
+
 
     function Advanced() {
         // Initalise the parent
@@ -10,7 +15,7 @@ class Advanced extends skylight {
     }
 
     function _remap($path, $params = array()) {
-
+        $filterurl = "";
             $form = form_open('advanced/post');
 
             $search_fields = $this->config->item('skylight_search_fields');
@@ -99,11 +104,13 @@ class Advanced extends skylight {
                 }
             }
 
-            echo $filterurl;
+
 
             $operator = $this->input->post('operator');
             // Base search URL
             redirect($base_search = './advanced/search'.$filterurl.'?operator='.$operator);
+
+
 
         }
         else if($path == 'search') {
@@ -133,7 +140,7 @@ class Advanced extends skylight {
         $saved_filters = array();
         $saved_search = array();
         $url_filters = array();
-        $message = '<h3>Currently searching the following fields: </h3>';
+        $message = '<h3>Currently searching the following fields:</h3>';
         $filter_message = '';
         if(count($this->uri->segments) > 2) {
 
@@ -154,7 +161,10 @@ class Advanced extends skylight {
                     $test_filter = urldecode($test_filter);
                     $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
                     if(array_key_exists($filter_segments[0], $configured_filters)) {
-                        $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+
+                       // This used to match filters... that doesn't work well, though. So we use raw field instead
+                       // $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+                        $saved_filters[] = $this->skylight_utilities->getRawField($filter_segments[0]).$delimiter.$filter_segments[1];
                         $saved_search[$filter_segments[0]] = $filter_segments[1];
                         $message .= '<strong>'.$filter_segments[0].'</strong> : '.urldecode($filter_segments[1]).'<br/>';
                     }
@@ -180,8 +190,6 @@ class Advanced extends skylight {
         foreach($url_filters as $url_filter) {
             $base_search .= '/'.$url_filter;
         }
-
-        
 
         // Solr query business moved to solr_client library
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, $operator);
@@ -249,6 +257,8 @@ class Advanced extends skylight {
 
         $data['form'] = $form;
         $data['formhidden'] = true;
+
+        $data['filterurl'] = $saved_filters;
 
         $this->view('header', $data);
         $this->view('div_main');
