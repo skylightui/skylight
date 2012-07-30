@@ -6,7 +6,7 @@
 
     <div class="term_search">
         <form method="get" action="./browse/<?php echo $field; ?>">
-            <label for="prefix">Starts with: </label>
+            <label for="prefix">Starts with: (case sensitive) </label>
             <input name="prefix" id="prefix" value=""/>
             <input type="submit"/>
         </form>
