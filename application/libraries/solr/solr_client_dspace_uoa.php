@@ -668,7 +668,7 @@ class Solr_client_dspace_uoa {
         $counter = 0;
         $query_string = '';
        foreach($facets as $metadatavalue) {
-
+            $metadatavalue = preg_replace('/:/','',-1);
            $metadatavalue = preg_replace('/\[/','\\[',$metadatavalue,-1);
            $metadatavalue = preg_replace('/\]/','\\]',$metadatavalue,-1);
         //   $metadatavalue = preg_replace('/\(/','\\(',$metadatavalue,-1);
