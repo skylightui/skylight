@@ -295,6 +295,8 @@ class Solr_client_dspace_uoa {
             $docs[] = $doc;
         }
 
+        //print_r($docs);
+
         // get spellcheck collated suggestion
         $suggestion = "";
         $spellcheck = $search_xml->xpath("//lst[@name='spellcheck']/lst[@name='suggestions']/str[@name='collation']");
@@ -317,9 +319,11 @@ class Solr_client_dspace_uoa {
             // Build facets from solr response
             foreach ($facet_xml as $facet_term) {
 
+
                     //$names = preg_split('/\|\|\|/',$facet_term->attributes());
 
                     $term['name'] = urlencode($facet_term->attributes());
+                    $term['name'] = preg_replace('/%2C/',',',$term['name']);
                     $term['display_name'] = $facet_term->attributes();
                     //$term['norm_name'] = urlencode($names[0]);
                     $term['count'] = $facet_term;
@@ -337,7 +341,9 @@ class Solr_client_dspace_uoa {
             $facet['terms'] = $terms;
             $facet['queries'] = array();
             $facets[] = $facet;
+
         }
+
 
         foreach($this->configured_date_filters as $filter_name => $filter) {
             // Date.. needs facet query, not field, since
@@ -359,7 +365,7 @@ class Solr_client_dspace_uoa {
                         else {
                             $query_display_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','\1 - \2',$query_name);
                         }
-                        $query_norm_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','[\1%20TO%20\2]',$query_name);
+                        $query_norm_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','[\1+TO+\2]',$query_name);
                     }
                 }
                 //$query_display_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','\1 - \2',$query_name);
@@ -453,6 +459,7 @@ class Solr_client_dspace_uoa {
                     //$names = preg_split('/\|\|\|/',$facet_term->attributes());
 
                     $term['name'] = urlencode($facet_term->attributes());
+                    $term['name'] = preg_replace('/%2C/',',',$term['name']);
                     $term['display_name'] = $facet_term->attributes();
                     $term['count'] = $facet_term;
                     $active_test = $filter.$this->delimiter.'%22'.$term['name'].'%22';

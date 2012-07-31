@@ -9,7 +9,6 @@
         <h4><a href="./browse/<?php echo $facet['name']; ?>"><?php echo $facet['name'] ?></a></h4>
 
         <?php if(preg_match('/Date/',$base_search) && $facet['name'] == 'Date') {
-
                 $fpattern =  '#\/'.$facet['name'].'.*\]#';
                 $fremove = preg_replace($fpattern,'',$base_search, -1);
 
