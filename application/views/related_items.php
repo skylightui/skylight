@@ -1,4 +1,4 @@
-    <h4 style="margin-top:70px;">Related Items</h4>
+    <h4>Related Items</h4>
 
     <ul class="related">
 

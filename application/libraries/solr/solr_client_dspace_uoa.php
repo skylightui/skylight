@@ -551,6 +551,8 @@ class Solr_client_dspace_uoa {
             $url .= '&hl=true&hl.fl=*.en';
         }*/
 
+      //  print_r($url);
+
         $solr_xml = file_get_contents($url);
 
         // We would construct/pop a new skylight Record model here?

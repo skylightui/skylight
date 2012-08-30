@@ -31,6 +31,14 @@
                    echo '<span>('.$date.')</span>';
                }
             }
+            else {
+                $date_field = $this->skylight_utilities->getField("Year");
+                if (isset($solr[$date_field])) {
+                    foreach($solr[$date_field] as $date) {
+                        echo '<span>('.$date.')</span>';
+                    }
+                }
+            }
 
             ?>
     </div>
