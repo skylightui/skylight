@@ -232,7 +232,10 @@ class skylight extends CI_Controller {
     function _load_lang($lang_code) {
         $local_path = $this->config->item('skylight_local_path');
         $theme = $this->_get_theme();
-        require_once($local_path.'/language/'.$theme.'/'.$lang_code.'/skylight_lang.php');
+        if(!empty($local_path))
+            require_once($local_path.'/language/'.$theme.'/'.$lang_code.'/skylight_lang.php');
+        else
+            require_once('./language/'.$lang_code.'/skylight_lang.php');
         $this->uilang = array_merge($this->uilang, $text);
 
     }
