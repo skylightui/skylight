@@ -1,28 +1,6 @@
 
 <h1>Advanced Search</h1>
 
-<script type="text/javascript">
-     $(document).ready(function() {
-        $("input#Subject").autocomplete({
-        source: './autocomplete?field=dc.subject_ac',
-            max: 5
-        });
-         $("input#Author").autocomplete({
-        source: './autocomplete?field=dc.contributor.author_ac',
-            max: 5
-        });
-         $("input#Artist").autocomplete({
-        source: './autocomplete?field=dc.contributor.illustrator_ac',
-            max: 5
-        });
-         $("input#Type").autocomplete({
-        source: './autocomplete?field=dc.type_ac',
-            max: 5
-        });
-      });
-
-</script>
-
 <?php if($formhidden) {
     // We're hiding the form in search results
     ?>

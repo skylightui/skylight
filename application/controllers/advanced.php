@@ -160,19 +160,19 @@ class Advanced extends skylight {
                     $url_filters[] = $test_filter;
                     $test_filter = urldecode($test_filter);
                     $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
-                    if(array_key_exists($filter_segments[0], $configured_filters)) {
+                //    if(array_key_exists($filter_segments[0], $configured_filters)) {
 
                        // This used to match filters... that doesn't work well, though. So we use raw field instead
                        // $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
                         $saved_filters[] = $this->skylight_utilities->getRawField($filter_segments[0]).$delimiter.$filter_segments[1];
                         $saved_search[$filter_segments[0]] = $filter_segments[1];
                         $message .= '<strong>'.$filter_segments[0].'</strong> : '.urldecode($filter_segments[1]).'<br/>';
-                    }
-                    else {
+               //     }
+               //     else {
                         // If it's not a filter/facet, we'll just treat it as fulltext search
-                        if(count($filter_segments) > 0)
-                            $query = $filter_segments[1];
-                    }
+                //        if(sizeof($filter_segments) > 0)
+                //            $query = $filter_segments[1];
+                //    }
 
                 }
             }
