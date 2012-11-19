@@ -248,6 +248,9 @@ class Solr_client_dspace_uoa {
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
         }
+        else {
+            $url .= '&spellcheck=false';
+        }
         //print_r($url);
 
         $solr_xml = file_get_contents($url);
