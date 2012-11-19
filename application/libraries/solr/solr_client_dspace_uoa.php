@@ -26,7 +26,7 @@ class Solr_client_dspace_uoa {
     var $bitstream_field = '';
     var $display_thumbnail = false;
     var $link_bitstream = false;
-    var $dictionary = 'default';
+    var $dictionary = '';
     var $fields = array();
 
    /**
@@ -243,9 +243,11 @@ class Solr_client_dspace_uoa {
         $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
 
         // Set up spellcheck
-
+        if($this->dictionary != '')
+        {
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
+        }
         //print_r($url);
 
         $solr_xml = file_get_contents($url);
