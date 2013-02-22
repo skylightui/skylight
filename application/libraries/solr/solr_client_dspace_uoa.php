@@ -202,8 +202,9 @@ class Solr_client_dspace_uoa {
         }
         $url = $this->base_url . "select?q=" . $this->solrEscape($q);
         if(count($fq) > 0) {
-            foreach($fq as $value)
-            $url .= '&fq='.$this->solrEscape($value).'';
+            foreach($fq as $value) {
+                $url .= '&fq='.$this->solrEscape($value).'';
+            }
         }
 
         /*
