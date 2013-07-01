@@ -4,7 +4,7 @@
 
     $config['skylight_theme'] = 'default';
 
-    $config['skylight_fullname'] = 'ResearchSpace';
+    $config['skylight_fullname'] = 'Skylight';
 
     $config['skylight_adminemail'] = 'example@example.com';
 
