@@ -10,10 +10,12 @@
 
     $config['skylight_oaipmhcollection'] = 'hdl_123456789_1';
 
-
     // Container ID and the field used in solr index to store this ID. Used for restricting search/browse scope.
-    $config['skylight_container_id'] = '4';
+    // skylight_container_field can be either location.coll (with the id set to the Collection ID) or
+    // location.comm (with the id set to the Community ID). To view items from all colelctions, set the
+    // skylight_container_id to '*'.
     $config['skylight_container_field'] = 'location.coll';
+    $config['skylight_container_id'] = '*';
 
     $config['skylight_fields'] = array('Title' => 'dc.title',
                                         'Author' => 'dc.creator',
@@ -24,7 +26,7 @@
                                         'Accession Date' => 'dc.date.accessioned_dt'
                                         );
 
-    $config['skylight_date_filters'] = array('Date' => 'dc.date.issued.year');
+    $config['skylight_date_filters'] = array('Date' => 'dateissued.year_sort');
     $config['skylight_filters'] = array('Author' => 'author_superfilter', 'Subject' => 'subject_superfilter', 'Type' => 'dc.type');
     $config['skylight_filter_delimiter'] = ':';
 
@@ -59,7 +61,7 @@
     $config['skylight_results_per_page'] = 10;
     $config['skylight_share_buttons'] = false;
 
-    // $config['skylight_homepage_recentitems'] = false;
+    $config['skylight_homepage_recentitems'] = true;
 
     // Set to the number of minutes to cache pages for. Set to false for no caching.
     // This overrides the setting in skylight.php so is commented by default
