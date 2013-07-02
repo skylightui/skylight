@@ -35,7 +35,8 @@ class content extends skylight {
 
             // Do we want to include recent items?
             if ($this->config->item('skylight_homepage_recentitems') === TRUE) {
-                $data['recentitems'] = $this->solr_client->getRecentItems();
+                $recentitems = $this->solr_client->getRecentItems();
+                $data['recentitems'] = $recentitems['recent_items'];
                 $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
             }
 
@@ -52,6 +53,11 @@ class content extends skylight {
             } else {
                 $this->view('index', $data);
             }
+
+            if ($this->config->item('skylight_homepage_recentitems') === TRUE) {
+                $this->view('recent_items', $data);
+            }
+
             $this->view('div_main_end');
             $this->view('div_sidebar');
             $this->view('search_facets',$facet_data);

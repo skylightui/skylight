@@ -2,18 +2,28 @@
 
     <ul class="listing">
 
-    <?php foreach ($docs as $index => $doc) {
+    <?php
+
+        $title_field = $this->skylight_utilities->getField('Title');
+        $author_field = $this->skylight_utilities->getField('Author');
+        $subject_field = $this->skylight_utilities->getField('Subject');
+        $description_field = $this->skylight_utilities->getField('Description');
+        $date_field = $this->skylight_utilities->getField('Date');
+        $type_field = $this->skylight_utilities->getField("Type");
+
+        foreach ($recentitems as $index => $doc) {
 
         $type = 'Unknown';
 
         if(isset($doc[$type_field])) {
                     $type = "media-" . strtolower(str_replace(' ','-',$doc[$type_field][0]));
                 }
+
         ?>
 
-    <li<?php if($index == 0) { echo ' class="first"'; } elseif($index == sizeof($docs) - 1) { echo ' class="last"'; } ?>>
+    <li<?php if($index == 0) { echo ' class="first"'; } elseif($index == sizeof($recentitems) - 1) { echo ' class="last"'; } ?>>
         <span class="icon <?php echo $type ?>"></span>
-        <h3><a href="./record/<?php echo $doc['id']?>?highlight=<?php echo $query ?>"><?php echo $doc[$title_field][0]; ?></a></h3>
+        <h3><a href="./record/<?php echo $doc['id']?>"><?php echo $doc[$title_field][0]; ?></a></h3>
         <div class="tags">
 
 
