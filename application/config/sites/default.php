@@ -79,4 +79,7 @@
     $config['skylight_language_default'] = 'en';
     $config['skylight_language_options'] = array('en', 'ko', 'jp');
 
+    // Common title prefix
+    $config['skylight_page_title_prefix'] = "Skylight: ";
+
 ?>
