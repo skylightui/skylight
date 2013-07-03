@@ -147,6 +147,7 @@ class Advanced extends skylight {
         $url_filters = array();
         $message = '<h3>Currently searching the following fields:</h3>';
         $filter_message = '';
+
         if(count($this->uri->segments) > 2) {
 
             for($i = 3; $i <= count($this->uri->segments); $i++) {
@@ -154,6 +155,8 @@ class Advanced extends skylight {
                 if(preg_match('#%7C%7C%7C#',$test_filter)) {
                     $url_filters[] = $test_filter;
                     $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
+                    $filter_segments[0] = urldecode($filter_segments[0]);
+
                     if(array_key_exists($filter_segments[0], $configured_filters)) {
                         $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
                         $display_value = preg_split("#%7C%7C%7C#",$filter_segments[1],2);
