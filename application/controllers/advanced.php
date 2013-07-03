@@ -19,6 +19,11 @@ class Advanced extends skylight {
             $form = form_open('advanced/post');
 
             $search_fields = $this->config->item('skylight_search_fields');
+        // Determine the page title and heading.
+        $page_title_prefix = $this->config->item('skylight_page_title_prefix');
+        if( !isset($page_title_prefix) ) {
+            $page_title_prefix = "";
+        }
 
             foreach($search_fields as $key => $value) {
 
@@ -71,7 +76,7 @@ class Advanced extends skylight {
             $formdata['formhidden'] = false;
 
             // Set the page title to the record title
-            $data['page_title'] = 'Advanced Search';
+            $data['page_title'] = $page_title_prefix.'Advanced Search';
             $this->view('header', $data);
             $this->view('div_main');
             $this->view('advanced_search',$formdata);
@@ -204,7 +209,9 @@ class Advanced extends skylight {
         $data['sort_options'] = $sort_options;
         // Variables to populate the search box
         $data['searchbox_query'] = $query;
-        if (($data['searchbox_query'] == '*') || ($data['searchbox_query'] == '*:*')) $data['searchbox_query'] = '';
+        if (($data['searchbox_query'] == '*') || ($data['searchbox_query'] == '*:*')) {
+            $data['searchbox_query'] = '';
+        }
         $data['searchbox_filters'] = $saved_filters;
 
         $data['form'] = $form;
@@ -212,10 +219,20 @@ class Advanced extends skylight {
 
         $data['message'] = $message;
 
+
+        $decodedQuery = urldecode($query);
+        if( $decodedQuery !== "*:*" && $decodedQuery !== "*" && $decodedQuery !== "" ) {
+            $data['page_title'] = $page_title_prefix.'Search results for "'.$decodedQuery.'"';
+            $data['page_heading'] = 'Search results for "<span class=searched>'.$decodedQuery.'</span>"';
+        } else {
+            $data['page_title'] = $page_title_prefix.'Search Results';
+            $data['page_heading'] = 'Search Results"';
+        }
+
+
         // Check for zero results
         $result_count = $data['rows'];
         if ($result_count == 0) {
-            $data['page_title'] = 'No search results found!';
             $this->view('header', $data);
             $this->view('div_main');
             $this->view('advanced_search',$data);
@@ -246,8 +263,6 @@ class Advanced extends skylight {
         else
             $data['endrow'] = $data['startrow'] + ($rows - 1);
 
-        // Set the page title to the record title
-        $data['page_title'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
         $data['title_field'] = $title;
         $data['author_field'] =  $title = $this->skylight_utilities->getField('Author');
         $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");

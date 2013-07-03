@@ -37,9 +37,15 @@ class Record extends skylight {
         // Solr query business moved to solr_client library
         $data = $this->solr_client->getRecord($id);
 
+        // Determine the page title and heading.
+        $page_title_prefix = $this->config->item('skylight_page_title_prefix');
+        if( !isset($page_title_prefix) ) {
+            $page_title_prefix = "";
+        }
+
         // Check for a valid ID
         if ($data['result_count'] == 0) {
-            $data['page_title'] = 'Invalid record identifier!';
+            $data['page_title'] = $page_title_prefix.'Record - Invalid Identifier';
             $this->view('header', $data);
             $this->view('div_main');
             $this->view('record_invalid');
@@ -94,7 +100,9 @@ class Record extends skylight {
 
         $data['sharethis'] = $this->config->item('skylight_share_buttons');
 
-        $data['page_title'] = $data['solr'][$title][0];
+        //$data['page_title'] = $data['solr'][$title][0];
+        $data['page_title'] = $page_title_prefix . '"'.$data['solr'][$title][0].'"';
+        $data['record_title'] = $data['solr'][$title][0];
         $data['title_field'] = $title;
 
         $data['id'] = $id;

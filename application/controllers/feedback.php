@@ -13,7 +13,13 @@ class Feedback extends skylight {
     public function index() {
         $data['recaptcha_key_public'] = $this->config->item('skylight_recaptcha_key_public');
 
-        $data['page_title'] = 'Feedback';
+        // Determine the page title and heading.
+        $page_title_prefix = $this->config->item('skylight_page_title_prefix');
+        if( !isset($page_title_prefix) ) {
+            $page_title_prefix = "";
+        }
+
+        $data['page_title'] = $page_title_prefix.'Feedback';
 
         $this->view('header', $data);
         $this->view('div_main');

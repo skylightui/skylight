@@ -98,10 +98,25 @@ class Search extends skylight {
         if (($data['searchbox_query'] == '*') || ($data['searchbox_query'] == '*:*')) $data['searchbox_query'] = '';
         $data['searchbox_filters'] = $saved_filters;
 
+
+        // Obtain the common page title prefix.
+        $page_title_prefix = $this->config->item('skylight_page_title_prefix');
+        if( !isset($page_title_prefix) ) {
+            $page_title_prefix = "";
+        }
+
+        if( urldecode($query) != "*:*" && urldecode($query) != "*" ) {
+            $data['page_title'] = $page_title_prefix.'Search results for "'.urldecode($query).'"';
+            $data['page_heading'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
+        } else {
+            $data['page_title'] = $page_title_prefix.'Search Results';
+            $data['page_heading'] = 'Search Results"';
+        }
+
+	    
         // Check for zero results
         $result_count = $data['rows'];
         if ($result_count == 0) {
-            $data['page_title'] = 'No search results found!';
             $this->view('header', $data);
             $this->view('div_main');
             $this->view('search_suggestions', $data);
@@ -139,11 +154,6 @@ class Search extends skylight {
         else {
             $data['author_field'] = 'dccreator';
         }
-
-        // Set the page title to the record title
-        $data['page_title'] = 'Search results for "'.urldecode($query).'"';
-        $data['page_heading'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
-
 
         //$data['title_field'] = $title;
         $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
