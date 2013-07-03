@@ -15,62 +15,76 @@ class Advanced extends skylight {
     }
 
     function _remap($path, $params = array()) {
-        $filterurl = "";
-            $form = form_open('advanced/post');
 
-            $search_fields = $this->config->item('skylight_search_fields');
+        $filterurl = "";
+        $form = form_open('advanced/post');
+
         // Determine the page title and heading.
         $page_title_prefix = $this->config->item('skylight_page_title_prefix');
         if( !isset($page_title_prefix) ) {
             $page_title_prefix = "";
         }
 
-            foreach($search_fields as $key => $value) {
+        $search_fields = $this->config->item('skylight_search_fields');
 
-                  $escaped_key = $this->_escape($key);
 
-                  $input_data = array(
-                                  'name'        => $escaped_key,
-                                  'id'          => $escaped_key,
-                                  'style'       => 'margin-left: 15px;'
-                                );
+        foreach($search_fields as $key => $value) {
 
-                  $form .= '<p>';
+              $escaped_key = $this->_escape($key);
 
-                  $form .= form_label($key, $escaped_key, array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
+              $input_data = array(
+                              'name'        => $escaped_key,
+                              'id'          => $escaped_key,
+                              'style'       => 'margin-left: 15px;'
+                            );
 
-                  if (substr($value, 0, 8) === 'dropdown') {
-                       if (isset($_SESSION['skylight_language'])) {
-                           $lang = $_SESSION['skylight_language'];
-                       } else {
-                           $lang = '';
+              $form .= '<p>';
+
+              $form .= form_label($key, $escaped_key, array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
+
+              if (substr($value, 0, 8) === 'dropdown') {
+                   if (isset($_SESSION['skylight_language'])) {
+                       $lang = $_SESSION['skylight_language'];
+                   } else {
+                       $lang = '';
+                   }
+
+                   if (($lang != '') && (is_array($this->config->item($value . '.' . $lang)))) {
+                       $options = $this->config->item($value . '.' . $lang);
+                   } else {
+                        $options = $this->config->item($value);
+                   }
+
+                   $encodedOptions = array();
+
+                   if(is_array($options)) {
+                       foreach($options as $key => $value) {
+                           $encodedOptions[urlencode($key)] = $value;
                        }
+                   } else {
+                       $encodedOptions = $options;
+                   }
 
-                       if (($lang != '') && (is_array($this->config->item($value . '.' . $lang)))) {
-                           $options = $this->config->item($value . '.' . $lang);
-                       } else {
-                            $options = $this->config->item($value);
-                       }
-                       $form .= form_dropdown($escaped_key, $options, '', 'style="margin-left:15px;"');
-                  } else {
-                       $form .= form_input($input_data);
-                  }
+                   $form .= form_dropdown($escaped_key, $encodedOptions, '', 'style="margin-left:15px;"');
+              } else {
 
-                  $form .= '</p>';
-            }
-            $form .= '<p>'.form_label('Default search operator', 'operators', array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
-            $operators = array('OR' => 'OR (any terms may match)','AND' => 'AND (all terms must match)');
-            $form .= form_dropdown('operator',$operators,'OR','style="margin-left:15px;"').'</p>';
-            $form .= '<p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p>';
-            $form .= form_submit('search', 'Search', 'style="margin-left: 120px" class="btn"');
-            $form .= '</form>';
+                   $form .= form_input($input_data);
+              }
+
+              $form .= '</p>';
+        }
+        $form .= '<p>'.form_label('Default search operator', 'operators', array('style' => 'width: 100px; float: left; display: block; text-align: right;'));
+        $operators = array('OR' => 'OR (any terms may match)','AND' => 'AND (all terms must match)');
+        $form .= form_dropdown('operator',$operators,'OR','style="margin-left:15px;"').'</p>';
+        $form .= '<p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p>';
+        $form .= form_submit('search', 'Search', 'style="margin-left: 120px" class="btn"');
+        $form .= '</form>';
 
 
         if ((empty($path)) || ($path == 'index')) {
             redirect(base_url().'/advanced/form');
         }
         else if($path == 'form') {
-
 
             $formdata['form'] = $form;
             $formdata['formhidden'] = false;
@@ -92,14 +106,12 @@ class Advanced extends skylight {
             $filters = '';
             $filterurl = '';
 
-           // $delimiter = $this->config->item('skylight_filter_delimiter');
-          //  $recorddisplay = $this->config->item('skylight_recorddisplay');
-           // $rows = $this->config->item('skylight_results_per_page');
-           // $title = $recorddisplay['Title'];
+            // $delimiter = $this->config->item('skylight_filter_delimiter');
+            // $recorddisplay = $this->config->item('skylight_recorddisplay');
+            // $rows = $this->config->item('skylight_results_per_page');
+            // $title = $recorddisplay['Title'];
 
-            //print_r($search_fields);
             foreach($search_fields as $label => $field) {
-              //  print_r($label);
                 $dcfield = $this->skylight_utilities->getRawField($label);
 
                 $val = $this->input->post($this->_escape($label));
@@ -109,18 +121,14 @@ class Advanced extends skylight {
                 }
             }
 
-
-
             $operator = $this->input->post('operator');
+
             // Base search URL
-            redirect(base_url().'./advanced/search'.$filterurl.'?operator='.$operator);
-
-
-
+            redirect(base_url().'/advanced/search'.$filterurl.'?operator='.$operator);
         }
         else if($path == 'search') {
 
-       $query = '';
+        $query = '';
         $operator = $this->input->get('operator');
         $offset = $this->input->get('offset');
         $sort_by = $this->input->get('sort_by');
@@ -192,9 +200,8 @@ class Advanced extends skylight {
         }
 
 
-
         // Base search URL
-        $base_search = './advanced/search';
+        $base_search = base_url().'/advanced/search';
         foreach($url_filters as $url_filter) {
             $base_search .= '/'.$url_filter;
         }
