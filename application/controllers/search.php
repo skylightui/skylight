@@ -30,6 +30,7 @@ class Search extends skylight {
 
         $configured_fields = $this->config->item('skylight_fields');
         $configured_filters = $this->config->item('skylight_filters');
+        $configured_additional_fields = $this->config->item('skylight_filters_additional');
         $configured_date_filters = $this->config->item('skylight_date_filters');
         $delimiter = $this->config->item('skylight_filter_delimiter');
         $rows = $this->config->item('skylight_results_per_page');
@@ -41,22 +42,30 @@ class Search extends skylight {
         // TODO: get rid of this, it's bad
         $title = $this->skylight_utilities->getField('Title');
 
+        if(!isset($configured_additional_fields) || !is_array($configured_additional_fields)) {
+            $configured_additional_fields = array();
+        }
+
         $saved_filters = array();
         $url_filters = array();
         if(count($this->uri->segments) > 2) {
 
             for($i = 3; $i <= count($this->uri->segments); $i++) {
 
-
                 $test_filter = $this->uri->segments[$i];
                 $url_filters[] = $test_filter;
                 $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
+                $filter_segments[0] = urldecode($filter_segments[0]);
+
                 if(array_key_exists($filter_segments[0], $configured_filters)) {
                     $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
-                }
-                if(array_key_exists($filter_segments[0], $configured_date_filters)) {
-                    $saved_filters[] = $configured_date_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
-                }
+                } else if(array_key_exists($filter_segments[0], $configured_additional_fields)) {
+                    $saved_filters[] = $configured_additional_fields[$filter_segments[0]].$delimiter.$filter_segments[1];
+		        }
+
+		        if(array_key_exists($filter_segments[0], $configured_date_filters)) {
+		            $saved_filters[] = $configured_date_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+		        }
             }
         }
 
