@@ -1,5 +1,7 @@
-SkyLight - A new way to expose your collections
-===============================================
+SkyLight
+========
+A new way to expose your collections
+------------------------------------
 ![alt text](https://raw.github.com/skylightui/skylight/master/theme/default/images/skylight.jpg "SkyLight logo")
 
 http://skylightui.org/
