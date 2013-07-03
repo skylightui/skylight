@@ -242,7 +242,8 @@ class Solr_client_dspace_uoa {
 
         // Set up highlighting
         $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
-
+		
+		
         // Set up spellcheck
         if($this->dictionary != '')
         {
@@ -777,16 +778,21 @@ class Solr_client_dspace_uoa {
 
     function browseTerms($field = 'Subject', $rows = 10, $offset = 0, $prefix = '') {
 
+        if( isset($this->configured_filters[$field]) ) {
+            $facet_field = $this->configured_filters[$field];
+        } else {
+            $facet_field = $this->configured_date_filters[$field];
+        }
+
         $prefix = $this->solrEscape($prefix);
         $rows++;
         $url = $this->base_url . "select?q=*:*";
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
-        $url .= '&facet=true&facet.sort=index&facet.field='.$this->configured_filters[$field].'&facet.limit='.$rows.'&facet.offset='.$offset;
+        $url .= '&facet=true&facet.sort=index&facet.field='.$facet_field.'&facet.limit='.$rows.'&facet.offset='.$offset;
         if($prefix !== '') {
             $url .= '&facet.prefix='.$prefix;
         }
-
 
         $solr_xml = file_get_contents($url);
         
@@ -801,7 +807,7 @@ class Solr_client_dspace_uoa {
         $search_xml = @new SimpleXMLElement($solr_xml);
 
 
-        $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='".$this->configured_filters[$field]."']/int");
+        $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='".$facet_field."']/int");
         $facet['name'] = $field;
         $terms = array();
         // Build facets from solr response
