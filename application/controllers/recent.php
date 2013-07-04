@@ -15,39 +15,22 @@ class Recent extends skylight {
         $configured_filters = $this->config->item('skylight_filters');
         $configured_date_filters = $this->config->item('skylight_date_filters');
         $delimiter = $this->config->item('skylight_filter_delimiter');
-        $rows = $this->config->item('skylight_results_per_page');
         $recorddisplay = $this->config->item('skylight_recorddisplay');
-        $sort_options = $this->config->item('skylight_sort_fields');
         $display_thumbnail = $this->config->item('skylight_display_thumbnail');
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
 
         // TODO: get rid of this, it's bad
         $title = $this->skylight_utilities->getField('Title');
-		
-        $saved_filters = array();
-        $offset = 0;
-		$query = '*';
-		
-        // Solr query business moved to solr_client library
-        $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', 'dc.date.accessioned_dt+desc');
 
-        // Inject query back into results
-        $data['query'] = $query;
+        $recentitems = $this->solr_client->getRecentItems();
+        $data['recentitems'] = $recentitems['recent_items'];
+        $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
         $data['delimiter'] = $delimiter;
 		
         // Check for zero results
-        $result_count = $data['rows'];
-        if ($result_count == 0) {
-            $data['page_title'] = 'No search results found!';
-            $this->view('recent_list_none');
+        if (count($recentitems['recent_items']) == 0) {
+            $this->view('recent_items_none');
             return;
-        }
-		
-        $data['startrow'] = $offset + 1;
-        if($data['startrow'] + ($rows - 1 )  > $result_count) {
-            $data['endrow'] = $result_count;
-        } else {
-            $data['endrow'] = $data['startrow'] + ($rows - 1);
         }
 
         if(array_key_exists('Author', $recorddisplay)) {
@@ -55,11 +38,11 @@ class Recent extends skylight {
         } else {
             $data['author_field'] = 'dccreator';
         }
-		
-        $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
+
+        $data['hide_header'] = true;
         $data['display_thumbnail'] = $display_thumbnail;
         $data['thumbnail_field'] = 'solr_'.str_replace('.','',$thumbnail_field);
-        $this->view('recent_list_only', $data);
+        $this->view('recent_items', $data);
     }
 
 

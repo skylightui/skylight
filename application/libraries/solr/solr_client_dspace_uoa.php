@@ -716,9 +716,11 @@ class Solr_client_dspace_uoa {
 
         $title_field = $this->fields['Title'];
         $author_field =  $this->fields['Author'];
-        $subject_field = $this->fields['Subject'];
         $description_field = $this->fields['Abstract'];
-        
+        if(isset($this->fields['Subject'])) {
+            $subject_field = $this->fields['Subject'];
+        }
+
         $url = $this->base_url . 'select?q=*:*';
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2';
@@ -768,8 +770,10 @@ class Solr_client_dspace_uoa {
 
             $data['title_field'] = $title_field;
             $data['author_field'] = $author_field;
-            $data['subject_field'] = $subject_field;
             $data['description_field'] = $description_field;
+            if(isset($subject_field)) {
+                $data['subject_field'] = $subject_field;
+            }
 
             $data['recent_items'] = $recent_items;
 

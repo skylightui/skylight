@@ -1,4 +1,6 @@
+<?php if(!isset($hide_header) || $hide_header == true ) {  ?>
     <h3>Recently added items</h3>
+<?php } ?>
 
     <ul class="listing">
 
