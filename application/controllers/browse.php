@@ -18,7 +18,7 @@ class Browse extends skylight {
         $delimiter = $this->config->item('skylight_filter_delimiter');
         $rows = 30;
         $recorddisplay = $this->config->item('skylight_recorddisplay');
-     //   $title = $recorddisplay['Title'];
+        //$title = $recorddisplay['Title'];
 
         $saved_filters = array();
         $url_filters = array();
@@ -35,10 +35,8 @@ class Browse extends skylight {
             }
         }
 
-
         $offset = $this->input->get('offset');
         $prefix = $this->input->get('prefix');
-       // echo "PREFIX IS $prefix";
 
 
         // Base search URL
@@ -47,17 +45,25 @@ class Browse extends skylight {
             $base_search .= '/'.$url_filter;
         }
 
+        $decodedField = urldecode($field);
 
         // Solr query business moved to solr_client library
-        $data = $this->solr_client->browseTerms($field, $rows, $offset, $prefix);
+        $data = $this->solr_client->browseTerms($decodedField, $rows, $offset, $prefix);
+
+
+        // Determine the page title and heading.
+        $page_title_prefix = $this->config->item('skylight_page_title_prefix');
+        if( !isset($page_title_prefix) ) {
+            $page_title_prefix = "";
+        }
 
         // Check for zero results
         $result_count = $data['rows'];
         $facet_count = $data['facet']['termcount'];
 
         if ($result_count == 0) {
-            $data['page_title'] = 'No search results found!';
-            $this->view('header', $data);
+            $data['page_title'] = $page_title_prefix.'Browse "'. $decodedField . '"';
+	        $this->view('header', $data);
             $this->view('div_main');
             $this->view('search_noresults');
             $this->view('div_main_end');
@@ -79,8 +85,8 @@ class Browse extends skylight {
             $data['endrow'] = $data['startrow'] + ($rows - 1);
 
         // Set the page title to the record title
-        $data['page_title'] = 'Browsing '.$field.' terms';
-        $data['browse_url'] = $browse_url;
+        $data['page_title'] = $page_title_prefix.'Browse "'. $decodedField . '"';
+	    $data['browse_url'] = $browse_url;
         $data['field'] = $field;
         $data['offset'] = $offset;
 

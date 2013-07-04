@@ -30,6 +30,7 @@ class Search extends skylight {
 
         $configured_fields = $this->config->item('skylight_fields');
         $configured_filters = $this->config->item('skylight_filters');
+        $configured_additional_fields = $this->config->item('skylight_filters_additional');
         $configured_date_filters = $this->config->item('skylight_date_filters');
         $delimiter = $this->config->item('skylight_filter_delimiter');
         $rows = $this->config->item('skylight_results_per_page');
@@ -41,22 +42,30 @@ class Search extends skylight {
         // TODO: get rid of this, it's bad
         $title = $this->skylight_utilities->getField('Title');
 
+        if(!isset($configured_additional_fields) || !is_array($configured_additional_fields)) {
+            $configured_additional_fields = array();
+        }
+
         $saved_filters = array();
         $url_filters = array();
         if(count($this->uri->segments) > 2) {
 
             for($i = 3; $i <= count($this->uri->segments); $i++) {
 
-
                 $test_filter = $this->uri->segments[$i];
                 $url_filters[] = $test_filter;
                 $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
+                $filter_segments[0] = urldecode($filter_segments[0]);
+
                 if(array_key_exists($filter_segments[0], $configured_filters)) {
                     $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
-                }
-                if(array_key_exists($filter_segments[0], $configured_date_filters)) {
-                    $saved_filters[] = $configured_date_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
-                }
+                } else if(array_key_exists($filter_segments[0], $configured_additional_fields)) {
+                    $saved_filters[] = $configured_additional_fields[$filter_segments[0]].$delimiter.$filter_segments[1];
+		        }
+
+		        if(array_key_exists($filter_segments[0], $configured_date_filters)) {
+		            $saved_filters[] = $configured_date_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+		        }
             }
         }
 
@@ -98,10 +107,25 @@ class Search extends skylight {
         if (($data['searchbox_query'] == '*') || ($data['searchbox_query'] == '*:*')) $data['searchbox_query'] = '';
         $data['searchbox_filters'] = $saved_filters;
 
+
+        // Obtain the common page title prefix.
+        $page_title_prefix = $this->config->item('skylight_page_title_prefix');
+        if( !isset($page_title_prefix) ) {
+            $page_title_prefix = "";
+        }
+
+        if( urldecode($query) != "*:*" && urldecode($query) != "*" ) {
+            $data['page_title'] = $page_title_prefix.'Search results for "'.urldecode($query).'"';
+            $data['page_heading'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
+        } else {
+            $data['page_title'] = $page_title_prefix.'Search Results';
+            $data['page_heading'] = 'Search Results"';
+        }
+
+	    
         // Check for zero results
         $result_count = $data['rows'];
         if ($result_count == 0) {
-            $data['page_title'] = 'No search results found!';
             $this->view('header', $data);
             $this->view('div_main');
             $this->view('search_suggestions', $data);
@@ -139,11 +163,6 @@ class Search extends skylight {
         else {
             $data['author_field'] = 'dccreator';
         }
-
-        // Set the page title to the record title
-        $data['page_title'] = 'Search results for "'.urldecode($query).'"';
-        $data['page_heading'] = 'Search results for "<span class=searched>'.urldecode($query).'</span>"';
-
 
         //$data['title_field'] = $title;
         $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");

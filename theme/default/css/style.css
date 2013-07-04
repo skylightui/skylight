@@ -263,6 +263,9 @@ table thx							{ padding: 8px 17px; }
 table th							{ text-align: left; border-right: 1px solid #fff;  }
 table tr:nth-child(2n)				{ background: #e7e8ea; }
 
+.feedback_form #email               { margin-top: 5px; }
+.feedback_form #labelFeedback       { display: block; margin-top: 5px; }
+
 
 /* <END> Site Css \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
 
