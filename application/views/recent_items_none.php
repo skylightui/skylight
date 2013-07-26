@@ -1,0 +1,1 @@
+<span>No recent items</span>
