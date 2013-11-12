@@ -171,7 +171,7 @@ class Solr_client_dspace_181
             }
 
 
-            $handle = preg_split('/\//', $doc['handle'][0]);
+            $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title, $doc)) {
                 $doc[$title][] = 'No title';
@@ -272,13 +272,13 @@ array_push($ranges,$this->getDateRanges($filter));
 
 
             // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'][0] . "']/arr/str") as $highlight) {
+            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str") as $highlight) {
                 //echo $doc['handle'][0].': '.$highlight.'<br/>';
                 $doc['highlights'][] = $highlight;
             }
 
 
-            $handle = preg_split('/\//', $doc['handle'][0]);
+            $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title, $doc)) {
                 $doc[$title][] = 'No title';
@@ -630,7 +630,7 @@ $solr['highlights'][] = $highlight;
             }
 
 
-            $handle = preg_split('/\//', $doc['handle'][0]);
+            $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title_field, $doc)) {
                 $doc[$title_field][] = 'No title';
@@ -738,7 +738,7 @@ $solr['highlights'][] = $highlight;
                 $doc[str_replace('.', '', $key)] = $value;
             }
 
-            $handle = preg_split('/\//', $doc['handle'][0]);
+            $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title_field, $doc)) {
                 $doc[$title_field][] = 'No title';
