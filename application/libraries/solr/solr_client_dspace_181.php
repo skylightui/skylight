@@ -10,7 +10,7 @@
 class Solr_client_dspace_181
 {
 
-    var $base_url = 'http://localhost:8983/solr'; // Base URL. Typically not overridden in construct params. Get from config.
+    var $base_url = ''; // Base URL. Typically not overridden in construct params. Get from config.
     var $max_rows = 100; // Default to 100 rows maximum
     var $container = '*'; // Default to all collections
     var $container_field = 'location.coll'; // Default to discovery's DSpace collection field
@@ -383,6 +383,7 @@ array_push($ranges,$this->getDateRanges($filter));
     function getFacets($q = '*:*', $fq = array(), $saved_filters = array())
     {
 
+        //echo "get facets   ";
         $query = $q;
         if ($q == '*') {
             $q = '*:*';
@@ -393,13 +394,13 @@ array_push($ranges,$this->getDateRanges($filter));
                 $url .= '&fq=' . $value . '';
         }
 
-        /*
-$ranges = array();
-foreach($this->configured_date_filters as $filter_name => $filter) {
-array_push($ranges,$this->getDateRanges($filter));
-}
 
-*/
+//        $ranges = array();
+//        foreach($this->configured_date_filters as $filter_name => $filter) {
+//            array_push($ranges,$this->getDateRanges($filter, $q, $fq));
+//        }
+
+
         $dates = $this->getDateRanges($this->date_field, $q, $fq);
         $ranges = $dates['ranges'];
 
@@ -824,9 +825,7 @@ $solr['highlights'][] = $highlight;
 
     function getDateRanges($field, $q, $fq)
     {
-
         $dates = array();
-
         $lowest_year = $this->getLowerBound($field, $q, $fq);
         //print_r($lowest_year);
         $lowest_year = floor($lowest_year / 10) * 10;
@@ -880,13 +879,13 @@ $solr['highlights'][] = $highlight;
         $url .= '&fq=search.resourcetype:2&rows=1';
         $url .= '&sort=' . $field . '%20asc';
 
-        // print_r('lower bound='. $url);
+         //print_r('lower bound='. $url);
         //print_r('field='. $field);
         $solr_xml = file_get_contents($url);
         //print_r('URL'.$url);
-        //print_r('XML'.$solr_xml);
+      // print_r('XML'.$solr_xml);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
-        $field_xml = $bounds_xml->xpath("//result/doc/int[@name='" . $field . "']");
+        $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
         if (count($field_xml) > 0) {
             $value = $field_xml[0];
@@ -906,11 +905,13 @@ $solr['highlights'][] = $highlight;
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=1';
-        // $url .= '&sort='.$field.'%20desc';
-        $url .= '&sort=' . $field . '_sort%20desc'; //copied from uoa
+        $url .= '&sort='.$field.'%20desc';
+        //$url .= '&sort=' . $field . '_sort%20desc'; //copied from uoa
+
+        //print_r('upper bound='. $url);
         $solr_xml = file_get_contents($url);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
-        $field_xml = $bounds_xml->xpath("//result/doc/int[@name='" . $field . "']");
+        $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
         if (count($field_xml) > 0) {
             $value = $field_xml[0];
