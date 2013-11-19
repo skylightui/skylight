@@ -82,7 +82,7 @@ class Advanced extends skylight {
 
 
         if ((empty($path)) || ($path == 'index')) {
-            redirect(base_url().'/advanced/form');
+            redirect('/advanced/form');
         }
         else if($path == 'form') {
 
@@ -124,7 +124,7 @@ class Advanced extends skylight {
             $operator = $this->input->post('operator');
 
             // Base search URL
-            redirect(base_url().'/advanced/search'.$filterurl.'?operator='.$operator);
+            redirect('/advanced/search'.$filterurl.'?operator='.$operator);
         }
         else if($path == 'search') {
 
