@@ -102,8 +102,11 @@ class Skylight_utilities {
     function getBitstreamThumbLink($metadatavalue, $thumbmetadatavalue, $desc) {
 
         $uri = getBitstreamUri($metadatavalue);
+
         $mime = getBitstreamMimeType($metadatavalue);
+
         $filename = getBitstreamFilename($metadatavalue);
+
         //$desc = getBitstreamDescription($metadatavalue);
         $seq = getBitstreamSequence($metadatavalue);
 
@@ -118,9 +121,9 @@ class Skylight_utilities {
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
-            $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
-
-            $link .= '<script>$(document).ready(function(){
+            $link .= 'href="'.$uri.'"><img  style="float:right;" src="'.$thumburi.'"/></a>';
+//
+                    $link .= '<script>$(document).ready(function(){
                 $("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
         });</script>';
         }
@@ -134,6 +137,45 @@ class Skylight_utilities {
 
     }
 
+//SR 21/11/13 New method to allow configurable thumbnail images.
+//New parameters: width, distance from top, style.
+    function getBitstreamThumbLinkParameterised($metadatavalue, $thumbmetadatavalue, $desc, $width, $top, $style) {
+
+        $uri = getBitstreamUri($metadatavalue);
+
+        $mime = getBitstreamMimeType($metadatavalue);
+
+        $filename = getBitstreamFilename($metadatavalue);
+
+        //$desc = getBitstreamDescription($metadatavalue);
+        $seq = getBitstreamSequence($metadatavalue);
+
+        $thumburi = getBitstreamUri($thumbmetadatavalue);
+
+        // old class: bitstream_link
+        $link ='<a ';
+
+        if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
+            // Lightbox is enabled and this is a valid mime type to show in a light box
+            $link .= 'class="cboxElement" rel="'.$seq.'" ';
+            if($desc != '' && $desc != null) {
+                $link .= 'title="'.$desc.'" ';
+            }
+            $link .= 'href="'.$uri.'"><img '.$style.' src="'.$thumburi.'" width = "'.$width.'"/></a>';
+//
+            $link .= '<script>$(document).ready(function(){
+                $("a[rel=\''.$seq.'\']").colorbox({width: "400" , top: "'.$top.'"});
+        });</script>';
+        }
+        else {
+            $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
+        }
+
+
+
+        return $link;
+
+    }
         function getGalleryLink($metadatavalue, $thumbmetadatavalue, $desc, $index) {
 
         $uri = getBitstreamUri($metadatavalue);
