@@ -161,10 +161,10 @@ class Skylight_utilities {
             if($desc != '' && $desc != null) {
                 $link .= 'title="'.$desc.'" ';
             }
-            $link .= 'href="'.$uri.'"><img '.$style.' src="'.$thumburi.'" width = "'.$width.'"/></a>';
+            $link .= 'href="'.$uri.'"><img '.$style.' src="'.$thumburi.'" /></a>';
 //
             $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "400" , top: "'.$top.'"});
+                $("a[rel=\''.$seq.'\']").colorbox({width: "'.$width.'" , top: "'.$top.'"});
         });</script>';
         }
         else {
