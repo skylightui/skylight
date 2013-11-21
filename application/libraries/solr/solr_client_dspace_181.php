@@ -270,11 +270,14 @@ array_push($ranges,$this->getDateRanges($filter));
 
             }
 
-
-            // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str") as $highlight) {
-                //echo $doc['handle'][0].': '.$highlight.'<br/>';
-                $doc['highlights'][] = $highlight;
+            // Check for the existence of highlighted fields before trying to loop round them
+            $highlights = $search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str");
+            if ($highlights) {
+               // Build highlight results from solr response
+               foreach ($highlights as $highlight) {
+               //echo $doc['handle'][0].': '.$highlight.'<br/>';
+               $doc['highlights'][] = $highlight;
+               }
             }
 
 
