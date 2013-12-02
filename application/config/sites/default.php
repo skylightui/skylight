@@ -82,4 +82,7 @@
     // Common title prefix
     $config['skylight_page_title_prefix'] = "Skylight: ";
 
+    // SR 2/12/13 Add highlighting config
+    $config['skylight_highlight_fields'] = 'dc.title.en,dc.contributor.author,dc.subject.en,lido.country.en,dc.description.en,dc.relation.ispartof.en';
+
 ?>

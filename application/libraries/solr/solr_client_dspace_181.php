@@ -56,6 +56,9 @@ class Solr_client_dspace_181
         $this->bitstream_field = str_replace('.', '', $CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.', '', $CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
+        //SR 2/12/13 Add highlight_fields to config
+        $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
+        //echo 'HIGHLIGHTS'.$this->highlight_fields;
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
@@ -237,7 +240,8 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&q.op=' . $operator;
 
         // Set up highlighting
-        $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
+        // SR 2/12/13 change *.en to $this->highlight_fields. Things like bitstream don't look good here!
+        $url .= '&hl=true&hl.fl='.$this->highlight_fields.'&hl.simple.pre=<strong>&hl.simple.post=</strong>';
 
         // Set up spellcheck
 
