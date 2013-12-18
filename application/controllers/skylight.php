@@ -157,6 +157,9 @@ class skylight extends CI_Controller {
         // Load the correct config file - usually looked up using the hostname
         $hostname = $_SERVER['HTTP_HOST'];
 
+        // Trim the techically-legal but config-breaking trailing dot that a hostname may contain
+        $hostname = trim($hostname, ".");
+
         // Has a config file been specified using a query string parameter or in the session?
         if ($this->config->item('skylight_config_allowoverride') === TRUE) {
             $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
