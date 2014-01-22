@@ -238,7 +238,8 @@ class CI_URI {
 		$bad	= array('$',		'(',		')',		'%28',		'%29');
 		$good	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;');
 
-		return str_replace($bad, $good, $str);
+		//return str_replace($bad, $good, $str);
+        return $str;
 	}
 
 	// --------------------------------------------------------------------
