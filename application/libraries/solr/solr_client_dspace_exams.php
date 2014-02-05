@@ -202,7 +202,7 @@ class Solr_client_dspace_exams
         $url = $this->base_url . "select?q=" . $this->solrEscape($q);
         if (count($fq) > 0) {
             foreach ($fq as $value)
-                $url .= '&fq=' . $this->solrEscape($value) . '';
+               $url .= '&fq=' . $this->solrEscape($value) . '';
         }
 
         /*
@@ -227,7 +227,7 @@ array_push($ranges,$this->getDateRanges($filter));
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
         //$url .= '&rows=20&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=100&facet.sort=index';
+        $url .= '&facet=true&facet.limit=-1&facet.sort=index';
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
         }
@@ -247,6 +247,7 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
         //print_r('simple search '. $url);
+        log_message('debug', "simple search");
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -390,8 +391,6 @@ array_push($ranges,$this->getDateRanges($filter));
 
     function getFacets($q = '*:*', $fq = array(), $saved_filters = array())
     {
-
-        //echo "get facets   ";
         $query = $q;
         if ($q == '*') {
             $q = '*:*';
@@ -414,7 +413,7 @@ array_push($ranges,$this->getDateRanges($filter));
 
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=100&facet.sort=index';
+        $url .= '&facet=true&facet.limit=-1&facet.sort=index';
 
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
@@ -550,7 +549,7 @@ array_push($ranges,$this->getDateRanges($filter));
         /*if($highlight != "") {
 $url .= '&hl=true&hl.fl=*.en';
 }*/
-        //print_r($url);
+        //print_r('record '.$url);
         $solr_xml = file_get_contents($url);
 
         // We would construct/pop a new skylight Record model here?
@@ -709,6 +708,7 @@ $solr['highlights'][] = $highlight;
         $url .= '&fq=search.resourcetype:2';
         $url .= '&rows=5';
 
+        //print_r('related '. $url);
         $solr_xml = file_get_contents($url);
 
         return $solr_xml;
@@ -726,6 +726,8 @@ $solr['highlights'][] = $highlight;
         $url .= '&fq=search.resourcetype:2';
         $url .= '&sort=dc.date.accessioned_dt+desc';
         $url .= '&rows=' . $rows;
+
+        //print_r('recent '. $url);
         $solr_xml = file_get_contents($url);
 
         $recent_xml = @new SimpleXMLElement($solr_xml);
@@ -788,7 +790,8 @@ $solr['highlights'][] = $highlight;
         if ($prefix !== '') {
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
         }
-        //print_r($url);
+
+        //print_r('browseTerms '.$url);
 
         $solr_xml = file_get_contents($url);
 
@@ -884,14 +887,16 @@ $solr['highlights'][] = $highlight;
 
         $url = $this->base_url . "select/?q=" . $this->solrEscape($q);
         if (count($fq) > 0) {
-            foreach ($fq as $value)
+            foreach ($fq as $value) {
+                //print_r(' Lower value is '.$value);
                 $url .= '&fq=' . $this->solrEscape($value) . '';
+            }
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=1';
         $url .= '&sort=' . $field . '%20asc';
 
-         //print_r('lower bound='. $url);
+        //print_r('lower bound='. $url);
         //print_r('field='. $field);
         $solr_xml = file_get_contents($url);
         //print_r('URL'.$url);
@@ -912,8 +917,10 @@ $solr['highlights'][] = $highlight;
 
         $url = $this->base_url . "select?q=" . $this->solrEscape($q);
         if (count($fq) > 0) {
-            foreach ($fq as $value)
+            foreach ($fq as $value) {
+                //print_r(' Upper value is '.$value);
                 $url .= '&fq=' . $this->solrEscape($value) . '';
+            }
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=1';
