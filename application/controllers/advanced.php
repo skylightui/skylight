@@ -212,10 +212,6 @@ class Advanced extends skylight {
             $base_search .= '/'.$url_filter;
         }
 
-        //foreach($saved_filters as $myfilter) {
-        //print_r('saved filters are '.$myfilter.' ');
-       // }
-
         // Solr query business moved to solr_client library
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, $operator);
 

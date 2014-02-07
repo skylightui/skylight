@@ -25,7 +25,7 @@ class Skylight_utilities {
         $this->lightBoxMimes = $CI->config->item('skylight_lightbox_mimes');
         $this->fields = $CI->config->item('skylight_fields');
 
-		log_message('debug', "skylight Solr Client Initialized");
+		log_message('debug', "skylight Skylight Utilities Initialized");
 	}
 
     /**

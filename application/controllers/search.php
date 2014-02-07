@@ -9,8 +9,6 @@ class Search extends skylight {
     function Search() {
         // Initalise the parent
         parent::__construct();
-
-        log_message('debug',"Search constructor finished");
     }
 
     function _remap($query, $params = array()) {
@@ -96,7 +94,6 @@ class Search extends skylight {
             $base_parameters .= '?sort_by='.$sort_by;
         }
 
-        log_message('debug',"Just about to call simpleSearch");
         // Solr query business moved to solr_client library
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', $sort_by);
 

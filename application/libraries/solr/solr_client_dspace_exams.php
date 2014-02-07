@@ -21,7 +21,7 @@ class Solr_client_dspace_exams
     var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
-    var $date_field = 'dc.date.year';
+    //var $date_field = 'dc.date.year';
     var $delimiter = '';
     var $thumbnail_field = '';
     var $bitstream_field = '';
@@ -212,13 +212,20 @@ array_push($ranges,$this->getDateRanges($filter));
 }
 
 */
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
-        $datefqs = $dates['fq'];
-
-        foreach ($datefqs as $datefq) {
-            // $url .= '&fq='.$datefq;
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            $datefqs = $dates['fq'];
         }
+        else
+        {
+            $ranges = array();
+        }
+
+        //foreach ($datefqs as $datefq) {
+        //    // $url .= '&fq='.$datefq;
+        //}
 
         // Set up scope
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
@@ -246,8 +253,6 @@ array_push($ranges,$this->getDateRanges($filter));
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-        //print_r('simple search '. $url);
-        log_message('debug', "simple search");
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -408,8 +413,20 @@ array_push($ranges,$this->getDateRanges($filter));
 //        }
 
 
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
+        //$dates = $this->getDateRanges($this->date_field, $q, $fq);
+        //$ranges = $dates['ranges'];
+
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            //$datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
+        }
+
 
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
