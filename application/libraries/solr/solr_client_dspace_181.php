@@ -21,7 +21,7 @@ class Solr_client_dspace_181
     var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
-    var $date_field = 'dc.date.year';
+    //var $date_field = 'dc.date.year';
     var $delimiter = '';
     var $thumbnail_field = '';
     var $bitstream_field = '';
@@ -213,12 +213,15 @@ array_push($ranges,$this->getDateRanges($filter));
 }
 
 */
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
-        $datefqs = $dates['fq'];
-
-        foreach ($datefqs as $datefq) {
-            // $url .= '&fq='.$datefq;
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            $datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
         }
 
         // Set up scope
@@ -407,10 +410,17 @@ array_push($ranges,$this->getDateRanges($filter));
 //            array_push($ranges,$this->getDateRanges($filter, $q, $fq));
 //        }
 
-
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
-
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            //$datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
+        }
+        
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
         $url .= '&facet=true&facet.limit=10';
