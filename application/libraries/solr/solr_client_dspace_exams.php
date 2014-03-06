@@ -205,13 +205,8 @@ class Solr_client_dspace_exams
                $url .= '&fq=' . $this->solrEscape($value) . '';
         }
 
-        /*
-$ranges = array();
-foreach($this->configured_date_filters as $filter_name => $filter) {
-array_push($ranges,$this->getDateRanges($filter));
-}
 
-*/
+
         if (isset($this->date_field))
         {
             $dates = $this->getDateRanges($this->date_field, $q, $fq);
@@ -223,9 +218,6 @@ array_push($ranges,$this->getDateRanges($filter));
             $ranges = array();
         }
 
-        //foreach ($datefqs as $datefq) {
-        //    // $url .= '&fq='.$datefq;
-        //}
 
         // Set up scope
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
@@ -254,6 +246,7 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
 
+        // Call Solr!
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
 
@@ -310,7 +303,7 @@ array_push($ranges,$this->getDateRanges($filter));
         $data['rows'] = $search_xml->result['numFound'];
 
 
-        // Hard coded until I do something better
+        // First do the non-date filters
         foreach ($this->configured_filters as $filter_name => $filter) {
             $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='" . $filter . "']/int");
             $facet['name'] = $filter_name;
@@ -343,6 +336,7 @@ array_push($ranges,$this->getDateRanges($filter));
             $facets[] = $facet;
         }
 
+        // Now do the date filters
         foreach ($this->configured_date_filters as $filter_name => $filter) {
             // Date.. needs facet query, not field, since
             // we're on solr 1.4 and can't do nice easy integer ranges
