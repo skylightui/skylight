@@ -87,6 +87,7 @@ class skylight extends CI_Controller {
     function view($view, $data = array()) {
         // Load some globals
         $data['site_title'] = $this->config->item('skylight_fullname');
+        $data['ga_code'] = $this->config->item('skylight_ga_code');
 
         // Which output type to use?
         switch ($this->output_type) {
