@@ -52,20 +52,6 @@
 
             <?php } ?>
 
-       <?php if(array_key_exists($date_field, $doc)) { ?>
-            <span>
-                <?php
-                echo '(' . $doc[$date_field][0] . ')';
-          }
-                    elseif(array_key_exists('dateIssuedyear', $doc)) {
-                        echo '( ' . $doc['dateIssuedyear'][0] . ')';
-                    }
-
-                ?>
-                </span>
-
-
-
         <?php
         // TODO: Make highlighting configurable
 
