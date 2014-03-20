@@ -14,7 +14,7 @@ class Solr_client_dspace_181
     var $max_rows = 100; // Default to 100 rows maximum
     var $container = '*'; // Default to all collections
     var $container_field = 'location.coll'; // Default to discovery's DSpace collection field
-    var $handle_prefix = '123456789';
+    var $handle_prefix = '10683';
     var $scope = '';
     var $rows = 10;
     var $recorddisplay = array();
