@@ -142,12 +142,13 @@ class Search extends skylight {
         // Load and initialise pagination
         $this->load->library('pagination');
         $config['page_query_string'] = TRUE;
-        $config['num_links'] = 2;
+        $config['num_links'] = 4;
         $config['total_rows'] = $result_count;
         $config['per_page'] = $rows;
+        $config['cur_tag_open'] = '&nbsp;<span class="curpage">';
+        $config['cur_tag_close']= '</span>';
         $config['base_url'] = $base_search.$base_parameters;
         $this->pagination->initialize($config);
-
 
         $data['pagelinks'] = $this->pagination->create_links();
 
