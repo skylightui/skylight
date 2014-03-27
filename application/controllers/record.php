@@ -111,6 +111,7 @@ class Record extends skylight {
             $data['author_field'] = $recorddisplay['Author'];
         }
         else {
+            // using dc.contributor.author.en instead of dc.creator
             $data['author_field'] = 'dccontributorauthoren';
         }
         
