@@ -111,7 +111,8 @@ class Record extends skylight {
             $data['author_field'] = $recorddisplay['Author'];
         }
         else {
-            $data['author_field'] = 'dccreator';
+            // using dc.contributor.author.en instead of dc.creator
+            $data['author_field'] = 'dccontributorauthoren';
         }
         
         $data['date_field'] = $this->skylight_utilities->getField('Date');
