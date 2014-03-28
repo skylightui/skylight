@@ -46,15 +46,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                   //$link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
 
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+             //   $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
@@ -79,15 +79,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                   //$link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'"><img src="'.$uri.'"/></a>';
 
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+             //   $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
@@ -117,15 +117,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                   //$link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'"><img  style="float:right;" src="'.$thumburi.'"/></a>';
 //
-                    $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
-        });</script>';
+                    //$link .= '<script>$(document).ready(function(){
+                //$("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
@@ -157,15 +157,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-            $link .= 'class="cboxElement" rel="'.$seq.'" ';
+            //$link .= 'class="cboxElement" rel="'.$seq.'" ';
             if($desc != '' && $desc != null) {
                 $link .= 'title="'.$desc.'" ';
             }
             $link .= 'href="'.$uri.'"><img '.$style.' src="'.$thumburi.'" /></a>';
 //
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "'.$width.'" , top: "'.$top.'"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+                //$("a[rel=\''.$seq.'\']").colorbox({width: "'.$width.'" , top: "'.$top.'"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
@@ -192,15 +192,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="1" ';
+                   //$link .= 'class="cboxElement" rel="1" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'"><img style="height:90px;" src="'.$thumburi.'"/></a></div>';
 
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\'1\']").colorbox({width: "400px", top: "100px"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+            //    $("a[rel=\'1\']").colorbox({width: "400px", top: "100px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:left;" src="'.$thumburi.'"/></a>';

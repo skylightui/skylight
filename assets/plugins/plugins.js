@@ -157,4 +157,7 @@ function RandRange(minNum, maxNum) {
 	return (Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum);
 }
 
+$(document).ready(function() { $(".fancybox").fancybox(); });
+
+
 // ======================================================================
