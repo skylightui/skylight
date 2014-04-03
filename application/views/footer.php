@@ -2,8 +2,10 @@
         </div> <!-- close main -->
         </div> <!-- close container -->
 
-        <script src="<?php echo base_url()?>assets/jquery-1.11.0/jquery-1.11.0.min.js"></script>
-        <script src="<?php echo base_url()?>assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js"></script>
+        <!-- moved to headers
+        <script src="<//?php echo base_url()?>assets/jquery-1.11.0/jquery-1.11.0.min.js"></script>
+        <script src="<//?php echo base_url()?>assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js"></script>
+        -->
 
         <!-- Add mousewheel plugin (this is optional) -->
         <script type="text/javascript" src="<?php echo base_url()?>assets/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
