@@ -73,7 +73,10 @@
 
         if(empty($facet['terms']) && empty($facet['queries'])) { ?>
             <li>No matches</li>
-       <?php } ?>
+       <?php }
+       else { ?>
+           <li><a href="./browse/<?php echo $facet['name']; ?>">More ...</a></li>
+       <?php }?>
         </ul>
     <?php } ?>
 <?php } ?>
