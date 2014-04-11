@@ -709,9 +709,10 @@ $solr['highlights'][] = $highlight;
             $counter++;
         }
         $query_string .= ' -handle:"' . $handle . '"';
-        $url = $this->base_url . 'select?q=' . $this->solrEscape($query_string);
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url = $this->base_url . 'select?';
+        $url .= 'fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
+        $url .= '&q=' . $this->solrEscape($query_string);
         $url .= '&rows=5';
 
         $solr_xml = file_get_contents($url);
