@@ -534,9 +534,8 @@ array_push($ranges,$this->getDateRanges($filter));
 
     function getRecord($id = NULL, $highlight = "")
     {
-
-        $title_field = $this->recorddisplay[0]; //changed to index
-        $subject_field = $this->recorddisplay[3]; //changed to index
+        $title_field = 'title';
+        $subject_field = 'subject';
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
@@ -597,8 +596,7 @@ $solr['highlights'][] = $highlight;
 
 */
         }
-
-        // Related Items
+         // Related Items
         if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
             $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
         } elseif (array_key_exists($subject_field, $solr)) {
