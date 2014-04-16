@@ -156,7 +156,11 @@ class skylight extends CI_Controller {
      */
     function _load_site_config() {
         // Load the correct config file - usually looked up using the hostname
-        $hostname = $_SERVER['HTTP_HOST'];
+        //$hostname = $_SERVER['HTTP_HOST'];
+
+        // Our URLs will be of the form collections.ed.ac.uk/thing where thing will match the site config file. Robin.
+        $url_segments = explode( "/", $_SERVER['PHP_SELF'] );
+        $hostname = $url_segments[1];
 
         // Has a config file been specified using a query string parameter or in the session?
         if ($this->config->item('skylight_config_allowoverride') === TRUE) {
