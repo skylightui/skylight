@@ -38,6 +38,8 @@ class Search extends skylight {
         $sort_options = $this->config->item('skylight_sort_fields');
         $display_thumbnail = $this->config->item('skylight_display_thumbnail');
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
+        $link_bitstream = $this->config->item('skylight_link_bitstream');
+        $bitstream_field = str_replace('.','',$this->config->item('skylight_bitstream_field'));
 
         // TODO: get rid of this, it's bad
         $title = $this->skylight_utilities->getField('Title');
@@ -140,12 +142,13 @@ class Search extends skylight {
         // Load and initialise pagination
         $this->load->library('pagination');
         $config['page_query_string'] = TRUE;
-        $config['num_links'] = 2;
+        $config['num_links'] = 4;
         $config['total_rows'] = $result_count;
         $config['per_page'] = $rows;
+        $config['cur_tag_open'] = '&nbsp;<span class="curpage">';
+        $config['cur_tag_close']= '</span>';
         $config['base_url'] = $base_search.$base_parameters;
         $this->pagination->initialize($config);
-
 
         $data['pagelinks'] = $this->pagination->create_links();
 
@@ -171,6 +174,10 @@ class Search extends skylight {
        // $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
         $data['display_thumbnail'] = $display_thumbnail;
         $data['thumbnail_field'] = 'solr_'.str_replace('.','',$thumbnail_field);
+
+        $data['link_bitstream'] = $link_bitstream;
+        $data['bitstream_field'] = $bitstream_field;
+
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('search_suggestions', $data);

@@ -87,6 +87,7 @@ class skylight extends CI_Controller {
     function view($view, $data = array()) {
         // Load some globals
         $data['site_title'] = $this->config->item('skylight_fullname');
+        $data['ga_code'] = $this->config->item('skylight_ga_code');
 
         // Which output type to use?
         switch ($this->output_type) {
@@ -155,7 +156,11 @@ class skylight extends CI_Controller {
      */
     function _load_site_config() {
         // Load the correct config file - usually looked up using the hostname
-        $hostname = $_SERVER['HTTP_HOST'];
+        //$hostname = $_SERVER['HTTP_HOST'];
+
+        // Our URLs will be of the form collections.ed.ac.uk/thing where thing will match the site config file. Robin.
+        $url_segments = explode( "/", $_SERVER['PHP_SELF'] );
+        $hostname = $url_segments[1];
 
         // Trim the techically-legal but config-breaking trailing dot that a hostname may contain
         $hostname = trim($hostname, ".");

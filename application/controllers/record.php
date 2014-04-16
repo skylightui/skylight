@@ -63,7 +63,8 @@ class Record extends skylight {
             $filename = $segments[4];
 
             if(preg_match('/^\d+$/',$seq)) {
-                $url = $this->config->item('skylight_objectproxy_url').$id.'/'.$seq.'/'.$filename;
+                $url = $this->config->item('skylight_objectproxy_url').$id.'/'.$seq.'/'.urlencode($filename);
+
 
                 // Which part of the solr results array is the bitstream in? (bitstream or thumbnail)
                 $check = getBitstreamsMimeType($data['solr'][$bitstream_field], $seq);
@@ -111,7 +112,8 @@ class Record extends skylight {
             $data['author_field'] = $recorddisplay['Author'];
         }
         else {
-            $data['author_field'] = 'dccreator';
+            // using dc.contributor.author.en instead of dc.creator
+            $data['author_field'] = 'dccontributorauthoren';
         }
         
         $data['date_field'] = $this->skylight_utilities->getField('Date');

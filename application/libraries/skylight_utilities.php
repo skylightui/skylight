@@ -25,7 +25,7 @@ class Skylight_utilities {
         $this->lightBoxMimes = $CI->config->item('skylight_lightbox_mimes');
         $this->fields = $CI->config->item('skylight_fields');
 
-		log_message('debug', "skylight Solr Client Initialized");
+		log_message('debug', "skylight Skylight Utilities Initialized");
 	}
 
     /**
@@ -46,15 +46,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                   //$link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
 
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+             //   $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
@@ -79,15 +79,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                   //$link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'"><img src="'.$uri.'"/></a>';
 
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+             //   $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
@@ -102,8 +102,11 @@ class Skylight_utilities {
     function getBitstreamThumbLink($metadatavalue, $thumbmetadatavalue, $desc) {
 
         $uri = getBitstreamUri($metadatavalue);
+
         $mime = getBitstreamMimeType($metadatavalue);
+
         $filename = getBitstreamFilename($metadatavalue);
+
         //$desc = getBitstreamDescription($metadatavalue);
         $seq = getBitstreamSequence($metadatavalue);
 
@@ -114,15 +117,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="'.$seq.'" ';
+                   //$link .= 'class="cboxElement" rel="'.$seq.'" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
-            $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
-
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
-        });</script>';
+            $link .= 'href="'.$uri.'"><img  style="float:right;" src="'.$thumburi.'"/></a>';
+//
+                    //$link .= '<script>$(document).ready(function(){
+                //$("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
@@ -134,6 +137,45 @@ class Skylight_utilities {
 
     }
 
+//SR 21/11/13 New method to allow configurable thumbnail images.
+//New parameters: width, distance from top, style.
+    function getBitstreamThumbLinkParameterised($metadatavalue, $thumbmetadatavalue, $desc, $width, $top, $style) {
+
+        $uri = getBitstreamUri($metadatavalue);
+
+        $mime = getBitstreamMimeType($metadatavalue);
+
+        $filename = getBitstreamFilename($metadatavalue);
+
+        //$desc = getBitstreamDescription($metadatavalue);
+        $seq = getBitstreamSequence($metadatavalue);
+
+        $thumburi = getBitstreamUri($thumbmetadatavalue);
+
+        // old class: bitstream_link
+        $link ='<a ';
+
+        if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
+            // Lightbox is enabled and this is a valid mime type to show in a light box
+            //$link .= 'class="cboxElement" rel="'.$seq.'" ';
+            if($desc != '' && $desc != null) {
+                $link .= 'title="'.$desc.'" ';
+            }
+            $link .= 'href="'.$uri.'"><img '.$style.' src="'.$thumburi.'" /></a>';
+//
+            //$link .= '<script>$(document).ready(function(){
+                //$("a[rel=\''.$seq.'\']").colorbox({width: "'.$width.'" , top: "'.$top.'"});
+        //});</script>';
+        }
+        else {
+            $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
+        }
+
+
+
+        return $link;
+
+    }
         function getGalleryLink($metadatavalue, $thumbmetadatavalue, $desc, $index) {
 
         $uri = getBitstreamUri($metadatavalue);
@@ -150,15 +192,15 @@ class Skylight_utilities {
 
         if($this->lightBox == true && in_array($mime, $this->lightBoxMimes)) {
             // Lightbox is enabled and this is a valid mime type to show in a light box
-                   $link .= 'class="cboxElement" rel="1" ';
+                   //$link .= 'class="cboxElement" rel="1" ';
                     if($desc != '' && $desc != null) {
                         $link .= 'title="'.$desc.'" ';
                     }
             $link .= 'href="'.$uri.'"><img style="height:90px;" src="'.$thumburi.'"/></a></div>';
 
-            $link .= '<script>$(document).ready(function(){
-                $("a[rel=\'1\']").colorbox({width: "400px", top: "100px"});
-        });</script>';
+            //$link .= '<script>$(document).ready(function(){
+            //    $("a[rel=\'1\']").colorbox({width: "400px", top: "100px"});
+        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:left;" src="'.$thumburi.'"/></a>';

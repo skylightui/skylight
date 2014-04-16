@@ -24,7 +24,7 @@
         ?>
 
     <li<?php if($index == 0) { echo ' class="first"'; } elseif($index == sizeof($recentitems) - 1) { echo ' class="last"'; } ?>>
-        <span class="icon <?php echo $type ?>"></span>
+
         <h3><a href="./record/<?php echo $doc['id']?>"><?php echo $doc[$title_field][0]; ?></a></h3>
         <div class="tags">
 
@@ -51,20 +51,6 @@
             ?>
 
             <?php } ?>
-
-       <?php if(array_key_exists($date_field, $doc)) { ?>
-            <span>
-                <?php
-                echo '(' . $doc[$date_field][0] . ')';
-          }
-                    elseif(array_key_exists('dateIssuedyear', $doc)) {
-                        echo '( ' . $doc['dateIssuedyear'][0] . ')';
-                    }
-
-                ?>
-                </span>
-
-
 
         <?php
         // TODO: Make highlighting configurable

@@ -62,6 +62,7 @@
     $config['skylight_share_buttons'] = false;
 
     $config['skylight_homepage_recentitems'] = true;
+    $config['skylight_homepage_fullwidth'] = false;
 
     // Set to the number of minutes to cache pages for. Set to false for no caching.
     // This overrides the setting in skylight.php so is commented by default
@@ -81,5 +82,8 @@
 
     // Common title prefix
     $config['skylight_page_title_prefix'] = "Skylight: ";
+
+    // SR 2/12/13 Add highlighting config
+    $config['skylight_highlight_fields'] = 'dc.title.en,dc.contributor.author,dc.subject.en,lido.country.en,dc.description.en,dc.relation.ispartof.en';
 
 ?>

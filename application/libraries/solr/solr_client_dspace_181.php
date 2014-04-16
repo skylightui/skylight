@@ -10,18 +10,18 @@
 class Solr_client_dspace_181
 {
 
-    var $base_url = 'http://localhost:8983/solr'; // Base URL. Typically not overridden in construct params. Get from config.
+    var $base_url = ''; // Base URL. Typically not overridden in construct params. Get from config.
     var $max_rows = 100; // Default to 100 rows maximum
     var $container = '*'; // Default to all collections
     var $container_field = 'location.coll'; // Default to discovery's DSpace collection field
-    var $handle_prefix = '123456789';
+    var $handle_prefix = '10683';
     var $scope = '';
     var $rows = 10;
     var $recorddisplay = array();
     var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
-    var $date_field = 'dc.date.year';
+    //var $date_field = 'dc.date.year';
     var $delimiter = '';
     var $thumbnail_field = '';
     var $bitstream_field = '';
@@ -56,6 +56,9 @@ class Solr_client_dspace_181
         $this->bitstream_field = str_replace('.', '', $CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.', '', $CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
+        //SR 2/12/13 Add highlight_fields to config
+        $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
+        //echo 'HIGHLIGHTS'.$this->highlight_fields;
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
@@ -210,12 +213,15 @@ array_push($ranges,$this->getDateRanges($filter));
 }
 
 */
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
-        $datefqs = $dates['fq'];
-
-        foreach ($datefqs as $datefq) {
-            // $url .= '&fq='.$datefq;
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            $datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
         }
 
         // Set up scope
@@ -237,7 +243,8 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&q.op=' . $operator;
 
         // Set up highlighting
-        $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
+        // SR 2/12/13 change *.en to $this->highlight_fields. Things like bitstream don't look good here!
+        $url .= '&hl=true&hl.fl='.$this->highlight_fields.'&hl.simple.pre=<strong>&hl.simple.post=</strong>';
 
         // Set up spellcheck
 
@@ -270,11 +277,14 @@ array_push($ranges,$this->getDateRanges($filter));
 
             }
 
-
-            // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str") as $highlight) {
-                //echo $doc['handle'][0].': '.$highlight.'<br/>';
-                $doc['highlights'][] = $highlight;
+            // Check for the existence of highlighted fields before trying to loop round them
+            $highlights = $search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str");
+            if ($highlights) {
+               // Build highlight results from solr response
+               foreach ($highlights as $highlight) {
+               //echo $doc['handle'][0].': '.$highlight.'<br/>';
+               $doc['highlights'][] = $highlight;
+               }
             }
 
 
@@ -383,6 +393,7 @@ array_push($ranges,$this->getDateRanges($filter));
     function getFacets($q = '*:*', $fq = array(), $saved_filters = array())
     {
 
+        //echo "get facets   ";
         $query = $q;
         if ($q == '*') {
             $q = '*:*';
@@ -393,16 +404,23 @@ array_push($ranges,$this->getDateRanges($filter));
                 $url .= '&fq=' . $value . '';
         }
 
-        /*
-$ranges = array();
-foreach($this->configured_date_filters as $filter_name => $filter) {
-array_push($ranges,$this->getDateRanges($filter));
-}
 
-*/
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
+//        $ranges = array();
+//        foreach($this->configured_date_filters as $filter_name => $filter) {
+//            array_push($ranges,$this->getDateRanges($filter, $q, $fq));
+//        }
 
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            //$datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
+        }
+        
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
         $url .= '&facet=true&facet.limit=10';
@@ -516,9 +534,8 @@ array_push($ranges,$this->getDateRanges($filter));
 
     function getRecord($id = NULL, $highlight = "")
     {
-
-        $title_field = $this->recorddisplay[0]; //changed to index
-        $subject_field = $this->recorddisplay[3]; //changed to index
+        $title_field = 'title';
+        $subject_field = 'subject';
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
@@ -579,8 +596,7 @@ $solr['highlights'][] = $highlight;
 
 */
         }
-
-        // Related Items
+         // Related Items
         if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
             $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
         } elseif (array_key_exists($subject_field, $solr)) {
@@ -691,9 +707,10 @@ $solr['highlights'][] = $highlight;
             $counter++;
         }
         $query_string .= ' -handle:"' . $handle . '"';
-        $url = $this->base_url . 'select?q=' . $this->solrEscape($query_string);
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url = $this->base_url . 'select?';
+        $url .= 'fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
+        $url .= '&q=' . $this->solrEscape($query_string);
         $url .= '&rows=5';
 
         $solr_xml = file_get_contents($url);
@@ -824,9 +841,7 @@ $solr['highlights'][] = $highlight;
 
     function getDateRanges($field, $q, $fq)
     {
-
         $dates = array();
-
         $lowest_year = $this->getLowerBound($field, $q, $fq);
         //print_r($lowest_year);
         $lowest_year = floor($lowest_year / 10) * 10;
@@ -880,13 +895,13 @@ $solr['highlights'][] = $highlight;
         $url .= '&fq=search.resourcetype:2&rows=1';
         $url .= '&sort=' . $field . '%20asc';
 
-        // print_r('lower bound='. $url);
+         //print_r('lower bound='. $url);
         //print_r('field='. $field);
         $solr_xml = file_get_contents($url);
         //print_r('URL'.$url);
-        //print_r('XML'.$solr_xml);
+      // print_r('XML'.$solr_xml);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
-        $field_xml = $bounds_xml->xpath("//result/doc/int[@name='" . $field . "']");
+        $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
         if (count($field_xml) > 0) {
             $value = $field_xml[0];
@@ -906,11 +921,13 @@ $solr['highlights'][] = $highlight;
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=1';
-        // $url .= '&sort='.$field.'%20desc';
-        $url .= '&sort=' . $field . '_sort%20desc'; //copied from uoa
+        $url .= '&sort='.$field.'%20desc';
+        //$url .= '&sort=' . $field . '_sort%20desc'; //copied from uoa
+
+        //print_r('upper bound='. $url);
         $solr_xml = file_get_contents($url);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
-        $field_xml = $bounds_xml->xpath("//result/doc/int[@name='" . $field . "']");
+        $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
         if (count($field_xml) > 0) {
             $value = $field_xml[0];

@@ -78,29 +78,34 @@ class Browse extends skylight {
             $browse_url .= '?prefix='.$prefix;
         }
 
-        $data['startrow'] = $offset + 1;
-        if($data['startrow'] + ($rows - 1 )  > $facet_count)
-            $data['endrow'] = $offset + $facet_count;
-        else
-            $data['endrow'] = $data['startrow'] + ($rows - 1);
-
         // Set the page title to the record title
         $data['page_title'] = $page_title_prefix.'Browse "'. $decodedField . '"';
 	    $data['browse_url'] = $browse_url;
         $data['field'] = $field;
         $data['offset'] = $offset;
 
+        //print_r($data);
+
         // Load and initialise pagination
-        $this->load->library('solr/pagination');
+        $this->load->library('pagination');
         $config['page_query_string'] = TRUE;
-        $config['num_links'] = 1;
-        $config['total_rows'] = $facet_count + $offset;
+        $config['num_links'] = 4;
+        //$config['total_rows'] = $facet_count + $offset;
+        $config['total_rows'] = $data['rows'];
         $config['per_page'] = $rows;
         $config['base_url'] = $browse_url;
+        $config['cur_tag_open'] = '&nbsp;<span class="curpage">';
+        $config['cur_tag_close']= '</span>';
 
         $this->pagination->initialize($config);
         $data['pagelinks'] = $this->pagination->create_links();
-        
+
+        $data['startrow'] = $offset + 1;
+        if($data['startrow'] + ($rows - 1 )  > $data['rows'])
+            $data['endrow'] = $data['rows'];
+        else
+            $data['endrow'] = $data['startrow'] + ($rows - 1);
+
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('browse_facets', $data);
