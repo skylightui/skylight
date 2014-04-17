@@ -22,7 +22,12 @@ class Feedback extends skylight {
         $data['page_title'] = $page_title_prefix.'Feedback';
 
         $this->view('header', $data);
-        $this->view('div_main');
+        if ($this->config->item('skylight_homepage_fullwidth') === TRUE) {
+            $this->view('div_main_full', $data);
+        }
+        else {
+            $this->view('div_main', $data);
+        }
 
         // Verify the form inputs
         $this->form_validation->set_rules('name', 'Name', 'trim|_clean|required');
