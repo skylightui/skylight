@@ -14,7 +14,7 @@ class Solr_client_dspace_181
     var $max_rows = 100; // Default to 100 rows maximum
     var $container = '*'; // Default to all collections
     var $container_field = 'location.coll'; // Default to discovery's DSpace collection field
-    var $handle_prefix = '10683';
+    var $handle_prefix = '';
     var $scope = '';
     var $rows = 10;
     var $recorddisplay = array();
@@ -44,7 +44,7 @@ class Solr_client_dspace_181
 
         $CI =& get_instance();
         $this->base_url = $CI->config->item('skylight_solrbase');
-        //echo 'BASEURL'.$this->base_url;
+        $this->handle_prefix = $CI->config->item('skylight_handle_prefix');
         $this->container = $CI->config->item('skylight_container_id');
         $this->container_field = $CI->config->item('skylight_container_field');
         $this->rows = $CI->config->item('skylight_results_per_page');
@@ -56,9 +56,7 @@ class Solr_client_dspace_181
         $this->bitstream_field = str_replace('.', '', $CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.', '', $CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
-        //SR 2/12/13 Add highlight_fields to config
         $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
-        //echo 'HIGHLIGHTS'.$this->highlight_fields;
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
@@ -66,6 +64,7 @@ class Solr_client_dspace_181
         }
 
         log_message('debug', "skylight Solr Client Initialized");
+        log_message('debug', "handle_prefix " .$this->handle_prefix);
     }
 
     // --------------------------------------------------------------------
@@ -814,7 +813,6 @@ $solr['highlights'][] = $highlight;
         foreach ($facet_xml as $facet_term) {
 
             $names = preg_split('/\|\|\|/', $facet_term->attributes());
-            //print_r($names);
             $term['name'] = urlencode($facet_term->attributes());
             if (count($names) == 1)
             {
@@ -843,11 +841,9 @@ $solr['highlights'][] = $highlight;
     {
         $dates = array();
         $lowest_year = $this->getLowerBound($field, $q, $fq);
-        //print_r($lowest_year);
         $lowest_year = floor($lowest_year / 10) * 10;
 
         $highest_year = $this->getUpperBound($field, $q, $fq);
-        //print_r($highest_year);
         $total_gap = $highest_year - $lowest_year;
         $yearcount = 20; // number of ranges to show up as filters
         $gap = 5;
@@ -895,11 +891,7 @@ $solr['highlights'][] = $highlight;
         $url .= '&fq=search.resourcetype:2&rows=1';
         $url .= '&sort=' . $field . '%20asc';
 
-         //print_r('lower bound='. $url);
-        //print_r('field='. $field);
         $solr_xml = file_get_contents($url);
-        //print_r('URL'.$url);
-      // print_r('XML'.$solr_xml);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
         $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
