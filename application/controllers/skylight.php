@@ -134,12 +134,14 @@ class skylight extends CI_Controller {
         $theme = $this->config->item('skylight_theme');
 
         // Has the user requested to override the theme?
-        $get_theme = $this->input->get('theme');
-        if ((!empty($get_theme)) && ($this->config->item('skylight_theme_allowoverride') === TRUE)) {
-            $theme = preg_replace('/[^A-Za-z0-9]/', '', $this->input->get('theme'));
-            $_SESSION['skylight_theme'] = $theme;
-        } else if (isset($_SESSION['skylight_theme'])) {
-            $theme = $_SESSION['skylight_theme'];
+        if ($this->config->item('skylight_theme_allowoverride') === TRUE) {
+            $get_theme = $this->input->get('theme');
+            if (!empty($get_theme)) {
+                $theme = preg_replace('/[^A-Za-z0-9]/', '', $this->input->get('theme'));
+                $_SESSION['skylight_theme'] = $theme;
+            } else if (isset($_SESSION['skylight_theme'])) {
+                $theme = $_SESSION['skylight_theme'];
+            }
         }
 
         // Return the theme
@@ -156,11 +158,34 @@ class skylight extends CI_Controller {
      */
     function _load_site_config() {
         // Load the correct config file - usually looked up using the hostname
-        //$hostname = $_SERVER['HTTP_HOST'];
+        $hostname = $_SERVER['HTTP_HOST'];
 
-        // Our URLs will be of the form collections.ed.ac.uk/thing where thing will match the site config file. Robin.
-        $url_segments = explode( "/", $_SERVER['PHP_SELF'] );
-        $hostname = $url_segments[1];
+        // Now check to see if we are using URLs of the form http://.../prefix/...
+        $url_prefixes = $this->config->item('skylight_url_prefixes');
+        if (!empty($url_prefixes))
+        {
+            // Our URLs will be of the form collections.ed.ac.uk/prefix/... where prefix will match the site config file,
+            // except for the CLDs which have no prefix. Robin.
+            //log_message('debug', 'uri string is '.uri_string());
+
+            $url_segments = explode( "/", uri_string());
+            if (sizeof($url_segments) > 0) {
+                // Have a look and see if the URL segment matches one of our collection prefixes.
+                if (in_array($url_segments[0], $url_prefixes)) {
+                    $hostname = $url_segments[0];
+                }
+                else {
+                    // Use the default hostname 'clds'
+                    // todo: take out this nasty hardcoding and move the clds config into the 'default' config.
+                    $hostname = 'clds';
+                }
+            }
+            else {
+                //log_message('debug', 'seg 1 is '.$url_segments[1]);
+                // Use the default hostname 'clds'
+                $hostname = 'clds';
+            }
+        }
 
         // Has a config file been specified using a query string parameter or in the session?
         if ($this->config->item('skylight_config_allowoverride') === TRUE) {
