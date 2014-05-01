@@ -50,11 +50,11 @@ class Search extends skylight {
 
         $saved_filters = array();
         $url_filters = array();
-        if(count($this->uri->segments) > 2) {
+        if(count($this->uri->rsegments) > 2) {
 
-            for($i = 3; $i <= count($this->uri->segments); $i++) {
+            for($i = 3; $i <= count($this->uri->rsegments); $i++) {
 
-                $test_filter = $this->uri->segments[$i];
+                $test_filter = $this->uri->rsegments[$i];
                 $url_filters[] = $test_filter;
                 $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
                 $filter_segments[0] = urldecode($filter_segments[0]);

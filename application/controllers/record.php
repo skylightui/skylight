@@ -57,8 +57,8 @@ class Record extends skylight {
         }
 
         // Digital object proxy
-        if(count($this->uri->segments) == 4) {
-            $segments = $this->uri->segments;
+        if(count($this->uri->rsegments) == 4) {
+            $segments = $this->uri->rsegments;
             $seq = $segments[3];
             $filename = $segments[4];
 
