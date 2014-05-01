@@ -82,7 +82,7 @@ class Advanced extends skylight {
 
 
         if ((empty($path)) || ($path == 'index')) {
-            redirect(base_url().'/advanced/form');
+            redirect(base_url().'advanced/form');
         }
         else if($path == 'form') {
 
