@@ -41,6 +41,11 @@
 $route['default_controller'] = "content";
 $route['404_override'] = 'content';
 
+$route['art/(:any)'] = "$1";
+$route['mimed/(:any)'] = "$1";
+$route['physics/(:any)'] = "$1";
+
+
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

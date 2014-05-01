@@ -12,7 +12,14 @@ class content extends skylight {
 	function index() {
         // Get the URL actually requested
         $url = uri_string();
-        
+
+        // If we are using prefixed URLs then strip off the prefixes.
+        $url_prefix = $this->config->item('skylight_url_prefix');
+        if (!empty($url_prefix))
+        {
+            $url = str_replace($url_prefix, '', $url);
+        }
+
         $theme = 'default';
         if($this->config->item('theme') != '' && $this->config->item('theme') != NULL) {
             $theme = $this->config->item('theme');

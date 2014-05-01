@@ -159,5 +159,9 @@ function RandRange(minNum, maxNum) {
 
 $(document).ready(function() { $(".fancybox").fancybox(); });
 
-
+$(document).ready(function() {
+$('.carousel').carousel({
+    interval: 10000 // in milliseconds
+})
+});
 // ======================================================================
