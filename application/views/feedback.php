@@ -1,4 +1,7 @@
 <div class="feedback_form">
+
+    <h1>Feedback</h1>
+
     <p>Please contact us with your suggestions or questions below.</p>
 
     <?php echo validation_errors(); ?>
