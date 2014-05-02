@@ -24,6 +24,7 @@
              
         <?php }
 
+        $numterms = 0;
         foreach($facet['terms'] as $term) {
 
              if($term['active']) {
@@ -31,6 +32,7 @@
              } else {
                  $inactive_terms[] = $term;
              }
+            $numterms++;
         }
 
         if(sizeof($active_terms) > 0) { ?>
@@ -53,7 +55,7 @@
                 </li>
             <?php
         }
-               
+
         foreach($facet['queries'] as $term) {
             $pattern =  '#\/'.rawurlencode($facet['name']).'.*\]#';
             $remove = preg_replace($pattern,'',$base_search, -1);
@@ -74,9 +76,11 @@
         if(empty($facet['terms']) && empty($facet['queries'])) { ?>
             <li>No matches</li>
        <?php }
-       else { ?>
+       else {
+           if($numterms == $this->config->item('skylight_results_per_page')) { ?>
            <li><a href="./browse/<?php echo $facet['name']; ?>">More ...</a></li>
-       <?php }?>
+       <?php }
+            } ?>
         </ul>
     <?php } ?>
 <?php } ?>

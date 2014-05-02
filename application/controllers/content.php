@@ -156,6 +156,11 @@ class content extends skylight {
             $this->view('404');
             $this->view('div_main_end');
             $this->view('div_sidebar');
+
+            // Get the facet data
+            $facet_data = $this->solr_client->getFacets();
+
+            $this->view('search_facets', $facet_data);
             $this->view('div_sidebar_end');
             $this->view('footer');
         }

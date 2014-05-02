@@ -29,7 +29,7 @@ class Browse extends skylight {
                 $test_filter = $this->uri->segments[$i];
                 $url_filters[] = $test_filter;
                 $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
-                if(array_key_exists($filter_segments[0], $configured_filters)) {
+                if(isset($filter_segments[1]) && array_key_exists($filter_segments[0], $configured_filters)) {
                     $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
                 }
             }
