@@ -2,7 +2,7 @@
     <div class="pagination browse_pagination">
         <span class="no-results">
         <strong><?php echo $startrow ?>-<?php echo $endrow ?></strong> of
-        <strong><?php echo $rows ?></strong> results </span>
+        <strong><?php echo $total_results ?></strong> results </span>
         <?php echo $pagelinks ?>
     </div>
 
@@ -16,7 +16,6 @@
         </div>
 
         <div class="browse_facets">
-
             <ul class="browse_facet_list">
 
                 <?php foreach($facet['terms'] as $term) { ?>
