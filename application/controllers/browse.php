@@ -89,8 +89,6 @@ class Browse extends skylight {
         $total_results = $this->solr_client->countBrowseTerms($decodedField, $prefix);
         $data['total_results'] = $total_results;
 
-        print_r($total_results);
-
         // Load and initialise pagination
         $this->load->library('pagination');
         $config['page_query_string'] = TRUE;
