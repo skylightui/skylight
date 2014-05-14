@@ -77,3 +77,19 @@ var events = function () {
 	}
 	
 }();
+
+$("#left-metadata").css({
+    "width": 660 - 20 - $("#main-image").width()
+});
+
+$(document).ready(function(){
+    if ($('#main-image').css('height') > $('#left-metadata').css('height')) {
+        $('#main-image').css({"height": parseInt($('#left-metadata').css('height')) + 10});
+    }
+
+    if (parseInt($('#main-image').css('height')) + 180 < parseInt($('#left-metadata').css('height'))) {
+        $('#second-image').removeClass("record-image");
+        $('#second-image').css({"width": $('#main-image').css('width')});
+    }
+
+});
