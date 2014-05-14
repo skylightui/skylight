@@ -836,6 +836,36 @@ $solr['highlights'][] = $highlight;
         return $data;
     }
 
+    function countBrowseTerms($field = 'Subject', $prefix = '')
+    {
+
+        $prefix = $this->solrEscape(strtolower($prefix));
+
+        $url = $this->base_url . "select?q=*:*";
+        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
+        if (preg_match("/Date/", $field)) {
+            $facetField = $this->configured_date_filters[$field];
+        } else {
+            $facetField = $this->configured_filters[$field];
+        }
+        $url .= '&facet=true&facet.sort=index&facet.field=' . $facetField . '&facet.limit=10000';
+
+        if ($prefix !== '') {
+            $url .= '&facet.prefix=' . $this->solrEscape($prefix);
+        }
+
+        //print_r($url);
+
+        $solr_xml = file_get_contents($url);
+
+        // We would construct/pop a new skylight Record model here?
+        $search_xml = @new SimpleXMLElement($solr_xml);
+
+        $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='" . $facetField . "']/int");
+
+        return count($facet_xml);
+    }
 
     function getDateRanges($field, $q, $fq)
     {
