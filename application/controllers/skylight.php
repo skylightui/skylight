@@ -321,4 +321,22 @@ class skylight extends CI_Controller {
     function _endswith($haystack, $needle) {
         return strrpos($haystack, $needle) === strlen($haystack) - strlen($needle);
     }
+
+    function _isAuthorised() {
+        $ip_addr = $_SERVER['REMOTE_ADDR'];
+        //print_r('ip addr is '.$ip_address);
+        $ip_ranges = $this->config->item('skylight_ip_ranges');
+        if (!empty($ip_ranges)) {
+            foreach($ip_ranges as $ip_range) {
+                if (preg_match($ip_range, $ip_addr)) {
+                    //print_r(' Authorised!!!');
+                    return TRUE;
+                }
+            }
+        }
+
+        //print_r(' Not authorised');
+        return FALSE;
+
+    }
 }
