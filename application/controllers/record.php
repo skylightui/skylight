@@ -122,6 +122,9 @@ class Record extends skylight {
         $data['recorddisplay'] = $recorddisplay;
         $data['metafields'] = $metafields;
 
+        // Currently only used to restrict access to Physics material, but available for use elsewhere.
+        $data['isAuthorised'] =  $this->_isAuthorised();
+
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('record', $data);

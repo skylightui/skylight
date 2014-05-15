@@ -178,6 +178,9 @@ class Search extends skylight {
         $data['link_bitstream'] = $link_bitstream;
         $data['bitstream_field'] = $bitstream_field;
 
+        // Currently only used to restrict access to Physics material, but available for use elsewhere.
+        $data['isAuthorised'] =  $this->_isAuthorised();
+
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('search_suggestions', $data);
