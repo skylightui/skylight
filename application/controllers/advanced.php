@@ -80,8 +80,15 @@ class Advanced extends skylight {
         $form .= form_submit('search', 'Search', 'style="margin-left: 120px" class="btn"');
         $form .= '</form>';
 
+
+        $url_prefix = $this->config->item('skylight_url_prefix');
+        if (!empty($url_prefix))
+        {
+            $url_prefix = '/'.$url_prefix;
+        }
+
         if ((empty($path)) || ($path == 'index')) {
-            redirect('/advanced/form');
+            redirect($url_prefix.'/advanced/form');
         }
         else if($path == 'form') {
             $formdata['form'] = $form;
