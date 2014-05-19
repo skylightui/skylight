@@ -78,18 +78,51 @@ var events = function () {
 	
 }();
 
-$("#left-metadata").css({
-    "width": 660 - 20 - $("#main-image").width()
-});
 
 $(document).ready(function(){
-    if ($('#main-image').css('height') > $('#left-metadata').css('height')) {
-        $('#main-image').css({"height": parseInt($('#left-metadata').css('height')) + 10});
-    }
 
-    if (parseInt($('#main-image').css('height')) + 180 < parseInt($('#left-metadata').css('height'))) {
-        $('#second-image').removeClass("record-image");
-        $('#second-image').css({"width": $('#main-image').css('width')});
-    }
+    $("#main-image").load(function() {
 
+        // set metadata width according to main-image width
+        $("#left-metadata").css({"width": 640 - $('#main-image').width()});
+
+        // if the main image's height is taller than the metadata section...
+        if ($('#main-image').height() > $('#left-metadata').height()) {
+            // resize the height to match
+            $('#main-image').css({"height": $('#left-metadata').height() + 10});
+            // resize metadata width accordingly
+            $("#left-metadata").css({"width": 640 - $('#main-image').width()});
+        }
+
+        // if there is room for a second image
+        if (parseInt($('#main-image').css('height')) + 180 < parseInt($('#left-metadata').css('height'))) {
+            // stop it from being sized like a thumbnail
+            $('#second-image').removeClass("record-image");
+            // set it's width to the same as the main-image
+            $('#second-image').css({"width": $('#main-image').width()});
+
+        }
+
+        // now check if the height is greater than the space we have left alongside the metadata
+        if ($('#second-image').height() > ( $('#left-metadata').height() - $('#main-image').height() + 10 )) {
+
+            // if there is less than 100 pixels of height
+            if (($('#left-metadata').height() - $('#main-image').height()) < 100 ) {
+                // make it a thumbnail
+                $('#second-image').addClass("record-image");
+                // remove the width set above
+                $('#second-image').css({"width": ""});
+                // push it below the metadata
+                $('#second-image').css({"clear": "both"});
+            }
+            // there is enough space
+            else {
+                // set it's height to what's left
+                $('#second-image').css({"height": $('#left-metadata').height() - $('#main-image').height() + 1});
+                // remove it's set width
+                $('#second-image').css({"width": ""});
+            }
+
+        }
+    })
 });
