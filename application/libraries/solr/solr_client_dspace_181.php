@@ -957,6 +957,79 @@ $solr['highlights'][] = $highlight;
         return $value;
     }
 
+    // function to fetch handles and images
+    // for sitemap generation
+    function getSiteMapURLs($q)
+    {
+
+        $url = $this->base_url . "select?indent=on&version=2.2&q=";
+        $url .= $q . "&fq=&start=0&rows=10000&fl=location.coll%2Chandle%2Cdc.format.original&qt=&wt=&explainOther=&hl.fl=f";
+        //$url .= "location.coll%3A(1+3+11+15)&fq=&start=0&rows=10000&fl=location.coll&qt=&wt=&explainOther=&hl.fl=";
+        //$url .= $this->solrEscape($q) . "&fq=&start=0&rows=20000&fl=handle%2C+location.coll&qt=&wt=&explainOther=&hl.fl=";
+        //$url .= "*&fq=&start=&rows=100&fl=handle%2C+dc.format.original&qt=&wt=&explainOther=&hl.fl=";
+        // location.coll%3A%281+3+11+15%29
+
+        $solr_xml = file_get_contents($url);
+        $result_xml = @new SimpleXMLElement($solr_xml);
+
+        $docs = array();
+
+        foreach ($result_xml->result->doc as $result) {
+            $doc = array();
+
+            foreach ($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+
+                //echo "Key: " . $key . " Value: " . $value . "</br>";
+
+                if($key = "handle") {
+
+                    $handle_id = preg_replace('/^.*\//', '',$value);
+                    $doc["recordURL"] = 'record/' . $handle_id;
+                }
+
+            }
+
+            foreach ($result->arr as $multivalue_field) {
+                $key = $multivalue_field['name'];
+
+                foreach ($multivalue_field->str as $value) {
+
+                    //echo "Key: " . $key . " Value: " . $value . "</br>";
+
+                    if($key == "location.coll") {
+                        $doc["collection"] = (string)$value;
+                    }
+                    else if($key == "dc.format.original") {
+
+                        $b_segments = explode("##", $value);
+                        $b_filename = $b_segments[1];
+                        $b_handle = $b_segments[3];
+                        $b_seq = $b_segments[4];
+                        $b_handle_id = preg_replace('/^.*\//', '',$b_handle);
+                        $b_uri = 'record/'.$b_handle_id.'/'.$b_seq.'/'.$b_filename;
+
+                        if (strpos($b_filename, ".jpg") > 0)
+                        {
+                            $doc["imageURL"][] = $b_uri;
+                        }
+
+                    }
+                }
+
+            }
+
+            $docs[] = $doc;
+        }
+
+        $data['docs'] = $docs;
+        $data['rows'] = $result_xml->result['numFound'];
+
+        return $data;
+
+    }
+
 
 }
 
