@@ -125,4 +125,26 @@ $(document).ready(function(){
 
         }
     })
+
+    $('.jcarousel')
+        .jcarousel({
+        // Configuration goes here
+            wrap: 'circular'
+        })
+        .jcarouselAutoscroll({
+            interval: 3000,
+            target: '+=1',
+            autostart: true
+        });
+    $('.jcarousel-control-prev')
+        .jcarouselControl({
+            target: '-=1'
+        });
+    $('.jcarousel-control-next')
+        .jcarouselControl({
+            target: '+=1'
+        });
+
 });
+
+
