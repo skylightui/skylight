@@ -18,11 +18,14 @@ class Advanced extends skylight {
 
         $filterurl = "";
         $url_prefix = $this->config->item('skylight_url_prefix');
+        $form_prefix = "";
+        $redirect_prefix = "";
         if (!empty($url_prefix))
         {
-            $url_prefix = '/'.$url_prefix;
+            $form_prefix = $url_prefix . '/';
+            $redirect_prefix = '/'.$url_prefix;
         }
-        $form = form_open($url_prefix.'advanced/post');
+        $form = form_open($form_prefix.'advanced/post');
 
         // Determine the page title and heading.
         $page_title_prefix = $this->config->item('skylight_page_title_prefix');
@@ -85,7 +88,7 @@ class Advanced extends skylight {
         $form .= '</form>';
 
         if ((empty($path)) || ($path == 'index')) {
-            redirect('/advanced/form');
+            redirect($redirect_prefix.'/advanced/form');
         }
         else if($path == 'form') {
             $formdata['form'] = $form;
@@ -126,7 +129,7 @@ class Advanced extends skylight {
             $operator = $this->input->post('operator');
 
             // Base search URL
-            redirect('/advanced/search'.$filterurl.'?operator='.$operator);
+            redirect($redirect_prefix.'/advanced/search'.$filterurl.'?operator='.$operator);
         }
         else if($path == 'search') {
 
@@ -158,11 +161,18 @@ class Advanced extends skylight {
             $message = '<h3>Currently searching the following fields:</h3>';
             $filter_message = '';
 
+            // need to handle if there's a url prefix
+            if(!empty($url_prefix)) {
+                $search_index_start = 4;
+            }
+            else {
+                $search_index_start = 3;
+            }
+
             if(count($this->uri->segments) > 2) {
 
-                for($i = 3; $i <= count($this->uri->segments); $i++) {
+                for($i = $search_index_start; $i <= count($this->uri->segments); $i++) {
                     $test_filter = $this->uri->segments[$i];
-
 
                     if(preg_match('#%7C%7C%7C#',$test_filter)) {
                         $url_filters[] = $test_filter;
@@ -181,13 +191,10 @@ class Advanced extends skylight {
                         $test_filter = urldecode($test_filter);
                         $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
 
-
                         //    if(array_key_exists($filter_segments[0], $configured_filters)) {
 
                         // This used to match filters... that doesn't work well, though. So we use raw field instead
                         // $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
-
-
 
                         $saved_filters[] = $this->skylight_utilities->getRawField($filter_segments[0]).$delimiter.$filter_segments[1];
                         $saved_search[$filter_segments[0]] = $filter_segments[1];

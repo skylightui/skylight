@@ -12,6 +12,10 @@ class redirect extends skylight {
             $url_prefix = '/'.$url_prefix;
         }
 
+        print_r("Advanced");
+        print_r($url_prefix);
+        die();
+
         // Redirect to the relevant search page (/search/query) rather than /search/?q=query
         if (!empty($_POST['q'])) {
             redirect($url_prefix.'/search/' . $_POST['q']);
