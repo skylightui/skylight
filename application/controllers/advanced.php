@@ -169,7 +169,7 @@ class Advanced extends skylight {
                 $search_index_start = 3;
             }
 
-            if(count($this->uri->segments) > 2) {
+            if(count($this->uri->segments) > $search_index_start - 1) {
 
                 for($i = $search_index_start; $i <= count($this->uri->segments); $i++) {
                     $test_filter = $this->uri->segments[$i];
@@ -217,7 +217,7 @@ class Advanced extends skylight {
 
 
             // Base search URL
-            $base_search = base_url().'/advanced/search';
+            $base_search = base_url().$url_prefix.'/advanced/search';
             foreach($url_filters as $url_filter) {
                 $base_search .= '/'.$url_filter;
             }
