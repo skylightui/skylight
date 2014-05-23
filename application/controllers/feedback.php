@@ -21,6 +21,14 @@ class Feedback extends skylight {
 
         $data['page_title'] = $page_title_prefix.'Feedback';
 
+        $url_prefix = $this->config->item('skylight_url_prefix');
+        if (!empty($url_prefix))
+        {
+            $url_prefix = '/'.$url_prefix;
+        }
+
+        $data['url_prefix'] = $url_prefix;
+
         $this->view('header', $data);
         if ($this->config->item('skylight_homepage_fullwidth') === TRUE) {
             $this->view('div_main_full', $data);
