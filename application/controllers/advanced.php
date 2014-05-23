@@ -17,7 +17,12 @@ class Advanced extends skylight {
     function _remap($path, $params = array()) {
 
         $filterurl = "";
-        $form = form_open('advanced/post');
+        $url_prefix = $this->config->item('skylight_url_prefix');
+        if (!empty($url_prefix))
+        {
+            $url_prefix = '/'.$url_prefix;
+        }
+        $form = form_open($url_prefix.'advanced/post');
 
         // Determine the page title and heading.
         $page_title_prefix = $this->config->item('skylight_page_title_prefix');
@@ -26,7 +31,6 @@ class Advanced extends skylight {
         }
 
         $search_fields = $this->config->item('skylight_search_fields');
-
 
         foreach($search_fields as $key => $value) {
 
@@ -80,15 +84,8 @@ class Advanced extends skylight {
         $form .= form_submit('search', 'Search', 'style="margin-left: 120px" class="btn"');
         $form .= '</form>';
 
-
-        $url_prefix = $this->config->item('skylight_url_prefix');
-        if (!empty($url_prefix))
-        {
-            $url_prefix = '/'.$url_prefix;
-        }
-
         if ((empty($path)) || ($path == 'index')) {
-            redirect($url_prefix.'/advanced/form');
+            redirect('/advanced/form');
         }
         else if($path == 'form') {
             $formdata['form'] = $form;
@@ -275,7 +272,6 @@ class Advanced extends skylight {
             $config['per_page'] = $rows;
             $config['base_url'] = $base_search.'?operator='.$operator;
             $this->pagination->initialize($config);
-
 
             $data['pagelinks'] = $this->pagination->create_links();
 
