@@ -603,6 +603,11 @@ $solr['highlights'][] = $highlight;
         } elseif (array_key_exists($title_field, $solr)) {
             $rels_xml = $this->getRelatedItems($solr[$title_field], $id);
         }
+        //todo add related items fields to skylight config
+        else
+        {
+            return $data;
+        }
 
         $related = @new SimpleXMLElement($rels_xml);
 
