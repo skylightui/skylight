@@ -84,7 +84,7 @@ class content extends skylight {
         } else if (file_exists($local_path . '/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php')) {
             // If there a static file with this name in the local path...
             $title = str_replace('-', ' ', $url);
-            $title = str_replace('/', ' > ', $title);
+            $title = str_replace('/', ' ', $title);
             $title = ucwords($title);
             $data['page_title'] = $title;
             
@@ -112,7 +112,7 @@ class content extends skylight {
         } else if (file_exists('./application/views/static/' . $this->config->item('skylight_appname') . '/' . $url . '.php')) {
             // If there a static file with this name...
             $title = str_replace('-', ' ', $url);
-            $title = str_replace('/', ' > ', $title);
+            $title = str_replace('/', ' ', $title);
             $title = ucwords($title);
             $data['page_title'] = $title;
 
