@@ -600,10 +600,10 @@ $solr['highlights'][] = $highlight;
             $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
         } elseif (array_key_exists($subject_field, $solr)) {
             $rels_xml = $this->getRelatedItems($solr[$subject_field], $id);
+        } elseif (array_key_exists($title_field, $solr)) {
+            $rels_xml = $this->getRelatedItems($solr[$title_field], $id);
         }
-        else {
-            $rels_xml = $this->getRelatedItems(array_values($solr), $id);
-        }
+
         $related = @new SimpleXMLElement($rels_xml);
 
         // Parse like search results. This will be moved somewhere better
