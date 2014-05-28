@@ -100,7 +100,6 @@ $(document).ready(function(){
             $('#second-image').removeClass("record-image");
             // set it's width to the same as the main-image
             $('#second-image').css({"width": $('#main-image').width()});
-
         }
 
         // now check if the height is greater than the space we have left alongside the metadata
@@ -123,6 +122,9 @@ $(document).ready(function(){
                 $('#second-image').css({"width": ""});
             }
 
+        }
+        else {
+            $('#second-image').css({"max-height": "500px"});
         }
     })
 
