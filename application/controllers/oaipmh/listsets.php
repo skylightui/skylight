@@ -13,7 +13,8 @@
     $response = str_replace(substr($oaipmhbase, 0, strlen($oaipmhbase) - 1), htmlentities($base), $response);
     $response = str_replace(' set="' . $oaipmhcollection . '">', '>', $response);
     $response = str_replace('<identifier>' . $oaipmhid, '<identifier>oai:skylight/' . $id . '/', $response);
-    $response = str_replace('<dc:identifier>' . $oaipmhlink, '<dc:identifier>' . $record_url, $response);
+    //$response = str_replace('<dc:identifier>' . $oaipmhlink, '<dc:identifier>' . $record_url, $response);
+    $response = str_replace($oaipmhlink, $record_url, $response);
     $response = preg_replace("#<dc:identifier>(?:(?!".$record_url.").)*</dc:identifier>#",'', $response);
     $response = str_replace('<setSpec>' . $oaipmhcollection . '</setSpec>', '', $response);
     echo $response;
