@@ -14,8 +14,7 @@ University of Auckland:
 University of Edinburgh:
  * Collection Level Descriptions http://collections.ed.ac.uk/
  * Musical Instruments Museums Edinburgh http://collections.ed.ac.uk/mimed 
- * Edinburgh University Art Collection http://collections.ed.ac.uk/art 
- * Exam Papers http://exampapers.ed.ac.uk (coming soon UoE only)
+ * Edinburgh University Art Collection http://collections.ed.ac.uk/art
 
 Installation
 ------------
