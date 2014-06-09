@@ -1,6 +1,6 @@
 SkyLight: Expose your collections
 =================================
-![alt text](https://raw.github.com/skylightui/skylight/master/theme/default/images/skylight.jpg "SkyLight logo") http://skylightui.org/
+![alt text](https://raw.github.com/skylightui/skylight/master/theme/default/images/skylight.jpg "SkyLight logo")
 
 Example sites
 -------------
