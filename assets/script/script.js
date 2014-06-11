@@ -81,7 +81,7 @@ var events = function () {
 
 $(document).ready(function(){
 
-    $("#main-image").load(function() {
+$("#main-image").load(function() {
 
         // set metadata width according to main-image width
         $("#left-metadata").css({"width": 640 - $('#main-image').width()});
@@ -147,6 +147,11 @@ $(document).ready(function(){
             target: '+=1'
         });
 
+    $('audio[id^="audio-"]').bind("play", function(){
+        ga('send', 'event', 'Audio', 'play', $(this).attr('title'));
+    });
+
 });
+
 
 
