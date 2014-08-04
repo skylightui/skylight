@@ -159,10 +159,24 @@ class skylight extends CI_Controller {
     function _load_site_config() {
         // Load the correct config file - usually looked up using the hostname
         $hostname = $_SERVER['HTTP_HOST'];
-
-        // Now check to see if we are using URLs of the form http://.../prefix/...
         $url_prefixes = $this->config->item('skylight_url_prefixes');
-        if (!empty($url_prefixes))
+        $skylight_hostnames = $this->config->item('skylight_hostnames');
+
+        // See if we are using a predefined hostname
+        if (in_array($hostname, $skylight_hostnames))
+        {
+            // strip test out if it's there
+            if (strpos($_SERVER['HTTP_HOST'], "test") !== false) {
+
+                // will be test.livehostname
+                // remove test.
+                $hostname = substr($hostname, 5);
+            }
+            // else just use the hostname
+
+        }
+        // Now check to see if we are using URLs of the form http://.../prefix/...
+        else if (!empty($url_prefixes))
         {
             // Our URLs will be of the form collections.ed.ac.uk/prefix/... where prefix will match the site config file,
             // except for the CLDs which have no prefix. Robin.
