@@ -32,6 +32,20 @@ class Skylight_utilities {
      *
      * <a rel="lightbox" class="bitstream_link" target="_blank" href="<?php echo getBitstreamUri($bitstream); ?>"><?php echo getBitstreamFilename($bitstream); ?></a>
      * @param  $metadatavalue
+     * @return a formatted bitstream uri */
+    function getBitstreamUri($metadatavalue) {
+
+        $uri = getBitstreamUri($metadatavalue);
+
+        return $uri;
+
+    }
+
+
+    /**
+     *
+     * <a rel="lightbox" class="bitstream_link" target="_blank" href="<?php echo getBitstreamUri($bitstream); ?>"><?php echo getBitstreamFilename($bitstream); ?></a>
+     * @param  $metadatavalue
      * @return a formatted bitstream link */
     function getBitstreamLink($metadatavalue) {
 
@@ -52,9 +66,6 @@ class Skylight_utilities {
                     }
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
 
-            //$link .= '<script>$(document).ready(function(){
-             //   $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
-        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
@@ -85,9 +96,6 @@ class Skylight_utilities {
                     }
             $link .= 'href="'.$uri.'"><img src="'.$uri.'"/></a>';
 
-            //$link .= '<script>$(document).ready(function(){
-             //   $("a[rel=\''.$seq.'\']").colorbox({width: "800px", height: "600px"});
-        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'">'.$filename.'</a>';
@@ -123,9 +131,7 @@ class Skylight_utilities {
                     }
             $link .= 'href="'.$uri.'"><img  style="float:right;" src="'.$thumburi.'"/></a>';
 //
-                    //$link .= '<script>$(document).ready(function(){
-                //$("a[rel=\''.$seq.'\']").colorbox({width: "400px", top: "100px"});
-        //});</script>';
+
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
@@ -137,7 +143,6 @@ class Skylight_utilities {
 
     }
 
-//SR 21/11/13 New method to allow configurable thumbnail images.
 //New parameters: width, distance from top, style.
     function getBitstreamThumbLinkParameterised($metadatavalue, $thumbmetadatavalue, $desc, $width, $top, $style) {
 
@@ -163,9 +168,6 @@ class Skylight_utilities {
             }
             $link .= 'href="'.$uri.'"><img '.$style.' src="'.$thumburi.'" /></a>';
 //
-            //$link .= '<script>$(document).ready(function(){
-                //$("a[rel=\''.$seq.'\']").colorbox({width: "'.$width.'" , top: "'.$top.'"});
-        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:right;" src="'.$thumburi.'"/></a>';
@@ -198,9 +200,6 @@ class Skylight_utilities {
                     }
             $link .= 'href="'.$uri.'"><img style="height:90px;" src="'.$thumburi.'"/></a></div>';
 
-            //$link .= '<script>$(document).ready(function(){
-            //    $("a[rel=\'1\']").colorbox({width: "400px", top: "100px"});
-        //});</script>';
         }
         else {
             $link .= 'href="'.$uri.'"><img style="float:left;" src="'.$thumburi.'"/></a>';
