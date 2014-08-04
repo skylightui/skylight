@@ -46,7 +46,6 @@ $route['mimed/(:any)'] = "$1";
 $route['physics/(:any)'] = "$1";
 $route['calendars/(:any)'] = "$1";
 $route['cockburn/(:any)'] = "$1";
-$route['bookscans/(:any)'] = "$1";
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
 
