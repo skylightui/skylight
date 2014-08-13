@@ -5,7 +5,7 @@
         <strong><?php echo $total_results ?></strong> results </span>
         <?php echo $pagelinks ?>
     </div>
-
+    <br />
     <div class="browse_results">
         <div class="term_search">
             <form method="get" action="./browse/<?php echo $field; ?>">
@@ -14,7 +14,7 @@
                 <input type="submit"/>
             </form>
         </div>
-
+        <br />
         <div class="browse_facets">
             <ul class="browse_facet_list">
 
