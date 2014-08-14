@@ -172,6 +172,12 @@ class skylight extends CI_Controller {
                 // remove test.
                 $hostname = substr($hostname, 5);
             }
+            // strip out the www if it's there
+            else if(strpos($_SERVER['HTTP_HOST'], "www.") !== false) {
+                // will be www.hostname
+                // remove www.
+                $hostname = substr($hostname, 4);
+            }
             // else just use the hostname
 
         }
