@@ -1,7 +1,7 @@
 <?php
 
     $url = $oaipmhbase . 'verb=ListRecords';
-
+    $restricted = false;
 
     if (!(isset($_GET['metadataPrefix'])))
     {
@@ -28,7 +28,9 @@ switch ($_GET['metadataPrefix'])
 
     if (!(isset($_GET['set'])))
     {
-        $set = '&set=' . $oaipmhcollection;
+        //$set = '&set=' . $oaipmhcollection;
+        // set needs to be defined
+        $restricted = true;
 
     }
     else
@@ -43,23 +45,29 @@ switch ($_GET['metadataPrefix'])
         $url .= $metadataPrefix.$set;
     }
 
+    // now make sure it's a collection we're allowed to disseminate
+    $oaiallowed = $this->config->item('skylight_oaipmhallowed');
 
+    if($oaiallowed && !$restricted) {
 
-    $response = file_get_contents($url);
+        $response = file_get_contents($url);
 
-    //print_r($response);
-    $record_url = str_replace("/record/","/".$config."/record/", $record_url );
-    $response = str_replace('<?xml version="1.0" encoding="UTF-8" ?>', '', $response);
-    $response = str_replace(substr($oaipmhbase, 0, strlen($oaipmhbase) - 1), htmlentities($base), $response);
-    $response = str_replace(' set="' . $oaipmhcollection . '">', '>', $response);
-    //$response = str_replace('<identifier>' . $oaipmhid, '<identifier>oai:skylight/' . $id . '/', $response);
-    $response = str_replace('<identifier>' . $oaipmhid, '<identifier>oai:skylight/', $response);
-    //$response = str_replace('<dc:identifier>' . $oaipmhlink, '<dc:identifier>' . $record_url, $response);
-    $response = str_replace($oaipmhlink, $record_url, $response);
-    $response = preg_replace("#<dc:identifier>(?:(?!".$record_url.").)*</dc:identifier>#",'', $response);
-    $response = str_replace('<setSpec>' . $oaipmhcollection . '</setSpec>', '', $response);
+        //print_r($response);
+        $record_url = str_replace("/record/","/".$config."/record/", $record_url );
+        $response = str_replace('<?xml version="1.0" encoding="UTF-8" ?>', '', $response);
+        $response = str_replace(substr($oaipmhbase, 0, strlen($oaipmhbase) - 1), htmlentities($base), $response);
+        $response = str_replace(' set="' . $oaipmhcollection . '">', '>', $response);
+        //$response = str_replace('<identifier>' . $oaipmhid, '<identifier>oai:skylight/' . $id . '/', $response);
+        $response = str_replace('<identifier>' . $oaipmhid, '<identifier>oai:skylight/', $response);
+        //$response = str_replace('<dc:identifier>' . $oaipmhlink, '<dc:identifier>' . $record_url, $response);
+        $response = str_replace($oaipmhlink, $record_url, $response);
+        $response = preg_replace("#<dc:identifier>(?:(?!".$record_url.").)*</dc:identifier>#",'', $response);
+        $response = str_replace('<setSpec>' . $oaipmhcollection . '</setSpec>', '', $response);
 
-    $response = str_replace($oaipmhbitstream, $record_url, $response);
-    echo $response;
-
+        $response = str_replace($oaipmhbitstream, $record_url, $response);
+        echo $response;
+    }
+    else {
+        echo "Can not disseminate format - ListRecords not permitted on this collection.";
+    }
 ?>
