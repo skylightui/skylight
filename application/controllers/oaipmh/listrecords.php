@@ -35,7 +35,12 @@ switch ($_GET['metadataPrefix'])
     }
     else
     {
-        $set = '&set='.$_GET['set'];
+        if ($_GET['set'] === $oaipmhcollection) {
+            $set = '&set='.$_GET['set'];
+        }
+        else {
+            $restricted = true;
+        }
     }
 
 
@@ -67,7 +72,17 @@ switch ($_GET['metadataPrefix'])
         $response = str_replace($oaipmhbitstream, $record_url, $response);
         echo $response;
     }
-    else {
-        echo "Can not disseminate format - ListRecords not permitted on this collection.";
+    else { ?>
+
+        <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
+         http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+            <responseDate><?php echo $now; ?></responseDate>
+            <request><?php echo htmlentities($url); ?></request>
+            <error code="cannotDisseminateFormat">ListRecords not permitted on this collection</error>
+        </OAI-PMH>
+
+        <?php
     }
 ?>
