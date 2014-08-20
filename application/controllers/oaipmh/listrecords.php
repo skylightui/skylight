@@ -13,41 +13,39 @@
         $metadataPrefix = '&metadataPrefix='.$_GET['metadataPrefix'];
     }
 
-switch ($_GET['metadataPrefix'])
-{
-    case "lido":
-        $config = "mimed";
-        break;
-    case "pndsdc":
-        $config = "art";
-        break;
-    default:
-        $config = "";
-        break;
-}
+    switch ($_GET['metadataPrefix'])
+    {
+        case "lido":
+            $config = "mimed";
+            break;
+        case "pndsdc":
+            $config = "art";
+            break;
+        default:
+            $config = "";
+            break;
+    }
 
     if (!(isset($_GET['set'])))
     {
-        //$set = '&set=' . $oaipmhcollection;
+        $set = '&set=' . $oaipmhcollection;
         // set needs to be defined
         $restricted = true;
 
     }
     else
     {
-        if ($_GET['set'] === $oaipmhcollection) {
-            $set = '&set='.$_GET['set'];
-        }
-        else {
+        $set = '&set='.$_GET['set'];
+
+        if ($_GET['set'] !== $oaipmhcollection) {
             $restricted = true;
         }
     }
 
+    $url .= $metadataPrefix.$set;
 
     if (!empty($_GET['resumptionToken'])) {
         $url .= '&resumptionToken=' . $_GET['resumptionToken'];
-    } else {
-        $url .= $metadataPrefix.$set;
     }
 
     // now make sure it's a collection we're allowed to disseminate
@@ -73,16 +71,9 @@ switch ($_GET['metadataPrefix'])
         echo $response;
     }
     else { ?>
-
-        <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
-         http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-            <responseDate><?php echo $now; ?></responseDate>
-            <request><?php echo htmlentities($url); ?></request>
-            <error code="cannotDisseminateFormat">ListRecords not permitted on this collection</error>
-        </OAI-PMH>
-
-        <?php
-    }
-?>
+    <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+        <responseDate><?php echo $now; ?></responseDate>
+        <request><?php echo htmlentities($url); ?></request>
+        <error code="cannotDisseminateFormat">ListRecords not permitted for this collection</error>
+    </OAI-PMH>
+    <?php } ?>

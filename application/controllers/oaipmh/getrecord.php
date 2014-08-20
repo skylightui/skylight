@@ -54,7 +54,6 @@ else
 /* We are not allowing GetRecord to stop exam paper records being displayed */
 
 ?>
-
     <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
