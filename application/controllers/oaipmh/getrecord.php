@@ -1,5 +1,6 @@
 <?php
 
+/*
     $url = $oaipmhbase . 'verb=GetRecord';
 
 
@@ -48,5 +49,10 @@ else
     $response = str_replace('<setSpec>' . $oaipmhcollection . '</setSpec>', '', $response);
     $response = str_replace($oaipmhbitstream, $record_url, $response);
     echo $response;
+*/
+
+/* We are not allowing GetRecord to stop exam paper records being displayed */
+
+echo "Can not disseminate format - GetRecord not allowed.";
 
 ?>
