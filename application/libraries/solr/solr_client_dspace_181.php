@@ -57,6 +57,8 @@ class Solr_client_dspace_181
         $this->thumbnail_field = str_replace('.', '', $CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
         $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
+        $this->related_fields = $CI->config->item('skylight_related_fields');
+        $this->num_related = $CI->config->item('skylight_related_number');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
@@ -533,8 +535,7 @@ array_push($ranges,$this->getDateRanges($filter));
 
     function getRecord($id = NULL, $highlight = "")
     {
-        $title_field = 'title';
-        $subject_field = 'subject';
+        $title_field = "Title";
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
@@ -595,7 +596,9 @@ $solr['highlights'][] = $highlight;
 
 */
         }
-         // Related Items
+        // Related Items
+
+/*
         if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
             $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
         } elseif (array_key_exists($subject_field, $solr)) {
@@ -607,6 +610,22 @@ $solr['highlights'][] = $highlight;
         else
         {
             return $data;
+        }
+*/
+        $rels_solr = array();
+
+        foreach ($this->related_fields as $related_field) {
+            $key = str_replace('.', '', $related_field);
+            if(array_key_exists($key, $solr)) {
+                $rels_solr[] = $solr[$key];
+            }
+        }
+
+        if(count($rels_solr) > 0) {
+            $rels_xml = $this->getRelatedItems($rels_solr, $id);
+        }
+        else {
+            $rels_xml = $this->getRelatedItems(array_values($solr), $id);
         }
 
         $related = @new SimpleXMLElement($rels_xml);
@@ -715,7 +734,7 @@ $solr['highlights'][] = $highlight;
         $url .= 'fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
         $url .= '&q=' . $this->solrEscape($query_string);
-        $url .= '&rows=5';
+        $url .= '&rows=' . $this->num_related;
 
         $solr_xml = file_get_contents($url);
 
