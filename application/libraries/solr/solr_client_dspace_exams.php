@@ -60,6 +60,8 @@ class Solr_client_dspace_exams
         $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
         //echo 'HIGHLIGHTS'.$this->highlight_fields;
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
+        $this->related_fields = $CI->config->item('skylight_related_fields');
+        $this->num_related = $CI->config->item('skylight_related_number');
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
@@ -546,27 +548,19 @@ class Solr_client_dspace_exams
 
     function getRecord($id = NULL, $highlight = "")
     {
-
-        $title_field = $this->recorddisplay[0]; //changed to index
-        $subject_field = $this->recorddisplay[3]; //changed to index
+        $title_field = "Title";
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
         // TODO: Implement highlighting for record pages
         // the below works but only with snippets, not in context
         // of the whole returned doc. Going with javascript now.
-        //if($highlight == "") {
+
         $url .= 'handle:' . $handle;
-        //}
-        //else {
-        // $url .= $highlight;
-        //}
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
         $url .= '&fq=handle:' . $handle;
-        /*if($highlight != "") {
-$url .= '&hl=true&hl.fl=*.en';
-}*/
+
         //print_r('record '.$url);
         $solr_xml = file_get_contents($url);
 
@@ -601,16 +595,10 @@ $url .= '&hl=true&hl.fl=*.en';
             // TODO: Implement this later. For now, highlighting in jquery
             // TODO: on record page because that way, we can do our html bitstreams
 
-            /*
-foreach ($search_xml->xpath("//lst[@name='highlighting']/lst/arr/str") as $highlight) {
-//echo $doc['handle'][0].': '.$highlight.'<br/>';
-$solr['highlights'][] = $highlight;
-}
-
-*/
         }
 
         // Related Items
+        /*
         if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
             $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
         } elseif (array_key_exists($subject_field, $solr)) {
@@ -619,6 +607,24 @@ $solr['highlights'][] = $highlight;
         else {
             $rels_xml = $this->getRelatedItems(array_values($solr), $id);
         }
+        */
+
+        $rels_solr = array();
+
+        foreach ($this->related_fields as $related_field) {
+            $key = str_replace('.', '', $related_field);
+            if(array_key_exists($key, $solr)) {
+                $rels_solr[] = $solr[$key];
+            }
+        }
+
+        if(count($rels_solr) > 0) {
+            $rels_xml = $this->getRelatedItems($rels_solr, $id);
+        }
+        else {
+            $rels_xml = $this->getRelatedItems(array_values($solr), $id);
+        }
+
         $related = @new SimpleXMLElement($rels_xml);
 
         // Parse like search results. This will be moved somewhere better
@@ -658,7 +664,6 @@ $solr['highlights'][] = $highlight;
                 $doc[str_replace('.', '', $key)] = $value;
 
             }
-
 
             $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
@@ -724,7 +729,7 @@ $solr['highlights'][] = $highlight;
         $url = $this->base_url . 'select?q=' . $this->solrEscape($query_string);
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
-        $url .= '&rows=5';
+        $url .= '&rows=' . $this->num_related;
 
         //print_r('related '. $url);
         $solr_xml = file_get_contents($url);
