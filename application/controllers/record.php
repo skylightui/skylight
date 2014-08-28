@@ -63,7 +63,7 @@ class Record extends skylight {
             $filename = $segments[4];
 
             if(preg_match('/^\d+$/',$seq)) {
-                $url = $this->config->item('skylight_objectproxy_url').$id.'/'.$seq.'/'.urlencode($filename);
+                $url = $this->config->item('skylight_objectproxy_url').$id.'/'.$seq.'/'.$filename;
 
 
                 // Which part of the solr results array is the bitstream in? (bitstream or thumbnail)
