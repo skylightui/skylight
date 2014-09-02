@@ -597,21 +597,6 @@ $solr['highlights'][] = $highlight;
 */
         }
         // Related Items
-
-/*
-        if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
-        } elseif (array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($solr[$subject_field], $id);
-        } elseif (array_key_exists($title_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($solr[$title_field], $id);
-        }
-        //todo add related items fields to skylight config
-        else
-        {
-            return $data;
-        }
-*/
         $rels_solr = array();
 
         foreach ($this->related_fields as $related_field) {
@@ -701,9 +686,9 @@ $solr['highlights'][] = $highlight;
             if (is_array($metadatavalue)) {
                 $md = $metadatavalue;
                 $metadatavalue = '';
-                //foreach ($md as $value) {
-                    $metadatavalue .= $md[0] . ' ';
-                //}
+                // limit to the first 200 characters
+                $metadatavalue .= substr($md[0],0,200) . ' ';
+
             }
             $metadatavalue = preg_replace('/\[/', '\\[', $metadatavalue, -1);
             $metadatavalue = preg_replace('/\]/', '\\]', $metadatavalue, -1);
