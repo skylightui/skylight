@@ -253,7 +253,7 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
         //print_r('simple search '. $url);
 
-        $solr_xml = file_get_contents($url);
+        $solr_xml = @file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
 
         $docs = array();
