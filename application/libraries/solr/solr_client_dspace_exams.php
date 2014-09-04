@@ -598,17 +598,6 @@ class Solr_client_dspace_exams
         }
 
         // Related Items
-        /*
-        if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
-        } elseif (array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($solr[$subject_field], $id);
-        }
-        else {
-            $rels_xml = $this->getRelatedItems(array_values($solr), $id);
-        }
-        */
-
         $rels_solr = array();
 
         foreach ($this->related_fields as $related_field) {
@@ -697,9 +686,9 @@ class Solr_client_dspace_exams
             if (is_array($metadatavalue)) {
                 $md = $metadatavalue;
                 $metadatavalue = '';
-                //foreach ($md as $value) {
-                    $metadatavalue .= $md[0] . ' ';
-                //}
+                // limit to the first 200 characters
+                $metadatavalue .= substr($md[0],0,200) . ' ';
+
             }
             $metadatavalue = preg_replace('/\[/', '\\[', $metadatavalue, -1);
             $metadatavalue = preg_replace('/\]/', '\\]', $metadatavalue, -1);
