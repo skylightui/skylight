@@ -256,7 +256,7 @@ class Solr_client_dspace_exams
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
 
         // Call Solr!
-        $solr_xml = file_get_contents($url);
+        $solr_xml = @file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
 
         $docs = array();
