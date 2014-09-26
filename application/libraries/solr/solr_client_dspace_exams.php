@@ -51,6 +51,7 @@ class Solr_client_dspace_exams
         $this->recorddisplay = $CI->config->item('skylight_recorddisplay');
         $this->searchresultdisplay = $CI->config->item('skylight_searchresult_display');
         $this->configured_filters = $CI->config->item('skylight_filters');
+        $this->configured_search_filters = $CI->config->item('skylight_search_filters');
         $this->configured_date_filters = $CI->config->item('skylight_date_filters');
         $this->delimiter = $CI->config->item('skylight_filter_delimiter');
         $this->bitstream_field = str_replace('.', '', $CI->config->item('skylight_fulltext_field'));
@@ -194,12 +195,13 @@ class Solr_client_dspace_exams
     {
 
         if($sort_by == "score+desc" || $sort_by == "" || !isset($sort_by)) {
-            $sort_by = 'dc.coverage.temporal_sort+desc,dc.title_sort+asc';
+            $sort_by = 'dc.coverage.temporal_sort+desc,score+desc,dc.title_sort+asc';
         }
         else {
             $sort_by = str_replace(' ', '+', $sort_by);
             $sort_by .= ',dc.coverage.temporal_sort+desc';
         }
+
 
         // Returns $data containing search results and facets
         // See search.php controller for example of usage
@@ -214,7 +216,7 @@ class Solr_client_dspace_exams
                $url .= '&fq=' . $this->solrEscape($value) . '';
         }
 
-
+        $url .= '&qf=dc.title^20.0';
 
         if (isset($this->date_field))
         {
@@ -236,7 +238,7 @@ class Solr_client_dspace_exams
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
         //$url .= '&rows=20&facet.mincount=1';
         $url .= '&facet=true&facet.limit=-1&facet.sort=index';
-        foreach ($this->configured_filters as $filter_name => $filter) {
+        foreach ($this->configured_search_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
         }
 
