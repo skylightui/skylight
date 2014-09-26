@@ -237,7 +237,7 @@ class Solr_client_dspace_exams
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
         //$url .= '&rows=20&facet.mincount=1';
         $url .= '&facet=true&facet.limit=-1&facet.sort=index';
-        foreach ($this->configured_search_filters as $filter_name => $filter) {
+        foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
         }
 
