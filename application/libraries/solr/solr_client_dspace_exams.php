@@ -51,7 +51,6 @@ class Solr_client_dspace_exams
         $this->recorddisplay = $CI->config->item('skylight_recorddisplay');
         $this->searchresultdisplay = $CI->config->item('skylight_searchresult_display');
         $this->configured_filters = $CI->config->item('skylight_filters');
-        $this->configured_search_filters = $CI->config->item('skylight_search_filters');
         $this->configured_date_filters = $CI->config->item('skylight_date_filters');
         $this->delimiter = $CI->config->item('skylight_filter_delimiter');
         $this->bitstream_field = str_replace('.', '', $CI->config->item('skylight_fulltext_field'));
