@@ -194,12 +194,13 @@ class Solr_client_dspace_exams
     {
 
         if($sort_by == "score+desc" || $sort_by == "" || !isset($sort_by)) {
-            $sort_by = 'dc.coverage.temporal_sort+desc,dc.title_sort+asc';
+            $sort_by = 'dc.coverage.temporal_sort+desc,score+desc,dc.title_sort+asc';
         }
         else {
             $sort_by = str_replace(' ', '+', $sort_by);
             $sort_by .= ',dc.coverage.temporal_sort+desc';
         }
+
 
         // Returns $data containing search results and facets
         // See search.php controller for example of usage
@@ -214,7 +215,7 @@ class Solr_client_dspace_exams
                $url .= '&fq=' . $this->solrEscape($value) . '';
         }
 
-
+        $url .= '&qf=dc.title^20.0';
 
         if (isset($this->date_field))
         {
