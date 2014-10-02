@@ -209,7 +209,13 @@ class Solr_client_dspace_exams
         if ($q == '*' || $q == '') {
             $q = '*:*';
         }
-        $url = $this->base_url . "select?q=" . $this->solrEscape($q);
+
+        // treat search box query as phrase
+        if ($q != '*:*') {
+            $q = '"' . $q . '"';
+        }
+
+        $url = $this->base_url . 'select?q=' . $this->solrEscape($q);
         if (count($fq) > 0) {
             foreach ($fq as $value)
                $url .= '&fq=' . $this->solrEscape($value) . '';
