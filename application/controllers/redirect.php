@@ -14,7 +14,7 @@ class redirect extends skylight {
 
         // Redirect to the relevant search page (/search/query) rather than /search/?q=query
         if (!empty($_REQUEST['q'])) {
-            redirect($url_prefix.'/search/' . $_REQUEST['q']);
+            redirect($url_prefix.'/search/' . urlencode($_REQUEST['q']));
         } else {
             redirect($url_prefix.'/search/');
         }
