@@ -62,6 +62,20 @@ class Record extends skylight {
             $seq = $segments[3];
             $filename = $segments[4];
 
+            $filename = $segments[4];
+            // percentage
+            //$filename = str_replace("%", "%25", $filename);
+            // space
+            $filename = str_replace(' ', "%20", $filename);
+            // open bracket
+            $filename = str_replace("(", "%28", $filename);
+            // close bracket
+            $filename = str_replace(")", "%29", $filename);
+            // apostrophe
+            $filename = str_replace("'", "%27", $filename);
+            // comma
+            $filename = str_replace(",", "%2C", $filename);
+
             if(preg_match('/^\d+$/',$seq)) {
                 $url = $this->config->item('skylight_objectproxy_url').$id.'/'.$seq.'/'.$filename;
 
