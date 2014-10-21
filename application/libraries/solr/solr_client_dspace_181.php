@@ -968,15 +968,17 @@ $solr['highlights'][] = $highlight;
 
     // function to fetch handles and images
     // for sitemap generation
-    function getSiteMapURLs($q)
+    function getSiteMapURLs($q, $container)
     {
 
         $url = $this->base_url . "select?indent=on&version=2.2&q=";
-        $url .= $q . "&fq=&start=0&rows=10000&fl=location.coll%2Chandle%2Cdc.format.original&qt=&wt=&explainOther=&hl.fl=f";
-        //$url .= "location.coll%3A(1+3+11+15)&fq=&start=0&rows=10000&fl=location.coll&qt=&wt=&explainOther=&hl.fl=";
+        $url .= $q . "&fq=&start=0&rows=10000&fl=" . $container . "%2Chandle%2Cdc.format.original&qt=&wt=&explainOther=&hl.fl=f";
+        //$url .= "location.coll%3A%281+OR+3+OR+11+OR+15%29&fq=&start=0&rows=10000&fl=location.coll&qt=&wt=&explainOther=&hl.fl=";
         //$url .= $this->solrEscape($q) . "&fq=&start=0&rows=20000&fl=handle%2C+location.coll&qt=&wt=&explainOther=&hl.fl=";
         //$url .= "*&fq=&start=&rows=100&fl=handle%2C+dc.format.original&qt=&wt=&explainOther=&hl.fl=";
         // location.coll%3A%281+3+11+15%29
+
+        //print_r($url);
 
         $solr_xml = file_get_contents($url);
         $result_xml = @new SimpleXMLElement($solr_xml);
@@ -1005,10 +1007,13 @@ $solr['highlights'][] = $highlight;
 
                 foreach ($multivalue_field->str as $value) {
 
-                    //echo "Key: " . $key . " Value: " . $value . "</br>";
+                   // echo "Key: " . $key . " Value: " . $value . "</br>";
 
                     if($key == "location.coll") {
                         $doc["collection"] = (string)$value;
+                    }
+                    else if($key == "location.comm") {
+                        $doc["community"] = (string)$value;
                     }
                     else if($key == "dc.format.original") {
 
@@ -1022,6 +1027,10 @@ $solr['highlights'][] = $highlight;
                         if (strpos($b_filename, ".jpg") > 0)
                         {
                             $doc["imageURL"][] = $b_uri;
+                        }
+                        else if (strpos($b_filename, ".pdf") > 0)
+                        {
+                            $doc["pdfURL"][] = $b_uri;
                         }
 
                     }
