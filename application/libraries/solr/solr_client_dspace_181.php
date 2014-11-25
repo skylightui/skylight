@@ -174,7 +174,6 @@ class Solr_client_dspace_181
 
             }
 
-
             $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title, $doc)) {
