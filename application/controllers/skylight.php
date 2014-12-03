@@ -82,6 +82,34 @@ class skylight extends CI_Controller {
 
         // Load the Skylight Utilities library
         $this->load->library('skylight_utilities');
+
+        // if it's a hdl.handle.net request
+        // redirect to the correct URL
+        if (strpos($_SERVER['HTTP_HOST'], "hdl.handle.net") !== false) {
+
+            $handle_prefixes = $this->config->item('skylight_handle_prefixes');
+
+            $url_segments = explode( "/", uri_string());
+            $id_array = array(0 => 'dc.identifier.uri:' . $url_segments[0] . "/" . $url_segments[1]);
+
+            // Get the item with this handle
+            $data = $this->solr_client->simpleSearch('*', 0, $id_array, 'AND', 'score+desc');
+
+            foreach ($data['docs'] as $index => $doc) {
+                $collection = $doc['locationcoll'][0];
+            }
+
+            if(array_key_exists(intval($collection), $handle_prefixes)) {
+                redirect("http://collections.ed.ac.uk/" . $handle_prefixes[intval($collection)] . "/record/" . $url_segments[1]);
+            }
+            else { // use clds (or 404)
+                redirect("http://collections.ed.ac.uk/record/" . $url_segments[1]);
+            }
+
+            die();
+        }
+
+
     }
 
     function view($view, $data = array()) {
@@ -182,7 +210,7 @@ class skylight extends CI_Controller {
 
         }
         // Now check to see if we are using URLs of the form http://.../prefix/...
-        else if (!empty($url_prefixes))
+        else if (!empty($url_prefixes) && (strpos($_SERVER['HTTP_HOST'], "hdl.handle.net") === false))
         {
             // Our URLs will be of the form collections.ed.ac.uk/prefix/... where prefix will match the site config file,
             // except for the CLDs which have no prefix. Robin.
@@ -209,7 +237,7 @@ class skylight extends CI_Controller {
 
         // Has a config file been specified using a query string parameter or in the session?
         if ($this->config->item('skylight_config_allowoverride') === TRUE) {
-            $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
+                        $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
             if (!empty($get_config)) {
                 $hostname = $get_config;
                 $_SESSION['skylight_config'] = $hostname;
