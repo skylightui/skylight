@@ -24,9 +24,13 @@ class Autocomplete extends skylight {
 
         echo '[';
         for($i = 0; $i < sizeof($ac_json->terms->{'search_ac'}); $i += 2) {
-            echo '"'.$ac_json->terms->{'search_ac'}[$i].'"';
-            if($i+2 < sizeof($ac_json->terms->{'search_ac'})) {
-                echo ', ';
+            if($ac_json->terms->{'search_ac'}[$i+1] > 5) {
+                echo '"'.$ac_json->terms->{'search_ac'}[$i].'"';
+                if($i+2 < sizeof($ac_json->terms->{'search_ac'})) {
+                    if($ac_json->terms->{'search_ac'}[$i+3] > 5) {
+                        echo ', ';
+                    }
+                }
             }
         }
         echo ']';
