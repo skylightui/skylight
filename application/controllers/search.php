@@ -19,7 +19,8 @@ class Search extends skylight {
         if (uri_string() == 'search/index') {
             $query = 'index';
 
-        } elseif ((empty($query)) || ($query == 'index')) {
+        }
+        elseif ((empty($query)) || ($query == 'index')) {
             // No record ID, so go home
 		    //redirect('/');
 
@@ -27,6 +28,7 @@ class Search extends skylight {
             $query = '*';
 
         }
+
 
         $configured_fields = $this->config->item('skylight_fields');
         $configured_filters = $this->config->item('skylight_filters');
@@ -40,6 +42,8 @@ class Search extends skylight {
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
         $link_bitstream = $this->config->item('skylight_link_bitstream');
         $bitstream_field = str_replace('.','',$this->config->item('skylight_bitstream_field'));
+
+        $search_header = $this->config->item('skylight_search_header');
 
         // TODO: get rid of this, it's bad
         $title = $this->skylight_utilities->getField('Title');
@@ -98,6 +102,7 @@ class Search extends skylight {
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', $sort_by);
 
         // Inject query back into results
+        $data['search_url'] = uri_string();
         $data['query'] = $query;
         $data['base_search'] = $base_search;
         $data['event_search'] = $event_search;
@@ -184,6 +189,11 @@ class Search extends skylight {
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('search_suggestions', $data);
+        if ($search_header == true)
+        {
+            $this->view('result_type_header', $data);
+
+        }
         $this->view('search_results', $data);
         $this->view('div_main_end');
         $this->view('div_sidebar');
