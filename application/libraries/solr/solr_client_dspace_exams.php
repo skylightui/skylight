@@ -791,6 +791,62 @@ class Solr_client_dspace_exams
         return $data;
     }
 
+    function getRandomItems($rows = 5)
+    {
+        $title_field = $this->searchresultdisplay[0]; //'Title'];
+        $author_field = $this->searchresultdisplay[1]; //'Author'];
+        $subject_field = $this->searchresultdisplay[2]; //'Subject'];
+        $description_field = $this->searchresultdisplay[4]; //'Abstract'];
+
+        $url = $this->base_url . 'select?q=*:*';
+        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=search.resourcetype:2';
+        $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc';
+        $url .= '&rows=' . $rows;
+        $solr_xml = file_get_contents($url);
+
+        $recent_xml = @new SimpleXMLElement($solr_xml);
+        $random_items = array();
+        foreach ($recent_xml->result->doc as $result) {
+            $doc = array();
+            foreach ($result->arr as $multivalue_field) {
+                $key = $multivalue_field['name'];
+                foreach ($multivalue_field->str as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+                foreach ($multivalue_field->int as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+                foreach ($multivalue_field->date as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+            }
+
+            foreach ($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+                $doc[str_replace('.', '', $key)] = $value;
+            }
+
+            $handle = preg_split('/\//', $doc['handle']);
+            $doc['id'] = $handle[1];
+            if (!array_key_exists($title_field, $doc)) {
+                $doc[$title_field][] = 'No title';
+            }
+
+            $random_items[] = $doc;
+        }
+
+        $data['title_field'] = $title_field;
+        $data['author_field'] = $author_field;
+        $data['subject_field'] = $subject_field;
+        $data['description_field'] = $description_field;
+
+        $data['random_items'] = $random_items;
+
+        return $data;
+    }
+
     function browseTerms($field = 'Subject', $rows = 10, $offset = 0, $prefix = '')
     {
 
