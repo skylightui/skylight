@@ -60,6 +60,7 @@ class Solr_client_dspace_181
         $this->related_fields = $CI->config->item('skylight_related_fields');
         $this->num_related = $CI->config->item('skylight_related_number');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
+        $this->facet_limit = $CI->config->item('skylight_facet_limit');
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
@@ -231,7 +232,7 @@ array_push($ranges,$this->getDateRanges($filter));
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
         //$url .= '&rows=20&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=10';
+        $url .= '&facet=true&facet.limit=' . $this->facet_limit;
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
         }
@@ -423,7 +424,7 @@ array_push($ranges,$this->getDateRanges($filter));
         
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=10';
+        $url .= '&facet=true&facet.limit=' . $this->facet_limit;
 
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
