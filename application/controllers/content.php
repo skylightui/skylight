@@ -9,7 +9,7 @@ class content extends skylight {
         parent::__construct();
     }
 
-	function index() {
+    function index() {
         // Get the URL actually requested
         $url = uri_string();
 
@@ -47,6 +47,13 @@ class content extends skylight {
                 $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
             }
 
+            // Do we want to include random items?
+            if ($this->config->item('skylight_homepage_randomitems') === TRUE) {
+                $randomitems = $this->solr_client->getRandomItems();
+                $data['randomitems'] = $randomitems['random_items'];
+                $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
+            }
+
             // Get the facet data
             $facet_data = $this->solr_client->getFacets();
 
@@ -71,6 +78,10 @@ class content extends skylight {
                 $this->view('recent_items', $data);
             }
 
+            if ($this->config->item('skylight_homepage_randomitems') === TRUE) {
+                $this->view('random_items', $data);
+            }
+
             $this->view('div_main_end');
             if ($this->config->item('skylight_homepage_fullwidth') === TRUE) {
 
@@ -87,7 +98,7 @@ class content extends skylight {
             $title = str_replace('/', ' ', $title);
             $title = ucwords($title);
             $data['page_title'] = $title;
-            
+
             $facet_data = $this->solr_client->getFacets();
 
             $this->view('header', $data);
