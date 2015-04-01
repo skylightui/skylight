@@ -782,7 +782,7 @@ $solr['highlights'][] = $highlight;
         return $data;
     }
 
-    function getRandomItems($rows = 6)
+    function getRandomItems($rows = 5)
     {
         $title_field = $this->searchresultdisplay[0]; //'Title'];
         $author_field = $this->searchresultdisplay[1]; //'Author'];
