@@ -1105,6 +1105,64 @@ $solr['highlights'][] = $highlight;
 
     }
 
+    // function to fetch an array of ids to be used
+    // by getNext and getPrev
+    function getItems($q, $container)
+    {
+        $url = $this->base_url . "select?indent=on&version=2.2&q=";
+        $url .= $q . "&fq=&start=0&rows=10000&fl=" . $container . "%2Chandle&qt=&wt=&explainOther=&hl.fl=f";
+
+        $solr_xml = file_get_contents($url);
+        $result_xml = @new SimpleXMLElement($solr_xml);
+
+        $ids = array();
+
+        foreach ($result_xml->result->doc as $result) {
+
+            foreach ($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+
+                //echo "Key: " . $key . " Value: " . $value . "</br>";
+
+                if($key = "handle") {
+                    $ids[] = preg_replace('/^.*\//', '',$value);
+                }
+
+            }
+
+        }
+
+        return $ids;
+
+    }
+
+    // get ids of prev and next
+    function getNavigation($id, $q, $container)
+    {
+        $ids = $this->getItems($q, $container);
+
+        $size = count($ids) - 1;
+
+        // find the position of $id in the array
+        $i = array_search($id, $ids);
+
+        if($i == 0) {
+            $prev = $ids[$size];
+            $next = $ids[$i + 1];
+        }
+        else if($i === $size) {
+            $prev = $ids[$i - 1];
+            $next = $ids[0];
+        }
+        else {
+            $prev = $ids[$i - 1];
+            $next = $ids[$i + 1];
+        }
+
+        return array('prev' => $prev, 'next' => $next);
+
+    }
 
 }
 
