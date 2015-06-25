@@ -21,8 +21,22 @@ class Feedback extends skylight {
 
         $data['page_title'] = $page_title_prefix.'Feedback';
 
+        $url_prefix = $this->config->item('skylight_url_prefix');
+        $form_prefix = "";
+        if (!empty($url_prefix))
+        {
+            $form_prefix = $url_prefix . '/';
+        }
+
+        $data['form_prefix'] = $form_prefix;
+
         $this->view('header', $data);
-        $this->view('div_main');
+        if ($this->config->item('skylight_homepage_fullwidth') === TRUE) {
+            $this->view('div_main_full', $data);
+        }
+        else {
+            $this->view('div_main', $data);
+        }
 
         // Verify the form inputs
         $this->form_validation->set_rules('name', 'Name', 'trim|_clean|required');
@@ -32,7 +46,7 @@ class Feedback extends skylight {
         if ($this->form_validation->run() == FALSE)
         {
             // Errors in the form (or first time it has been requested), re-display email form
-            $this->view('feedback');
+            $this->view('feedback', $data);
         } else {
             // Send the email
             $this->load->library('email');

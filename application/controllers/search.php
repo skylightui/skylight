@@ -19,7 +19,8 @@ class Search extends skylight {
         if (uri_string() == 'search/index') {
             $query = 'index';
 
-        } elseif ((empty($query)) || ($query == 'index')) {
+        }
+        elseif ((empty($query)) || ($query == 'index')) {
             // No record ID, so go home
 		    //redirect('/');
 
@@ -27,6 +28,7 @@ class Search extends skylight {
             $query = '*';
 
         }
+
 
         $configured_fields = $this->config->item('skylight_fields');
         $configured_filters = $this->config->item('skylight_filters');
@@ -38,6 +40,10 @@ class Search extends skylight {
         $sort_options = $this->config->item('skylight_sort_fields');
         $display_thumbnail = $this->config->item('skylight_display_thumbnail');
         $thumbnail_field = $this->config->item('skylight_thumbnail_field');
+        $link_bitstream = $this->config->item('skylight_link_bitstream');
+        $bitstream_field = str_replace('.','',$this->config->item('skylight_bitstream_field'));
+
+        $search_header = $this->config->item('skylight_search_header');
 
         // TODO: get rid of this, it's bad
         $title = $this->skylight_utilities->getField('Title');
@@ -48,11 +54,11 @@ class Search extends skylight {
 
         $saved_filters = array();
         $url_filters = array();
-        if(count($this->uri->segments) > 2) {
+        if(count($this->uri->rsegments) > 2) {
 
-            for($i = 3; $i <= count($this->uri->segments); $i++) {
+            for($i = 3; $i <= count($this->uri->rsegments); $i++) {
 
-                $test_filter = $this->uri->segments[$i];
+                $test_filter = $this->uri->rsegments[$i];
                 $url_filters[] = $test_filter;
                 $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
                 $filter_segments[0] = urldecode($filter_segments[0]);
@@ -96,6 +102,7 @@ class Search extends skylight {
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', $sort_by);
 
         // Inject query back into results
+        $data['search_url'] = uri_string();
         $data['query'] = $query;
         $data['base_search'] = $base_search;
         $data['event_search'] = $event_search;
@@ -140,12 +147,13 @@ class Search extends skylight {
         // Load and initialise pagination
         $this->load->library('pagination');
         $config['page_query_string'] = TRUE;
-        $config['num_links'] = 2;
+        $config['num_links'] = 4;
         $config['total_rows'] = $result_count;
         $config['per_page'] = $rows;
+        $config['cur_tag_open'] = '&nbsp;<span class="curpage">';
+        $config['cur_tag_close']= '</span>';
         $config['base_url'] = $base_search.$base_parameters;
         $this->pagination->initialize($config);
-
 
         $data['pagelinks'] = $this->pagination->create_links();
 
@@ -171,9 +179,21 @@ class Search extends skylight {
        // $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
         $data['display_thumbnail'] = $display_thumbnail;
         $data['thumbnail_field'] = 'solr_'.str_replace('.','',$thumbnail_field);
+
+        $data['link_bitstream'] = $link_bitstream;
+        $data['bitstream_field'] = $bitstream_field;
+
+        // Currently only used to restrict access to Physics material, but available for use elsewhere.
+        $data['isAuthorised'] =  $this->_isAuthorised();
+
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('search_suggestions', $data);
+        if ($search_header == true)
+        {
+            $this->view('result_type_header', $data);
+
+        }
         $this->view('search_results', $data);
         $this->view('div_main_end');
         $this->view('div_sidebar');

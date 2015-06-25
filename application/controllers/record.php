@@ -57,13 +57,28 @@ class Record extends skylight {
         }
 
         // Digital object proxy
-        if(count($this->uri->segments) == 4) {
-            $segments = $this->uri->segments;
+        if(count($this->uri->rsegments) == 4) {
+            $segments = $this->uri->rsegments;
             $seq = $segments[3];
             $filename = $segments[4];
 
+            $filename = $segments[4];
+            // percentage
+            //$filename = str_replace("%", "%25", $filename);
+            // space
+            $filename = str_replace(' ', "%20", $filename);
+            // open bracket
+            $filename = str_replace("(", "%28", $filename);
+            // close bracket
+            $filename = str_replace(")", "%29", $filename);
+            // apostrophe
+            $filename = str_replace("'", "%27", $filename);
+            // comma
+            $filename = str_replace(",", "%2C", $filename);
+
             if(preg_match('/^\d+$/',$seq)) {
                 $url = $this->config->item('skylight_objectproxy_url').$id.'/'.$seq.'/'.$filename;
+
 
                 // Which part of the solr results array is the bitstream in? (bitstream or thumbnail)
                 $check = getBitstreamsMimeType($data['solr'][$bitstream_field], $seq);
@@ -111,7 +126,8 @@ class Record extends skylight {
             $data['author_field'] = $recorddisplay['Author'];
         }
         else {
-            $data['author_field'] = 'dccreator';
+            // using dc.contributor.author.en instead of dc.creator
+            $data['author_field'] = 'dccontributorauthoren';
         }
         
         $data['date_field'] = $this->skylight_utilities->getField('Date');
@@ -119,6 +135,9 @@ class Record extends skylight {
         // Send the display options config value for this collection
         $data['recorddisplay'] = $recorddisplay;
         $data['metafields'] = $metafields;
+
+        // Currently only used to restrict access to Physics material, but available for use elsewhere.
+        $data['isAuthorised'] =  $this->_isAuthorised();
 
         $this->view('header', $data);
         $this->view('div_main');

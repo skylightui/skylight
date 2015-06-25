@@ -48,6 +48,7 @@ class OAIPMH extends skylight {
         $oaipmhid = $this->config->item('skylight_oaipmhid');
         $oaipmhlink = $this->config->item('skylight_oaipmhlink');
         $oaipmhcollection = $this->config->item('skylight_oaipmhcollection');
+        $oaipmhbitstream = $this->config->item('skylight_objectproxy_url');
 
         // Process the query
         switch ($verb) {

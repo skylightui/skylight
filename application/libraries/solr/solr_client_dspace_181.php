@@ -10,18 +10,18 @@
 class Solr_client_dspace_181
 {
 
-    var $base_url = 'http://localhost:8983/solr'; // Base URL. Typically not overridden in construct params. Get from config.
+    var $base_url = ''; // Base URL. Typically not overridden in construct params. Get from config.
     var $max_rows = 100; // Default to 100 rows maximum
     var $container = '*'; // Default to all collections
     var $container_field = 'location.coll'; // Default to discovery's DSpace collection field
-    var $handle_prefix = '123456789';
+    var $handle_prefix = '';
     var $scope = '';
     var $rows = 10;
     var $recorddisplay = array();
     var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
-    var $date_field = 'dc.date.year';
+    //var $date_field = 'dc.date.year';
     var $delimiter = '';
     var $thumbnail_field = '';
     var $bitstream_field = '';
@@ -44,7 +44,7 @@ class Solr_client_dspace_181
 
         $CI =& get_instance();
         $this->base_url = $CI->config->item('skylight_solrbase');
-        //echo 'BASEURL'.$this->base_url;
+        $this->handle_prefix = $CI->config->item('skylight_handle_prefix');
         $this->container = $CI->config->item('skylight_container_id');
         $this->container_field = $CI->config->item('skylight_container_field');
         $this->rows = $CI->config->item('skylight_results_per_page');
@@ -56,13 +56,18 @@ class Solr_client_dspace_181
         $this->bitstream_field = str_replace('.', '', $CI->config->item('skylight_fulltext_field'));
         $this->thumbnail_field = str_replace('.', '', $CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
+        $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
+        $this->related_fields = $CI->config->item('skylight_related_fields');
+        $this->num_related = $CI->config->item('skylight_related_number');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
+        $this->facet_limit = $CI->config->item('skylight_facet_limit');
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
         }
 
         log_message('debug', "skylight Solr Client Initialized");
+        log_message('debug', "handle_prefix " .$this->handle_prefix);
     }
 
     // --------------------------------------------------------------------
@@ -170,7 +175,6 @@ class Solr_client_dspace_181
 
             }
 
-
             $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title, $doc)) {
@@ -210,12 +214,15 @@ array_push($ranges,$this->getDateRanges($filter));
 }
 
 */
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
-        $datefqs = $dates['fq'];
-
-        foreach ($datefqs as $datefq) {
-            // $url .= '&fq='.$datefq;
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            $datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
         }
 
         // Set up scope
@@ -225,7 +232,7 @@ array_push($ranges,$this->getDateRanges($filter));
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
         //$url .= '&rows=20&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=10';
+        $url .= '&facet=true&facet.limit=' . $this->facet_limit;
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
         }
@@ -237,7 +244,8 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&q.op=' . $operator;
 
         // Set up highlighting
-        $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
+        // SR 2/12/13 change *.en to $this->highlight_fields. Things like bitstream don't look good here!
+        $url .= '&hl=true&hl.fl='.$this->highlight_fields.'&hl.simple.pre=<strong>&hl.simple.post=</strong>';
 
         // Set up spellcheck
 
@@ -245,7 +253,7 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
         //print_r('simple search '. $url);
 
-        $solr_xml = file_get_contents($url);
+        $solr_xml = @file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
 
         $docs = array();
@@ -270,11 +278,14 @@ array_push($ranges,$this->getDateRanges($filter));
 
             }
 
-
-            // Build highlight results from solr response
-            foreach ($search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str") as $highlight) {
-                //echo $doc['handle'][0].': '.$highlight.'<br/>';
-                $doc['highlights'][] = $highlight;
+            // Check for the existence of highlighted fields before trying to loop round them
+            $highlights = $search_xml->xpath("//lst[@name='highlighting']/lst[@name='" . $doc['handle'] . "']/arr/str");
+            if ($highlights) {
+               // Build highlight results from solr response
+               foreach ($highlights as $highlight) {
+               //echo $doc['handle'][0].': '.$highlight.'<br/>';
+               $doc['highlights'][] = $highlight;
+               }
             }
 
 
@@ -383,6 +394,7 @@ array_push($ranges,$this->getDateRanges($filter));
     function getFacets($q = '*:*', $fq = array(), $saved_filters = array())
     {
 
+        //echo "get facets   ";
         $query = $q;
         if ($q == '*') {
             $q = '*:*';
@@ -393,19 +405,26 @@ array_push($ranges,$this->getDateRanges($filter));
                 $url .= '&fq=' . $value . '';
         }
 
-        /*
-$ranges = array();
-foreach($this->configured_date_filters as $filter_name => $filter) {
-array_push($ranges,$this->getDateRanges($filter));
-}
 
-*/
-        $dates = $this->getDateRanges($this->date_field, $q, $fq);
-        $ranges = $dates['ranges'];
+//        $ranges = array();
+//        foreach($this->configured_date_filters as $filter_name => $filter) {
+//            array_push($ranges,$this->getDateRanges($filter, $q, $fq));
+//        }
 
+        if (isset($this->date_field))
+        {
+            $dates = $this->getDateRanges($this->date_field, $q, $fq);
+            $ranges = $dates['ranges'];
+            //$datefqs = $dates['fq'];
+        }
+        else
+        {
+            $ranges = array();
+        }
+        
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
-        $url .= '&facet=true&facet.limit=10';
+        $url .= '&facet=true&facet.limit=' . $this->facet_limit;
 
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
@@ -516,9 +535,7 @@ array_push($ranges,$this->getDateRanges($filter));
 
     function getRecord($id = NULL, $highlight = "")
     {
-
-        $title_field = $this->recorddisplay[0]; //changed to index
-        $subject_field = $this->recorddisplay[3]; //changed to index
+        $title_field = "Title";
 
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
@@ -579,16 +596,23 @@ $solr['highlights'][] = $highlight;
 
 */
         }
-
         // Related Items
-        if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
-        } elseif (array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($solr[$subject_field], $id);
+        $rels_solr = array();
+
+        foreach ($this->related_fields as $related_field) {
+            $key = str_replace('.', '', $related_field);
+            if(array_key_exists($key, $solr)) {
+                $rels_solr[] = $solr[$key];
+            }
+        }
+
+        if(count($rels_solr) > 0) {
+            $rels_xml = $this->getRelatedItems($rels_solr, $id);
         }
         else {
             $rels_xml = $this->getRelatedItems(array_values($solr), $id);
         }
+
         $related = @new SimpleXMLElement($rels_xml);
 
         // Parse like search results. This will be moved somewhere better
@@ -662,9 +686,9 @@ $solr['highlights'][] = $highlight;
             if (is_array($metadatavalue)) {
                 $md = $metadatavalue;
                 $metadatavalue = '';
-                //foreach ($md as $value) {
-                    $metadatavalue .= $md[0] . ' ';
-                //}
+                // limit to the first 200 characters
+                $metadatavalue .= substr($md[0],0,200) . ' ';
+
             }
             $metadatavalue = preg_replace('/\[/', '\\[', $metadatavalue, -1);
             $metadatavalue = preg_replace('/\]/', '\\]', $metadatavalue, -1);
@@ -691,10 +715,11 @@ $solr['highlights'][] = $highlight;
             $counter++;
         }
         $query_string .= ' -handle:"' . $handle . '"';
-        $url = $this->base_url . 'select?q=' . $this->solrEscape($query_string);
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url = $this->base_url . 'select?';
+        $url .= 'fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
-        $url .= '&rows=5';
+        $url .= '&q=' . $this->solrEscape($query_string);
+        $url .= '&rows=' . $this->num_related;
 
         $solr_xml = file_get_contents($url);
 
@@ -757,6 +782,63 @@ $solr['highlights'][] = $highlight;
         return $data;
     }
 
+    function getRandomItems($rows = 12)
+    {
+        $title_field = $this->searchresultdisplay[0]; //'Title'];
+        $author_field = $this->searchresultdisplay[1]; //'Author'];
+        $subject_field = $this->searchresultdisplay[2]; //'Subject'];
+        $description_field = $this->searchresultdisplay[4]; //'Abstract'];
+
+        $url = $this->base_url . 'select?q=*:*';
+        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=search.resourcetype:2';
+        $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
+        $url .= '&rows=' . $rows;
+        //print_r($url);
+        $solr_xml = file_get_contents($url);
+
+        $recent_xml = @new SimpleXMLElement($solr_xml);
+        $random_items = array();
+        foreach ($recent_xml->result->doc as $result) {
+            $doc = array();
+            foreach ($result->arr as $multivalue_field) {
+                $key = $multivalue_field['name'];
+                foreach ($multivalue_field->str as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+                foreach ($multivalue_field->int as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+                foreach ($multivalue_field->date as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+            }
+
+            foreach ($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+                $doc[str_replace('.', '', $key)] = $value;
+            }
+
+            $handle = preg_split('/\//', $doc['handle']);
+            $doc['id'] = $handle[1];
+            if (!array_key_exists($title_field, $doc)) {
+                $doc[$title_field][] = 'No title';
+            }
+
+            $random_items[] = $doc;
+        }
+
+        $data['title_field'] = $title_field;
+        $data['author_field'] = $author_field;
+        $data['subject_field'] = $subject_field;
+        $data['description_field'] = $description_field;
+
+        $data['random_items'] = $random_items;
+
+        return $data;
+    }
+
     function browseTerms($field = 'Subject', $rows = 10, $offset = 0, $prefix = '')
     {
 
@@ -797,7 +879,6 @@ $solr['highlights'][] = $highlight;
         foreach ($facet_xml as $facet_term) {
 
             $names = preg_split('/\|\|\|/', $facet_term->attributes());
-            //print_r($names);
             $term['name'] = urlencode($facet_term->attributes());
             if (count($names) == 1)
             {
@@ -821,18 +902,44 @@ $solr['highlights'][] = $highlight;
         return $data;
     }
 
+    function countBrowseTerms($field = 'Subject', $prefix = '')
+    {
+
+        $prefix = $this->solrEscape(strtolower($prefix));
+
+        $url = $this->base_url . "select?q=*:*";
+        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=search.resourcetype:2&rows=0&facet.mincount=1';
+        if (preg_match("/Date/", $field)) {
+            $facetField = $this->configured_date_filters[$field];
+        } else {
+            $facetField = $this->configured_filters[$field];
+        }
+        $url .= '&facet=true&facet.sort=index&facet.field=' . $facetField . '&facet.limit=10000';
+
+        if ($prefix !== '') {
+            $url .= '&facet.prefix=' . $this->solrEscape($prefix);
+        }
+
+        //print_r($url);
+
+        $solr_xml = file_get_contents($url);
+
+        // We would construct/pop a new skylight Record model here?
+        $search_xml = @new SimpleXMLElement($solr_xml);
+
+        $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='" . $facetField . "']/int");
+
+        return count($facet_xml);
+    }
 
     function getDateRanges($field, $q, $fq)
     {
-
         $dates = array();
-
         $lowest_year = $this->getLowerBound($field, $q, $fq);
-        //print_r($lowest_year);
         $lowest_year = floor($lowest_year / 10) * 10;
 
         $highest_year = $this->getUpperBound($field, $q, $fq);
-        //print_r($highest_year);
         $total_gap = $highest_year - $lowest_year;
         $yearcount = 20; // number of ranges to show up as filters
         $gap = 5;
@@ -880,13 +987,9 @@ $solr['highlights'][] = $highlight;
         $url .= '&fq=search.resourcetype:2&rows=1';
         $url .= '&sort=' . $field . '%20asc';
 
-        // print_r('lower bound='. $url);
-        //print_r('field='. $field);
         $solr_xml = file_get_contents($url);
-        //print_r('URL'.$url);
-        //print_r('XML'.$solr_xml);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
-        $field_xml = $bounds_xml->xpath("//result/doc/int[@name='" . $field . "']");
+        $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
         if (count($field_xml) > 0) {
             $value = $field_xml[0];
@@ -906,11 +1009,13 @@ $solr['highlights'][] = $highlight;
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2&rows=1';
-        // $url .= '&sort='.$field.'%20desc';
-        $url .= '&sort=' . $field . '_sort%20desc'; //copied from uoa
+        $url .= '&sort='.$field.'%20desc';
+        //$url .= '&sort=' . $field . '_sort%20desc'; //copied from uoa
+
+        //print_r('upper bound='. $url);
         $solr_xml = file_get_contents($url);
         $bounds_xml = @new SimpleXMLElement($solr_xml);
-        $field_xml = $bounds_xml->xpath("//result/doc/int[@name='" . $field . "']");
+        $field_xml = $bounds_xml->xpath("//result/doc/str[@name='" . $field . "']");
 
         if (count($field_xml) > 0) {
             $value = $field_xml[0];
@@ -918,6 +1023,146 @@ $solr['highlights'][] = $highlight;
         return $value;
     }
 
+    // function to fetch handles and images
+    // for sitemap generation
+    function getSiteMapURLs($q, $container)
+    {
+
+        $url = $this->base_url . "select?indent=on&version=2.2&q=";
+        $url .= $q . "&fq=&start=0&rows=10000&fl=" . $container . "%2Chandle%2Cdc.format.original&qt=&wt=&explainOther=&hl.fl=f";
+        //$url .= "location.coll%3A%281+OR+3+OR+11+OR+15%29&fq=&start=0&rows=10000&fl=location.coll&qt=&wt=&explainOther=&hl.fl=";
+        //$url .= $this->solrEscape($q) . "&fq=&start=0&rows=20000&fl=handle%2C+location.coll&qt=&wt=&explainOther=&hl.fl=";
+        //$url .= "*&fq=&start=&rows=100&fl=handle%2C+dc.format.original&qt=&wt=&explainOther=&hl.fl=";
+        // location.coll%3A%281+3+11+15%29
+
+        //print_r($url);
+
+        $solr_xml = file_get_contents($url);
+        $result_xml = @new SimpleXMLElement($solr_xml);
+
+        $docs = array();
+
+        foreach ($result_xml->result->doc as $result) {
+            $doc = array();
+
+            foreach ($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+
+                //echo "Key: " . $key . " Value: " . $value . "</br>";
+
+                if($key = "handle") {
+
+                    $handle_id = preg_replace('/^.*\//', '',$value);
+                    $doc["recordURL"] = 'record/' . $handle_id;
+                }
+
+            }
+
+            foreach ($result->arr as $multivalue_field) {
+                $key = $multivalue_field['name'];
+
+                foreach ($multivalue_field->str as $value) {
+
+                   // echo "Key: " . $key . " Value: " . $value . "</br>";
+
+                    if($key == "location.coll") {
+                        $doc["collection"] = (string)$value;
+                    }
+                    else if($key == "location.comm") {
+                        $doc["community"] = (string)$value;
+                    }
+                    else if($key == "dc.format.original") {
+
+                        $b_segments = explode("##", $value);
+                        $b_filename = $b_segments[1];
+                        $b_handle = $b_segments[3];
+                        $b_seq = $b_segments[4];
+                        $b_handle_id = preg_replace('/^.*\//', '',$b_handle);
+                        $b_uri = 'record/'.$b_handle_id.'/'.$b_seq.'/'.$b_filename;
+
+                        if (strpos($b_filename, ".jpg") > 0)
+                        {
+                            $doc["imageURL"][] = $b_uri;
+                        }
+                        else if (strpos($b_filename, ".pdf") > 0)
+                        {
+                            $doc["pdfURL"][] = $b_uri;
+                        }
+
+                    }
+                }
+
+            }
+
+            $docs[] = $doc;
+        }
+
+        $data['docs'] = $docs;
+        $data['rows'] = $result_xml->result['numFound'];
+
+        return $data;
+
+    }
+
+    // function to fetch an array of ids to be used
+    // by getNext and getPrev
+    function getItems($q, $container)
+    {
+        $url = $this->base_url . "select?indent=on&version=2.2&q=";
+        $url .= $q . "&fq=&start=0&rows=10000&fl=" . $container . "%2Chandle&qt=&wt=&explainOther=&hl.fl=f";
+
+        $solr_xml = file_get_contents($url);
+        $result_xml = @new SimpleXMLElement($solr_xml);
+
+        $ids = array();
+
+        foreach ($result_xml->result->doc as $result) {
+
+            foreach ($result->str as $unique_field) {
+                $key = $unique_field['name'];
+                $value = $unique_field;
+
+                //echo "Key: " . $key . " Value: " . $value . "</br>";
+
+                if($key = "handle") {
+                    $ids[] = preg_replace('/^.*\//', '',$value);
+                }
+
+            }
+
+        }
+
+        return $ids;
+
+    }
+
+    // get ids of prev and next
+    function getNavigation($id, $q, $container)
+    {
+        $ids = $this->getItems($q, $container);
+
+        $size = count($ids) - 1;
+
+        // find the position of $id in the array
+        $i = array_search($id, $ids);
+
+        if($i == 0) {
+            $prev = $ids[$size];
+            $next = $ids[$i + 1];
+        }
+        else if($i === $size) {
+            $prev = $ids[$i - 1];
+            $next = $ids[0];
+        }
+        else {
+            $prev = $ids[$i - 1];
+            $next = $ids[$i + 1];
+        }
+
+        return array('prev' => $prev, 'next' => $next);
+
+    }
 
 }
 
