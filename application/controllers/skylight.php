@@ -82,11 +82,40 @@ class skylight extends CI_Controller {
 
         // Load the Skylight Utilities library
         $this->load->library('skylight_utilities');
+
+        // if it's a hdl.handle.net request
+        // redirect to the correct URL
+        if (strpos($_SERVER['HTTP_HOST'], "hdl.handle.net") !== false) {
+
+            $handle_prefixes = $this->config->item('skylight_handle_prefixes');
+
+            $url_segments = explode( "/", uri_string());
+            $id_array = array(0 => 'dc.identifier.uri:' . $url_segments[0] . "/" . $url_segments[1]);
+
+            // Get the item with this handle
+            $data = $this->solr_client->simpleSearch('*', 0, $id_array, 'AND', 'score+desc');
+
+            foreach ($data['docs'] as $index => $doc) {
+                $collection = $doc['locationcoll'][0];
+            }
+
+            if(array_key_exists(intval($collection), $handle_prefixes)) {
+                redirect("http://collections.ed.ac.uk/" . $handle_prefixes[intval($collection)] . "/record/" . $url_segments[1]);
+            }
+            else { // use clds (or 404)
+                redirect("http://collections.ed.ac.uk/record/" . $url_segments[1]);
+            }
+
+            die();
+        }
+
+
     }
 
     function view($view, $data = array()) {
         // Load some globals
         $data['site_title'] = $this->config->item('skylight_fullname');
+        $data['ga_code'] = $this->config->item('skylight_ga_code');
 
         // Which output type to use?
         switch ($this->output_type) {
@@ -133,12 +162,14 @@ class skylight extends CI_Controller {
         $theme = $this->config->item('skylight_theme');
 
         // Has the user requested to override the theme?
-        $get_theme = $this->input->get('theme');
-        if ((!empty($get_theme)) && ($this->config->item('skylight_theme_allowoverride') === TRUE)) {
-            $theme = preg_replace('/[^A-Za-z0-9]/', '', $this->input->get('theme'));
-            $_SESSION['skylight_theme'] = $theme;
-        } else if (isset($_SESSION['skylight_theme'])) {
-            $theme = $_SESSION['skylight_theme'];
+        if ($this->config->item('skylight_theme_allowoverride') === TRUE) {
+            $get_theme = $this->input->get('theme');
+            if (!empty($get_theme)) {
+                $theme = preg_replace('/[^A-Za-z0-9]/', '', $this->input->get('theme'));
+                $_SESSION['skylight_theme'] = $theme;
+            } else if (isset($_SESSION['skylight_theme'])) {
+                $theme = $_SESSION['skylight_theme'];
+            }
         }
 
         // Return the theme
@@ -156,13 +187,60 @@ class skylight extends CI_Controller {
     function _load_site_config() {
         // Load the correct config file - usually looked up using the hostname
         $hostname = $_SERVER['HTTP_HOST'];
+        $url_prefixes = $this->config->item('skylight_url_prefixes');
+        $skylight_hostnames = $this->config->item('skylight_hostnames');
+
+        // See if we are using a predefined hostname
+        if (in_array($hostname, $skylight_hostnames))
+        {
+            // strip test out if it's there
+            if (strpos($_SERVER['HTTP_HOST'], "test") !== false) {
+
+                // will be test.livehostname
+                // remove test.
+                $hostname = substr($hostname, 5);
+            }
+            // strip out the www if it's there
+            else if(strpos($_SERVER['HTTP_HOST'], "www.") !== false) {
+                // will be www.hostname
+                // remove www.
+                $hostname = substr($hostname, 4);
+            }
+            // else just use the hostname
+
+        }
+        // Now check to see if we are using URLs of the form http://.../prefix/...
+        else if (!empty($url_prefixes) && (strpos($_SERVER['HTTP_HOST'], "hdl.handle.net") === false))
+        {
+            // Our URLs will be of the form collections.ed.ac.uk/prefix/... where prefix will match the site config file,
+            // except for the CLDs which have no prefix. Robin.
+            //log_message('debug', 'uri string is '.uri_string());
+
+            $url_segments = explode( "/", uri_string());
+            if (sizeof($url_segments) > 0) {
+                // Have a look and see if the URL segment matches one of our collection prefixes.
+                if (in_array($url_segments[0], $url_prefixes)) {
+                    $hostname = $url_segments[0];
+                }
+                else {
+                    // Use the default hostname 'clds'
+                    // todo: take out this nasty hardcoding and move the clds config into the 'default' config.
+                    $hostname = 'clds';
+                }
+            }
+            else {
+                //log_message('debug', 'seg 1 is '.$url_segments[1]);
+                // Use the default hostname 'clds'
+                $hostname = 'clds';
+            }
+        }
 
         // Trim the techically-legal but config-breaking trailing dot that a hostname may contain
         $hostname = trim($hostname, ".");
 
         // Has a config file been specified using a query string parameter or in the session?
         if ($this->config->item('skylight_config_allowoverride') === TRUE) {
-            $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
+                        $get_config = preg_replace('/[^A-Za-z0-9-_\.]/', '', $this->input->get('config'));
             if (!empty($get_config)) {
                 $hostname = $get_config;
                 $_SESSION['skylight_config'] = $hostname;
@@ -293,5 +371,23 @@ class skylight extends CI_Controller {
 
     function _endswith($haystack, $needle) {
         return strrpos($haystack, $needle) === strlen($haystack) - strlen($needle);
+    }
+
+    function _isAuthorised() {
+        $ip_addr = $_SERVER['REMOTE_ADDR'];
+        //print_r('ip addr is '.$ip_address);
+        $ip_ranges = $this->config->item('skylight_ip_ranges');
+        if (!empty($ip_ranges)) {
+            foreach($ip_ranges as $ip_range) {
+                if (preg_match($ip_range, $ip_addr)) {
+                    //print_r(' Authorised!!!');
+                    return TRUE;
+                }
+            }
+        }
+
+        //print_r(' Not authorised');
+        return FALSE;
+
     }
 }

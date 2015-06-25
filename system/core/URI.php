@@ -189,8 +189,12 @@ class CI_URI {
 		{
 			return '/';
 		}
-				
-		$uri = parse_url($uri, PHP_URL_PATH);
+
+        // This causing problems with number only advanced searches
+        // and doesn't seem to actually make a difference to the url
+        // otherwise so just commenting it out
+        // IS 22/08/14
+		//$uri = parse_url($uri, PHP_URL_PATH);
 
 		// Do some final cleaning of the URI and return it
 		return str_replace(array('//', '../'), '/', trim($uri, '/'));
@@ -238,7 +242,8 @@ class CI_URI {
 		$bad	= array('$',		'(',		')',		'%28',		'%29');
 		$good	= array('&#36;',	'&#40;',	'&#41;',	'&#40;',	'&#41;');
 
-		return str_replace($bad, $good, $str);
+		//return str_replace($bad, $good, $str);
+        return $str;
 	}
 
 	// --------------------------------------------------------------------

@@ -41,6 +41,19 @@
 $route['default_controller'] = "content";
 $route['404_override'] = 'content';
 
+$route['art/(:any)'] = "$1";
+$route['mimed/(:any)'] = "$1";
+$route['physics/(:any)'] = "$1";
+$route['calendars/(:any)'] = "$1";
+$route['cockburn/(:any)'] = "$1";
+$route['alumni/(:any)'] = "$1";
+$route['iconics/(:any)'] = "$1";
+$route['openbooks/(:any)'] = "$1";
+$route['anatomy/(:any)'] = "$1";
+
+
+$route['sitemap\.xml'] = "sitemap/sitemap";
+
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

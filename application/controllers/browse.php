@@ -17,8 +17,6 @@ class Browse extends skylight {
         $configured_filters = $this->config->item('skylight_filters');
         $delimiter = $this->config->item('skylight_filter_delimiter');
         $rows = 30;
-        $recorddisplay = $this->config->item('skylight_recorddisplay');
-        //$title = $recorddisplay['Title'];
 
         $saved_filters = array();
         $url_filters = array();
@@ -30,14 +28,18 @@ class Browse extends skylight {
                 $url_filters[] = $test_filter;
                 $filter_segments = preg_split("/$delimiter/",$test_filter, 2);
                 if(array_key_exists($filter_segments[0], $configured_filters)) {
-                    $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+                    if(isset($filter_segments[1])) {
+                        $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+                    }
+                    else {
+                        $saved_filters[] = $configured_filters[$filter_segments[0]];
+                    }
                 }
             }
         }
 
         $offset = $this->input->get('offset');
         $prefix = $this->input->get('prefix');
-
 
         // Base search URL
         $base_search = './search/*';
@@ -49,7 +51,6 @@ class Browse extends skylight {
 
         // Solr query business moved to solr_client library
         $data = $this->solr_client->browseTerms($decodedField, $rows, $offset, $prefix);
-
 
         // Determine the page title and heading.
         $page_title_prefix = $this->config->item('skylight_page_title_prefix');
@@ -78,29 +79,37 @@ class Browse extends skylight {
             $browse_url .= '?prefix='.$prefix;
         }
 
-        $data['startrow'] = $offset + 1;
-        if($data['startrow'] + ($rows - 1 )  > $facet_count)
-            $data['endrow'] = $offset + $facet_count;
-        else
-            $data['endrow'] = $data['startrow'] + ($rows - 1);
-
         // Set the page title to the record title
         $data['page_title'] = $page_title_prefix.'Browse "'. $decodedField . '"';
 	    $data['browse_url'] = $browse_url;
         $data['field'] = $field;
         $data['offset'] = $offset;
 
+        // get the total count
+        $total_results = $this->solr_client->countBrowseTerms($decodedField, $prefix);
+        $data['total_results'] = $total_results;
+
         // Load and initialise pagination
-        $this->load->library('solr/pagination');
+        $this->load->library('pagination');
         $config['page_query_string'] = TRUE;
-        $config['num_links'] = 1;
-        $config['total_rows'] = $facet_count + $offset;
+        $config['num_links'] = 4;
+        $config['total_rows'] = $total_results;
         $config['per_page'] = $rows;
         $config['base_url'] = $browse_url;
+        $config['cur_tag_open'] = '&nbsp;<span class="curpage">';
+        $config['cur_tag_close']= '</span>';
 
         $this->pagination->initialize($config);
         $data['pagelinks'] = $this->pagination->create_links();
-        
+
+        $data['startrow'] = $offset + 1;
+        if(($data['startrow'] + ($rows - 1 ))  > $facet_count)
+             $data['endrow'] = $offset + $facet_count;
+        else
+             $data['endrow'] = $data['startrow'] + ($rows - 1);
+
+        //print_r($data);
+
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('browse_facets', $data);

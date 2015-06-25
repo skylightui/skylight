@@ -157,4 +157,11 @@ function RandRange(minNum, maxNum) {
 	return (Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum);
 }
 
+$(document).ready(function() { $(".fancybox").fancybox(); });
+
+$(document).ready(function() {
+$('.carousel').carousel({
+    interval: 10000 // in milliseconds
+})
+});
 // ======================================================================
