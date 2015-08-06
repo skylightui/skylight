@@ -217,7 +217,6 @@ class solr_client_archivesspace_1
 
         // Set up scope
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-       // $url .= '&fq=search.resourcetype:2';
         $url .= '&sort=' . $sort_by;
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
@@ -229,16 +228,10 @@ class solr_client_archivesspace_1
         foreach ($ranges as $range) {
             $url .= '&facet.query=' . $range;
         }
-        //$url .= '&q.op=' . $operator;
-
-        // Set up highlighting
-        // $url .= '&hl=true&hl.fl='.$this->highlight_fields.'&hl.simple.pre=<strong>&hl.simple.post=</strong>';
-
-        // Set up spellcheck
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-        //print_r('simple search '. $url);
+        print_r('simple search '. $url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -525,6 +518,8 @@ class solr_client_archivesspace_1
         $id = "\"". $this->handle_prefix. $id . "\"";
         $url .= 'id:' . $id;
         $url .= '&wt=xml';
+
+        print(" get record url "  . $url . " ");
         $solr_xml = file_get_contents($url);
 
         // We would construct/pop a new skylight Record model here?
@@ -640,7 +635,7 @@ class solr_client_archivesspace_1
 
         // End search result parse.
 
-        //print_r($solr);
+        print_r($solr);
         $data['solr'] = $solr;
 
         // Set the page title to the record title
@@ -653,9 +648,11 @@ class solr_client_archivesspace_1
     }
 
     function getRelatedItems($facets = array(), $id = '')
+
+
+
     {
         $operator = ' OR ';
-        //$id = $this->handle_prefix . '/' . $id;
         $counter = 0;
         $query_string = '';
         foreach ($facets as $metadatavalue) {
@@ -684,19 +681,20 @@ class solr_client_archivesspace_1
             $metadatavalue = preg_replace('/%/', '', $metadatavalue, -1);
 
             if ($counter == 0) {
+                print(" counter zero ");
                 $query_string .= $metadatavalue;
             } else {
                 $query_string .= $operator . $metadatavalue;
             }
             $counter++;
         }
+
         //$query_string .= 'id:"' . $id . '"';
-        $url = $this->base_url . 'select?';
+        $url = $this->base_url . '' . $this->solr_collection .'/select?';
         $url .= 'q=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=subjects:"' . $this->solrEscape($query_string) . "\"";
-        $url .= '&fq=id:' .$id;
+        $url .= '&fq=-id:' .$id;
         $url .= '&rows=5';
-
 
         $solr_xml = file_get_contents($url);
 
@@ -712,9 +710,9 @@ class solr_client_archivesspace_1
 
         $url = $this->base_url . "#/" . $this->solr_collection ."/query?q=*:*";
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        //$url .= '&fq=search.resourcetype:2';
-        //$url .= '&sort=dc.date.accessioned_dt+desc';
         $url .= '&rows=' . $rows;
+
+        print_r($url);
         $solr_xml = file_get_contents($url);
 
         $recent_xml = @new SimpleXMLElement($solr_xml);
@@ -777,7 +775,7 @@ class solr_client_archivesspace_1
         if ($prefix !== '') {
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
         }
-        //print_r($url);
+        print_r($url);
 
         $solr_xml = file_get_contents($url);
 
@@ -842,7 +840,7 @@ class solr_client_archivesspace_1
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
         }
 
-        //print_r($url);
+        print_r($url);
 
         $solr_xml = file_get_contents($url);
 
@@ -952,10 +950,6 @@ class solr_client_archivesspace_1
 
         $url = $this->base_url . "select?indent=on&version=2.2&q=";
         $url .= $q . "&fq=&start=0&rows=10000";
-        //$url .= "location.coll%3A(1+3+11+15)&fq=&start=0&rows=10000&fl=location.coll&qt=&wt=&explainOther=&hl.fl=";
-        //$url .= $this->solrEscape($q) . "&fq=&start=0&rows=20000&fl=handle%2C+location.coll&qt=&wt=&explainOther=&hl.fl=";
-        //$url .= "*&fq=&start=&rows=100&fl=handle%2C+dc.format.original&qt=&wt=&explainOther=&hl.fl=";
-        // location.coll%3A%281+3+11+15%29
 
         $solr_xml = file_get_contents($url);
         $result_xml = @new SimpleXMLElement($solr_xml);
