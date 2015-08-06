@@ -570,7 +570,7 @@ class solr_client_archivesspace_1
         //} else
         //TODO only subjects for related search
         if (array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($solr[$subject_field], $id);
+            $rels_xml = $this->getRelatedItems($subject_field, $solr[$subject_field], $id);
         }
         //elseif (array_key_exists($title_field, $solr)) {
             //$rels_xml = $this->getRelatedItems($solr[$title_field], $id);
@@ -635,7 +635,6 @@ class solr_client_archivesspace_1
 
         // End search result parse.
 
-        print_r($solr);
         $data['solr'] = $solr;
 
         // Set the page title to the record title
@@ -647,10 +646,7 @@ class solr_client_archivesspace_1
 
     }
 
-    function getRelatedItems($facets = array(), $id = '')
-
-
-
+    function getRelatedItems($field, $facets = array(), $id = '')
     {
         $operator = ' OR ';
         $counter = 0;
@@ -659,9 +655,7 @@ class solr_client_archivesspace_1
             if (is_array($metadatavalue)) {
                 $md = $metadatavalue;
                 $metadatavalue = '';
-                //foreach ($md as $value) {
-                    $metadatavalue .= $md[0] . ' ';
-                //}
+                $metadatavalue .= $md[0] . ' ';
             }
             $metadatavalue = preg_replace('/\[/', '\\[', $metadatavalue, -1);
             $metadatavalue = preg_replace('/\]/', '\\]', $metadatavalue, -1);
@@ -681,7 +675,6 @@ class solr_client_archivesspace_1
             $metadatavalue = preg_replace('/%/', '', $metadatavalue, -1);
 
             if ($counter == 0) {
-                print(" counter zero ");
                 $query_string .= $metadatavalue;
             } else {
                 $query_string .= $operator . $metadatavalue;
@@ -689,10 +682,9 @@ class solr_client_archivesspace_1
             $counter++;
         }
 
-        //$query_string .= 'id:"' . $id . '"';
         $url = $this->base_url . '' . $this->solr_collection .'/select?';
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=subjects:"' . $this->solrEscape($query_string) . "\"";
+        $url .= '&fq='. $field . ':"' . $this->solrEscape($query_string) . "\"";
         $url .= '&fq=-id:' .$id;
         $url .= '&rows=5';
 
