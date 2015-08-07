@@ -121,7 +121,6 @@ class solr_client_archivesspace_1
 
         // Set up scope
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        //$url .= '&fq=search.resourcetype:2';
 
         $url .= '&rows=' . $rows;
 
@@ -147,7 +146,6 @@ class solr_client_archivesspace_1
                 foreach ($multivalue_field->date as $value) {
                     $doc[str_replace('.', '', $key)] = $value;
                 }
-
             }
 
             foreach ($result->str as $unique_field) {
@@ -193,14 +191,8 @@ class solr_client_archivesspace_1
         // See search.php controller for example of usage
 
         $title = $this->recorddisplay[0]; //changed to index
-        if ($q == '*' || $q == '') {
-            $q = '*:*';
-        }
-        $url = $this->base_url . $this->solr_collection ."/select?q=" . $this->solrEscape($q);
-        if (count($fq) > 0) {
-            foreach ($fq as $value)
-                $url .= '&fq=' . $this->solrEscape($value) . '';
-        }
+
+        $url = $this->base_url . $this->solr_collection ."/select?";
 
         if (isset($this->date_field))
         {
@@ -214,7 +206,12 @@ class solr_client_archivesspace_1
         }
 
         // Set up scope
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=types:"archival_object"types:"accession"';
+        if (count($fq) > 0) {
+            foreach ($fq as $value)
+                $url .= '&fq=' . $this->solrEscape($value) . '';
+        }
         $url .= '&sort=' . $sort_by;
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
@@ -332,9 +329,6 @@ class solr_client_archivesspace_1
         }
 
         $data['facets'] = $facets;
-
-        //print_r($data);
-
         return $data;
 
     }
@@ -343,10 +337,7 @@ class solr_client_archivesspace_1
     {
 
         $query = $q;
-        if ($q == '*') {
-            $q = '*:*';
-        }
-        $url = $this->base_url . $this->solr_collection ."/select?q=" . $q;
+        $url = $this->base_url . $this->solr_collection ."/select?";
         if (count($fq) > 0) {
             foreach ($fq as $value)
                 $url .= '&fq=' . $value . '';
@@ -364,8 +355,8 @@ class solr_client_archivesspace_1
             $ranges = array();
         }
         
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
-       // $url .= '&fq=search.resourcetype:2';
+        $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=types:"archival_object"types:"accession"';
         $url .= '&wt=xml';
         $url .= '&rows=0';
         $url .= '&facet.mincount=1';
@@ -479,15 +470,17 @@ class solr_client_archivesspace_1
         return $data;
     }
 
-    function getRecord($id = NULL, $highlight = "")
+    function getRecord($id = NULL, $params)
     {
         //TODO remove hardcoding
         $title_field = 'title';
         $subject_field = 'subjects';
+        //todo better way to pass on type to query - hacktastic
+        $type = $params[0] . 's'; //todo need item type
 
         $url = $this->base_url . '' . $this->solr_collection .'/select?q=';
 
-        $id = "\"". $this->handle_prefix. $id . "\"";
+        $id = "\"". $this->handle_prefix . $type . "/" .$id . "\"";
         $url .= 'id:' . $id;
         $url .= '&wt=xml';
 
@@ -970,6 +963,8 @@ class solr_client_archivesspace_1
             if (!array_key_exists($title, $doc)) {
                 $doc[$title][] = 'No title';
             }
+
+
             $items[] = $doc;
 
         }
