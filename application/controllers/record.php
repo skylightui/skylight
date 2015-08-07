@@ -118,7 +118,6 @@ class Record extends skylight {
 
         $data['page_title'] = $page_title_prefix . '"'.$data['solr'][$title][0].'"';
         $data['record_title'] = $data['solr'][$title][0];
-        print($title);
         $data['title_field'] = $title;
 
         $data['id'] = $id;
