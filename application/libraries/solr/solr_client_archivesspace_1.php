@@ -229,44 +229,18 @@ class solr_client_archivesspace_1
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-        print_r('simple search '. $url);
+        //print_r('simple search '. $url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
 
-       // print_r($search_xml);
+        //print_r($search_xml);
 
-        $docs = array();
         $facet = array();
         $facets = array();
 
         // Build search results from solr response
-        foreach ($search_xml->result->doc as $result) {
-            $doc = array();
-            foreach ($result->arr as $multivalue_field) {
-
-                $key = $multivalue_field['name'];
-                foreach ($multivalue_field->str as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-            }
-
-            foreach ($result->str as $unique_field) {
-
-                $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
-
-            }
-            $handle = preg_split('/\//', $doc['id']);
-            $doc['id'] = $handle[4];
-
-            if (!array_key_exists($title, $doc)) {
-                $doc[$title][] = 'No title';
-            }
-            $docs[] = $doc;
-
-        }
+        $docs = $this->getResultsFromSolr($search_xml, $title);
 
 
         // get spellcheck collated suggestion
@@ -517,7 +491,7 @@ class solr_client_archivesspace_1
         $url .= 'id:' . $id;
         $url .= '&wt=xml';
 
-        print(" get record url "  . $url . " ");
+        //print(" get record url "  . $url . " ");
         $solr_xml = file_get_contents($url);
 
         // We would construct/pop a new skylight Record model here?
@@ -691,12 +665,7 @@ class solr_client_archivesspace_1
 
     function getRecentItems($rows = 5)
     {
-        print("get recent items ");
-        $title_field = $this->searchresultdisplay[0]; //'Title'];
-        //$author_field = $this->searchresultdisplay[1]; //'Author'];
-        //$subject_field = $this->searchresultdisplay[2]; //'Subject'];
-        //$description_field = $this->searchresultdisplay[4]; //'Abstract'];
-
+        $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . $this->solr_collection ."/select?";
         $url .= 'q=' . $this->container_field . ':' . $this->container;
         $url .= '&rows=' . $rows;
@@ -706,38 +675,9 @@ class solr_client_archivesspace_1
         $solr_xml = file_get_contents($url);
 
         $recent_xml = @new SimpleXMLElement($solr_xml);
-        $recent_items = array();
-        foreach ($recent_xml->result->doc as $result) {
-            $doc = array();
-            foreach ($result->arr as $multivalue_field) {
-                $key = $multivalue_field['name'];
-                foreach ($multivalue_field->str as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-                foreach ($multivalue_field->int as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-                foreach ($multivalue_field->date as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-            }
 
-            foreach ($result->str as $unique_field) {
-                $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
-            }
-            if (!array_key_exists($title_field, $doc)) {
-                $doc[$title_field][] = 'No title';
-            }
-
-            $recent_items[] = $doc;
-        }
-
-        $data['title_field'] = $title_field;
-        //$data['author_field'] = $author_field;
-        //$data['subject_field'] = $subject_field;
-        //$data['description_field'] = $description_field;
+        // Build search results from solr response
+        $recent_items = $this->getResultsFromSolr($recent_xml, $title);
 
         $data['recent_items'] = $recent_items;
 
@@ -752,7 +692,6 @@ class solr_client_archivesspace_1
         $description_field = $this->searchresultdisplay[4]; //'Abstract'];
         $url = $this->base_url . 'select?q=*:*';
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=search.resourcetype:2';
         $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
         $url .= '&rows=' . $rows;
         print_r($url);
@@ -798,8 +737,8 @@ class solr_client_archivesspace_1
 
         $prefix = $this->solrEscape(strtolower($prefix));
         $rows++;
-        $url = $this->base_url . "#/" . $this->solr_collection ."/query?q=*:*";
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url = $this->base_url . $this->solr_collection ."/select?";
+        $url .= 'q=' . $this->container_field . ':' . $this->container;
         $url .= '&rows=0&facet.mincount=1';
         if (preg_match("/Date/", $field)) {
             $facetField = $this->configured_date_filters[$field];
@@ -811,7 +750,7 @@ class solr_client_archivesspace_1
         if ($prefix !== '') {
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
         }
-        print_r($url);
+        //print_r($url);
 
         $solr_xml = file_get_contents($url);
 
@@ -861,9 +800,8 @@ class solr_client_archivesspace_1
 
         $prefix = $this->solrEscape(strtolower($prefix));
 
-        $url = $this->base_url . "#/" . $this->solr_collection ."/query?q=*:*";
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        //$url .= '&fq=search.resourcetype:2';
+        $url = $this->base_url . $this->solr_collection ."/select?";
+        $url .= 'q=' . $this->container_field . ':' . $this->container;
         $url .= '&rows=0&facet.mincount=1';
         if (preg_match("/Date/", $field)) {
             $facetField = $this->configured_date_filters[$field];
@@ -876,7 +814,7 @@ class solr_client_archivesspace_1
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
         }
 
-        print_r($url);
+        //print_r($url);
 
         $solr_xml = file_get_contents($url);
 
@@ -997,6 +935,45 @@ class solr_client_archivesspace_1
 
         return $data;
 
+    }
+
+    /**
+     * @param $recent_xml
+     * @param $title
+     * @param $recent_items
+     * @return array
+     */
+    public function getResultsFromSolr($recent_xml, $title)
+    {
+        $items = array();
+
+        foreach ($recent_xml->result->doc as $result) {
+            $doc = array();
+            foreach ($result->arr as $multivalue_field) {
+
+                $key = $multivalue_field['name'];
+                foreach ($multivalue_field->str as $value) {
+                    $doc[str_replace('.', '', $key)][] = $value;
+                }
+            }
+
+            foreach ($result->str as $unique_field) {
+
+                $key = $unique_field['name'];
+                $value = $unique_field;
+                $doc[str_replace('.', '', $key)] = $value;
+
+            }
+            $handle = preg_split('/\//', $doc['id']);
+            $doc['id'] = $handle[4];
+
+            if (!array_key_exists($title, $doc)) {
+                $doc[$title][] = 'No title';
+            }
+            $items[] = $doc;
+
+        }
+        return $items;
     }
 
 
