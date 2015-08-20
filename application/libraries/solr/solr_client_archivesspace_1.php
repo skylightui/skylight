@@ -1,17 +1,15 @@
 <?php
+
 /**
- * Created by JetBrains PhpStorm.
  * User: cknowles
  * ArchivesSpace SOLR 4 Client
  */
-
 class solr_client_archivesspace_1
 {
-
-    var $base_url = ''; // Base URL. Typically not overridden in construct params. Get from config.
-    var $max_rows = 100; // Default to 100 rows maximum
-    var $container = '*'; // Default to all collections
-    var $container_field = 'resource'; // Default to discovery's DSpace collection field
+    var $base_url = ''; /** Base URL. Typically not overridden in construct params. Get from config.*/
+    var $max_rows = 100; /** Default to 100 rows maximum */
+    var $container = '*'; /** Default to all collections */
+    var $container_field = 'resource'; /** Default to discovery's DSpace collection field */
     var $handle_prefix = '';
     var $scope = '';
     var $rows = 10;
@@ -19,7 +17,6 @@ class solr_client_archivesspace_1
     var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
-    //var $date_field = 'dc.date.year';
     var $delimiter = '';
     var $thumbnail_field = '';
     var $bitstream_field = '';
@@ -57,6 +54,7 @@ class solr_client_archivesspace_1
         $this->thumbnail_field = str_replace('.', '', $CI->config->item('skylight_thumbnail_field'));
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
         $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
+        $this->related_fields = $CI->config->item('skylight_related_fields');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
@@ -121,7 +119,6 @@ class solr_client_archivesspace_1
 
         // Set up scope
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        //$url .= '&fq=search.resourcetype:2';
 
         $url .= '&rows=' . $rows;
 
@@ -147,7 +144,6 @@ class solr_client_archivesspace_1
                 foreach ($multivalue_field->date as $value) {
                     $doc[str_replace('.', '', $key)] = $value;
                 }
-
             }
 
             foreach ($result->str as $unique_field) {
@@ -193,28 +189,35 @@ class solr_client_archivesspace_1
         // See search.php controller for example of usage
 
         $title = $this->recorddisplay[0]; //changed to index
-        if ($q == '*' || $q == '') {
-            $q = '*:*';
-        }
-        $url = $this->base_url . $this->solr_collection ."/select?q=" . $this->solrEscape($q);
-        if (count($fq) > 0) {
-            foreach ($fq as $value)
-                $url .= '&fq=' . $this->solrEscape($value) . '';
-        }
 
-        if (isset($this->date_field))
-        {
+        $url = $this->base_url . $this->solr_collection . "/select?";
+
+        if (isset($this->date_field)) {
             $dates = $this->getDateRanges($this->date_field, $q, $fq);
             $ranges = $dates['ranges'];
             $datefqs = $dates['fq'];
-        }
-        else
-        {
+        } else {
             $ranges = array();
         }
 
         // Set up scope
+        // print_r("$q = " .$q. " END ");
+        if ($q != NULL && $q != '*') {
+            $url .= "q=" . $this->solrEscape($q);
+            $url .= "&df=fullrecord";
+        } else {
+
+            $url .= 'q=*:*';
+        }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=types:"archival_object"';
+        if (count($fq) > 0) {
+            foreach ($fq as $value)
+                $url .= '&fq=' . $this->solrEscape($value) . '';
+        }
+        if ($sort_by == null) {
+            $sort_by = "title_sort+asc";
+        }
         $url .= '&sort=' . $sort_by;
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
@@ -233,8 +236,6 @@ class solr_client_archivesspace_1
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
-
-        //print_r($search_xml);
 
         $facet = array();
         $facets = array();
@@ -332,9 +333,6 @@ class solr_client_archivesspace_1
         }
 
         $data['facets'] = $facets;
-
-        //print_r($data);
-
         return $data;
 
     }
@@ -343,10 +341,7 @@ class solr_client_archivesspace_1
     {
 
         $query = $q;
-        if ($q == '*') {
-            $q = '*:*';
-        }
-        $url = $this->base_url . $this->solr_collection ."/select?q=" . $q;
+        $url = $this->base_url . $this->solr_collection ."/select?";
         if (count($fq) > 0) {
             foreach ($fq as $value)
                 $url .= '&fq=' . $value . '';
@@ -364,8 +359,8 @@ class solr_client_archivesspace_1
             $ranges = array();
         }
         
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
-       // $url .= '&fq=search.resourcetype:2';
+        $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=types:"archival_object"';
         $url .= '&wt=xml';
         $url .= '&rows=0';
         $url .= '&facet.mincount=1';
@@ -479,15 +474,17 @@ class solr_client_archivesspace_1
         return $data;
     }
 
-    function getRecord($id = NULL, $highlight = "")
+    function getRecord($id = NULL, $params)
     {
         //TODO remove hardcoding
         $title_field = 'title';
         $subject_field = 'subjects';
+        //todo better way to pass on type to query - hacktastic
+        $type = $params[0] . 's'; //todo need item type
 
         $url = $this->base_url . '' . $this->solr_collection .'/select?q=';
 
-        $id = "\"". $this->handle_prefix. $id . "\"";
+        $id = "\"". $this->handle_prefix . $type . "/" .$id . "\"";
         $url .= 'id:' . $id;
         $url .= '&wt=xml';
 
@@ -509,6 +506,7 @@ class solr_client_archivesspace_1
 
         //print_r ($search_xml->result->doc[0]);
         //TODO what about the data not in arrays?
+        //get the json???
         foreach ($search_xml->result->doc[0]->arr as $field) {
             $key = $field['name'];
 
@@ -527,31 +525,81 @@ class solr_client_archivesspace_1
 
         }
 
-        //todo loop throught the $search_xml->result->doc[0] looking for the record dispaly items?
+        //todo loop throught the $search_xml->result->doc[0] looking for the record display items?
+        //for Strings
+        $related_item_type = null;
+        $related_item_value = null;
         foreach ($search_xml->result->doc[0]->str as $field)
         {
             $key = "" . $field['name'];
-            $value = $field;
+            if ($field['name'] == 'json') {
 
-            $solr[$key][] = $value;
-        }
-         // Related Items
+                $json_obj = json_decode($field, TRUE);
+                //var_dump($json_obj);
+                foreach ($json_obj as $json_key => $json_value) {
 
-        //if (array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
-            //$rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
-        //} else
-        //TODO only subjects for related search
-        if (array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($subject_field, $solr[$subject_field], $id);
+                    //todo if $json_value is an array loop round
+                    //if the key is not already in the solr array as also included not in JSON
+                    //echo '<pre>';
+                    //print_r($json_key);
+                    //echo '</pre>';
+
+                }
+               // $solr['rights_statements'][] = $json_obj['rights_statements'][0];
+                if(!empty($json_obj['dates'])) {
+                    $solr['dates'][] = $json_obj['dates'][0]['expression'];
+                }
+                if (!empty($json_obj['extents'])) {
+                    $solr['extents'][] = $json_obj['extents'][0]['number'] . " " . $json_obj['extents'][0]['extent_type'];
+                }
+
+                //todo multipart notes
+                foreach ($json_obj['notes'] as $note) {
+                    if ($note['jsonmodel_type'] == 'note_multipart') {
+                        $solr[$note['type']][] = $note['subnotes'][0]['content'];
+                    }
+                    elseif($note['jsonmodel_type'] == 'note_bibliography')
+                    {
+                        $solr['note_bibliography'][] = $note['content'][0];
+                    }
+                    else{
+                        $solr[$note['type']][] = $note['content'][0];
+                    }
+                }
+                $solr['component_id'][] = $json_obj['component_id'];
+                if(!empty($json_obj['parent'])) {
+                    $parent = $json_obj['parent']['ref'];
+                    $parent_pieces = explode("/", $parent);
+                    //print_r("***********" . $parent . " " . count($parent_pieces));
+                    $parent_id = $parent_pieces[4];
+                    $parent_type = $parent_pieces[3];
+                    $solr['parent'][] = $parent;
+                    $solr['parent_id'][] = $parent_id;
+                    $solr['parent_type'][] = substr($parent_type, 0, strlen($parent_type)-1);
+                }
+            }
+            else
+            {
+                $value = $field;
+                $solr[$key][] = $value;
+            }
         }
 
-        //todo add related items fields to skylight config
-        else
-        {
-            return $data;
+        // Related Items
+        $rels_solr = array();
+
+        foreach ($this->related_fields as $related_field) {
+            $key = str_replace('.', '', $related_field);
+            //print_r("key " . $key . " field " . $related_field);
+            if(array_key_exists($key, $solr)) {
+                $rels_solr[$key] = $solr[$key];
+            }
         }
+
+        $rels_xml = $this->getRelatedItems($rels_solr, $id);
 
         $related = @new SimpleXMLElement($rels_xml);
+
 
         // Parse like search results. This will be moved somewhere better
 
@@ -616,12 +664,13 @@ class solr_client_archivesspace_1
 
     }
 
-    function getRelatedItems($field, $facets = array(), $id = '')
+    function getRelatedItems($related = array(), $id = '')
     {
         $operator = ' OR ';
         $counter = 0;
         $query_string = '';
-        foreach ($facets as $metadatavalue) {
+        foreach ($related as $metadatavalue) {
+
             if (is_array($metadatavalue)) {
                 $md = $metadatavalue;
                 $metadatavalue = '';
@@ -649,14 +698,15 @@ class solr_client_archivesspace_1
             } else {
                 $query_string .= $operator . $metadatavalue;
             }
-            $counter++;
         }
 
         $url = $this->base_url . '' . $this->solr_collection .'/select?';
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq='. $field . ':"' . $this->solrEscape($query_string) . "\"";
+        $url .= '&fq="' . $this->solrEscape($query_string) . "\"";
         $url .= '&fq=-id:' .$id;
+        $url .= '&df=fullrecord';
         $url .= '&rows=5';
+        //print_r("related items url " . $url . " ");
 
         $solr_xml = file_get_contents($url);
 
@@ -668,10 +718,11 @@ class solr_client_archivesspace_1
         $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . $this->solr_collection ."/select?";
         $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=types:"archival_object"';
         $url .= '&rows=' . $rows;
         $url .= '&wt=xml';
 
-        //print_r($url);
+        //print_r("recent items " . $url);
         $solr_xml = file_get_contents($url);
 
         $recent_xml = @new SimpleXMLElement($solr_xml);
@@ -686,48 +737,17 @@ class solr_client_archivesspace_1
 
     function getRandomItems($rows = 10)
     {
-        $title_field = $this->searchresultdisplay[0]; //'Title'];
-        $author_field = $this->searchresultdisplay[1]; //'Author'];
-        $subject_field = $this->searchresultdisplay[2]; //'Subject'];
-        $description_field = $this->searchresultdisplay[4]; //'Abstract'];
-        $url = $this->base_url . 'select?q=*:*';
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        $title = $this->recorddisplay[0]; //changed to index
+        $url = $this->base_url . 'select?';
+        $url .= '&q=' . $this->container_field . ':' . $this->container;
+        $url .= '&fq=types:"archival_object"';
         $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
         $url .= '&rows=' . $rows;
-        print_r($url);
+        $url .= '&wt=xml';
+        //print_r("random " . $url);
         $solr_xml = file_get_contents($url);
-        $recent_xml = @new SimpleXMLElement($solr_xml);
-        $random_items = array();
-        foreach ($recent_xml->result->doc as $result) {
-            $doc = array();
-            foreach ($result->arr as $multivalue_field) {
-                $key = $multivalue_field['name'];
-                foreach ($multivalue_field->str as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-                foreach ($multivalue_field->int as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-                foreach ($multivalue_field->date as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-            }
-            foreach ($result->str as $unique_field) {
-                $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
-            }
-            $handle = preg_split('/\//', $doc['handle']);
-            $doc['id'] = $handle[1];
-            if (!array_key_exists($title_field, $doc)) {
-                $doc[$title_field][] = 'No title';
-            }
-            $random_items[] = $doc;
-        }
-        $data['title_field'] = $title_field;
-        $data['author_field'] = $author_field;
-        $data['subject_field'] = $subject_field;
-        $data['description_field'] = $description_field;
+        $random_xml = @new SimpleXMLElement($solr_xml);
+        $random_items = $this->getResultsFromSolr($random_xml, $title);
         $data['random_items'] = $random_items;
         return $data;
     }
@@ -965,11 +985,16 @@ class solr_client_archivesspace_1
 
             }
             $handle = preg_split('/\//', $doc['id']);
-            $doc['id'] = $handle[4];
+            //todo top level does not have an id in this format!
+            if (count($handle) > 3 && $handle[4] != NULL) {
+                $doc['id'] = $handle[4];
+            }
 
             if (!array_key_exists($title, $doc)) {
                 $doc[$title][] = 'No title';
             }
+
+
             $items[] = $doc;
 
         }

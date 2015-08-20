@@ -35,7 +35,8 @@ class Record extends skylight {
 
         // GET RECORD
         // Solr query business moved to solr_client library
-        $data = $this->solr_client->getRecord($id);
+        //todo this may break highlighting if implemented
+        $data = $this->solr_client->getRecord($id, $params);
 
         // Determine the page title and heading.
         $page_title_prefix = $this->config->item('skylight_page_title_prefix');
@@ -115,7 +116,6 @@ class Record extends skylight {
 
         $data['sharethis'] = $this->config->item('skylight_share_buttons');
 
-        //$data['page_title'] = $data['solr'][$title][0];
         $data['page_title'] = $page_title_prefix . '"'.$data['solr'][$title][0].'"';
         $data['record_title'] = $data['solr'][$title][0];
         $data['title_field'] = $title;
