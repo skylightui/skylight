@@ -55,6 +55,7 @@ class solr_client_archivesspace_1
         $this->dictionary = $CI->config->item('skylight_solr_dictionary');
         $this->highlight_fields = $CI->config->item('skylight_highlight_fields');
         $this->related_fields = $CI->config->item('skylight_related_fields');
+        $this->num_related = $CI->config->item('skylight_related_number');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
@@ -694,18 +695,20 @@ class solr_client_archivesspace_1
             $metadatavalue = preg_replace('/%/', '', $metadatavalue, -1);
 
             if ($counter == 0) {
-                $query_string .= $metadatavalue;
+                $query_string .=  '"' . $metadatavalue . '"';
             } else {
-                $query_string .= $operator . $metadatavalue;
+                $query_string .= $operator . '"' . $metadatavalue . '"';
             }
+            $counter++;
         }
 
+        //print_r("related items query_string " . $query_string . " ");
         $url = $this->base_url . '' . $this->solr_collection .'/select?';
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq="' . $this->solrEscape($query_string) . "\"";
+        $url .= '&fq=' . $this->solrEscape($query_string) ;
         $url .= '&fq=-id:' .$id;
         $url .= '&df=fullrecord';
-        $url .= '&rows=5';
+        $url .= '&rows=' . $this->num_related;
         //print_r("related items url " . $url . " ");
 
         $solr_xml = file_get_contents($url);
