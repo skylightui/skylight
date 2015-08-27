@@ -567,8 +567,9 @@ class solr_client_archivesspace_1
                         $solr[$note['type']][] = $note['content'][0];
                     }
                 }
-                $solr['component_id'][] = $json_obj['component_id'];
-
+                if (!empty($json_obj['component_id'])) {
+                    $solr['component_id'][] = $json_obj['component_id'];
+                }
                 if(!empty($json_obj['parent'])) {
                     $parent = $json_obj['parent']['ref'];
                     $parent_pieces = explode("/", $parent);
