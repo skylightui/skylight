@@ -211,7 +211,7 @@ class solr_client_archivesspace_1
             $url .= 'q=*:*';
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         if (count($fq) > 0) {
             foreach ($fq as $value)
                 $url .= '&fq=' . $this->solrEscape($value) . '';
@@ -233,7 +233,7 @@ class solr_client_archivesspace_1
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-        //print_r('simple search '. $url);
+       // print_r('simple search '. $url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -361,7 +361,7 @@ class solr_client_archivesspace_1
         }
         
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         $url .= '&wt=xml';
         $url .= '&rows=0';
         $url .= '&facet.mincount=1';
@@ -568,6 +568,7 @@ class solr_client_archivesspace_1
                     }
                 }
                 $solr['component_id'][] = $json_obj['component_id'];
+
                 if(!empty($json_obj['parent'])) {
                     $parent = $json_obj['parent']['ref'];
                     $parent_pieces = explode("/", $parent);
@@ -721,7 +722,7 @@ class solr_client_archivesspace_1
         $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . $this->solr_collection ."/select?";
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         $url .= '&rows=' . $rows;
         $url .= '&wt=xml';
 
@@ -743,7 +744,7 @@ class solr_client_archivesspace_1
         $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . 'select?';
         $url .= '&q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
         $url .= '&rows=' . $rows;
         $url .= '&wt=xml';
