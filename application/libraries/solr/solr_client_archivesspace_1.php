@@ -990,9 +990,23 @@ class solr_client_archivesspace_1
             foreach ($result->str as $unique_field) {
 
                 $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
 
+                if ($key == 'json') {
+
+                    $json_obj = json_decode($unique_field, TRUE);
+                    if(!empty($json_obj['dates'])) {
+                        $doc['dates'] = $json_obj['dates'][0]['expression'];
+                    }
+
+                    if (!empty($json_obj['component_id'])) {
+                        $doc['component_id'] = $json_obj['component_id'];
+                    }
+
+                }
+                else {
+                    $value = $unique_field;
+                    $doc[str_replace('.', '', $key)] = $value;
+                }
             }
             $handle = preg_split('/\//', $doc['id']);
             //todo top level does not have an id in this format!
