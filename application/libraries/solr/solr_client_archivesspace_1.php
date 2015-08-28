@@ -479,7 +479,6 @@ class solr_client_archivesspace_1
     {
         //TODO remove hardcoding
         $title_field = 'title';
-        $subject_field = 'subjects';
         //todo better way to pass on type to query - hacktastic
         $type = $params[0] . 's'; //todo need item type
 
@@ -536,17 +535,6 @@ class solr_client_archivesspace_1
             if ($field['name'] == 'json') {
 
                 $json_obj = json_decode($field, TRUE);
-                //var_dump($json_obj);
-                foreach ($json_obj as $json_key => $json_value) {
-
-                    //todo if $json_value is an array loop round
-                    //if the key is not already in the solr array as also included not in JSON
-                    //echo '<pre>';
-                    //print_r($json_key);
-                    //echo '</pre>';
-
-                }
-               // $solr['rights_statements'][] = $json_obj['rights_statements'][0];
                 if(!empty($json_obj['dates'])) {
                     $solr['dates'][] = $json_obj['dates'][0]['expression'];
                 }
@@ -603,9 +591,6 @@ class solr_client_archivesspace_1
 
         $related = @new SimpleXMLElement($rels_xml);
 
-
-        // Parse like search results. This will be moved somewhere better
-
         $related_items = array();
 
         foreach ($related->result->doc as $result) {
@@ -625,8 +610,25 @@ class solr_client_archivesspace_1
 
             foreach ($result->str as $unique_field) {
                 $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
+                //print_r(" " . $key . "  ");
+
+                if ($key == 'json') {
+
+                    $json_obj = json_decode($unique_field, TRUE);
+                    if(!empty($json_obj['dates'])) {
+                        $doc['dates'] = $json_obj['dates'][0]['expression'];
+                    }
+
+                    if (!empty($json_obj['component_id'])) {
+                        $doc['component_id'] = $json_obj['component_id'];
+                    }
+
+                }
+                else
+                {
+                    $value = $unique_field;
+                    $doc[str_replace('.', '', $key)] = $value;
+                }
 
             }
             foreach ($result->int as $unique_field) {
@@ -642,6 +644,7 @@ class solr_client_archivesspace_1
 
             }
 
+
             //TODO replace handle here
             $handle = preg_split('/\//', $doc['id']);
             $doc['id'] = $handle[4];
@@ -652,6 +655,8 @@ class solr_client_archivesspace_1
             }
             $related_items[] = $doc;
         }
+        //print_r($related_items);
+
         $data['related_items'] = $related_items;
 
         // End search result parse.
