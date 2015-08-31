@@ -211,7 +211,7 @@ class solr_client_archivesspace_1
             $url .= 'q=*:*';
         }
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         if (count($fq) > 0) {
             foreach ($fq as $value)
                 $url .= '&fq=' . $this->solrEscape($value) . '';
@@ -233,7 +233,7 @@ class solr_client_archivesspace_1
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-        //print_r('simple search '. $url);
+       // print_r('simple search '. $url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -361,7 +361,7 @@ class solr_client_archivesspace_1
         }
         
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         $url .= '&wt=xml';
         $url .= '&rows=0';
         $url .= '&facet.mincount=1';
@@ -479,7 +479,6 @@ class solr_client_archivesspace_1
     {
         //TODO remove hardcoding
         $title_field = 'title';
-        $subject_field = 'subjects';
         //todo better way to pass on type to query - hacktastic
         $type = $params[0] . 's'; //todo need item type
 
@@ -536,17 +535,6 @@ class solr_client_archivesspace_1
             if ($field['name'] == 'json') {
 
                 $json_obj = json_decode($field, TRUE);
-                //var_dump($json_obj);
-                foreach ($json_obj as $json_key => $json_value) {
-
-                    //todo if $json_value is an array loop round
-                    //if the key is not already in the solr array as also included not in JSON
-                    //echo '<pre>';
-                    //print_r($json_key);
-                    //echo '</pre>';
-
-                }
-               // $solr['rights_statements'][] = $json_obj['rights_statements'][0];
                 if(!empty($json_obj['dates'])) {
                     $solr['dates'][] = $json_obj['dates'][0]['expression'];
                 }
@@ -567,7 +555,9 @@ class solr_client_archivesspace_1
                         $solr[$note['type']][] = $note['content'][0];
                     }
                 }
-                $solr['component_id'][] = $json_obj['component_id'];
+                if (!empty($json_obj['component_id'])) {
+                    $solr['component_id'][] = $json_obj['component_id'];
+                }
                 if(!empty($json_obj['parent'])) {
                     $parent = $json_obj['parent']['ref'];
                     $parent_pieces = explode("/", $parent);
@@ -601,9 +591,6 @@ class solr_client_archivesspace_1
 
         $related = @new SimpleXMLElement($rels_xml);
 
-
-        // Parse like search results. This will be moved somewhere better
-
         $related_items = array();
 
         foreach ($related->result->doc as $result) {
@@ -623,8 +610,25 @@ class solr_client_archivesspace_1
 
             foreach ($result->str as $unique_field) {
                 $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
+                //print_r(" " . $key . "  ");
+
+                if ($key == 'json') {
+
+                    $json_obj = json_decode($unique_field, TRUE);
+                    if(!empty($json_obj['dates'])) {
+                        $doc['dates'] = $json_obj['dates'][0]['expression'];
+                    }
+
+                    if (!empty($json_obj['component_id'])) {
+                        $doc['component_id'] = $json_obj['component_id'];
+                    }
+
+                }
+                else
+                {
+                    $value = $unique_field;
+                    $doc[str_replace('.', '', $key)] = $value;
+                }
 
             }
             foreach ($result->int as $unique_field) {
@@ -640,6 +644,7 @@ class solr_client_archivesspace_1
 
             }
 
+
             //TODO replace handle here
             $handle = preg_split('/\//', $doc['id']);
             $doc['id'] = $handle[4];
@@ -650,6 +655,8 @@ class solr_client_archivesspace_1
             }
             $related_items[] = $doc;
         }
+        //print_r($related_items);
+
         $data['related_items'] = $related_items;
 
         // End search result parse.
@@ -721,7 +728,7 @@ class solr_client_archivesspace_1
         $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . $this->solr_collection ."/select?";
         $url .= 'q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         $url .= '&rows=' . $rows;
         $url .= '&wt=xml';
 
@@ -743,7 +750,7 @@ class solr_client_archivesspace_1
         $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . 'select?';
         $url .= '&q=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=types:"archival_object"';
+        $url .= '&fq=types:"archival_object"+types:"resource"';
         $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
         $url .= '&rows=' . $rows;
         $url .= '&wt=xml';
@@ -983,9 +990,23 @@ class solr_client_archivesspace_1
             foreach ($result->str as $unique_field) {
 
                 $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
 
+                if ($key == 'json') {
+
+                    $json_obj = json_decode($unique_field, TRUE);
+                    if(!empty($json_obj['dates'])) {
+                        $doc['dates'] = $json_obj['dates'][0]['expression'];
+                    }
+
+                    if (!empty($json_obj['component_id'])) {
+                        $doc['component_id'] = $json_obj['component_id'];
+                    }
+
+                }
+                else {
+                    $value = $unique_field;
+                    $doc[str_replace('.', '', $key)] = $value;
+                }
             }
             $handle = preg_split('/\//', $doc['id']);
             //todo top level does not have an id in this format!
