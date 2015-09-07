@@ -387,7 +387,6 @@ class Pagination {
 			for ($loop = $start -1; $loop <= $end; $loop++)
 			{
 				$i = ($loop * $this->per_page) - $this->per_page;
-                print_r(' ' . $i . ' ');
 
 				if ($i >= 0)
 				{
