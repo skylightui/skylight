@@ -51,6 +51,7 @@ $route['alumni/(:any)'] = "$1";
 $route['iconics/(:any)'] = "$1";
 $route['openbooks/(:any)'] = "$1";
 $route['anatomy/(:any)'] = "$1";
+$route['piccolo/(:any)'] = "$1";
 
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
