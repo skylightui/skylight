@@ -376,8 +376,8 @@ class Pagination {
         if  ($this->first_link !== FALSE AND $this->cur_page > ($this->num_links + 1))
         {
              $first_url = ($this->first_url == '') ? $this->base_url : $this->first_url;
-            $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$first_url.'">1</a></li>';
-            $pages_array[] = '<li><span>&hellip;</span></li>';
+            $pages_array[] = '<li class="hidden-xs"><a '.$this->anchor_class.'href="'.$first_url.'">1</a></li>';
+            $pages_array[] = '<li class="hidden-xs"><span>&hellip;</span></li>';
         }
 
 		// Render the pages
@@ -400,13 +400,13 @@ class Pagination {
 
 						if ($n == '' && $this->first_url != '')
 						{
-							$pages_array[] = '<li><a href="'.$this->first_url.'">'.$loop.'</a></li>';
+							$pages_array[] = '<li class="hidden-xs"><a href="'.$this->first_url.'">'.$loop.'</a></li>';
 						}
 						else
 						{
 							$n = ($n == '') ? '' : $this->prefix.$n.$this->suffix;
 
-							$pages_array[] = '<li><a href="'.$this->base_url.$n.'">'.$loop.'</a></li>';
+							$pages_array[] = '<li class="hidden-xs"><a href="'.$this->base_url.$n.'">'.$loop.'</a></li>';
 						}
 					}
 				}
@@ -418,8 +418,8 @@ class Pagination {
         if ($this->last_link !== FALSE AND ($this->cur_page + $this->num_links) < $num_pages)
         {
             $i = (($num_pages * $this->per_page) - $this->per_page);
-            $pages_array[] = '<li><span>&hellip;</span></li>';
-            $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$num_pages .'</a></li>';
+            $pages_array[] = '<li class="hidden-xs"><span>&hellip;</span></li>';
+            $pages_array[] = '<li class="hidden-xs"><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$num_pages .'</a></li>';
         }
 
         if ($this->next_link !== FALSE AND $this->cur_page < $num_pages)
