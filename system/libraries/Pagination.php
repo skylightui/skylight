@@ -113,7 +113,7 @@ class Pagination {
 	 */
 	function create_links()
 	{
-		// If our item count or per-page total is zero there is no need to continue.
+        // If our item count or per-page total is zero there is no need to continue.
 		if ($this->total_rows == 0 OR $this->per_page == 0)
 		{
 			return '';
@@ -261,6 +261,13 @@ class Pagination {
 			$output .= $this->next_tag_open.'<a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.($this->cur_page * $this->per_page).$this->suffix.'">'.$this->next_link.'</a>'.$this->next_tag_close;
 		}
 
+        // Render the "Last" link
+        if ($this->last_link !== FALSE AND ($this->cur_page + $this->num_links) < $num_pages)
+        {
+            $i = (($num_pages * $this->per_page) - $this->per_page);
+            $output .= $this->last_tag_open.'<a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$this->last_link.'</a>'.$this->last_tag_close;
+        }
+
 		// Kill double slashes.  Note: Sometimes we can end up with a double slash
 		// in the penultimate link so we'll kill all double slashes.
 		$output = preg_replace("#([^:])//+#", "\\1/", $output);
@@ -281,7 +288,7 @@ class Pagination {
 	function responsive_links()
 	{
 
-		$pages_array = array();
+        $pages_array = array();
 		// If our item count or per-page total is zero there is no need to continue.
 		if ($this->total_rows == 0 OR $this->per_page == 0) {
 			return '';
@@ -291,9 +298,9 @@ class Pagination {
 		$num_pages = ceil($this->total_rows / $this->per_page);
 
 		// Is there only one page? Hm... nothing more to do here then.
-		if ($num_pages == 1) {
-			return '';
-		}
+		//if ($num_pages == 1) {
+		//	return '';
+		//}
 		// Determine the current page number.
 		$CI =& get_instance();
 
@@ -349,28 +356,29 @@ class Pagination {
 			$this->base_url = rtrim($this->base_url, '/') . '/';
 		}
 
+        if  ($this->prev_link !== FALSE AND $this->cur_page != 1)
+        {
+            $i = $uri_page_number - $this->per_page;
+
+            if ($i == 0 && $this->first_url != '')
+            {
+                $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$this->first_url.'">&laquo;</a></li>';
+            }
+            else
+            {
+                $i = ($i == 0) ? '' : $this->prefix.$i.$this->suffix;
+                $pages_array[] ='<li><a '.$this->anchor_class.'href="'.$this->base_url.$i.'">&laquo;</a></li>';
+            }
+
+        }
+
         // Render the "First" link
-//        if  ($this->first_link !== FALSE AND $this->cur_page > ($this->num_links + 1))
-//        {
-//            $first_url = ($this->first_url == '') ? $this->base_url : $this->first_url;
-//            $pages_array[0] = '<li><a '.$this->anchor_class.'href="'.$first_url.'">&laquo;</a></li>';
-//        }
-//
-//        if  ($this->prev_link !== FALSE AND $this->cur_page != 1)
-//        {
-//            $i = $uri_page_number - $this->per_page;
-//
-//            if ($i == 0 && $this->first_url != '')
-//            {
-//                $pages_array[$i] = '<li><a '.$this->anchor_class.'href="'.$this->first_url.'">'.$this->prev_link.'</a>'.$this->prev_tag_close;
-//            }
-//            else
-//            {
-//                $i = ($i == 0) ? '' : $this->prefix.$i.$this->suffix;
-//                $pages_array[$i] ='<li><a '.$this->anchor_class.'href="'.$this->base_url.$i.'">'.$this->prev_link.'</a>'.$this->prev_tag_close;
-//            }
-//
-//        }
+        if  ($this->first_link !== FALSE AND $this->cur_page > ($this->num_links + 1))
+        {
+             $first_url = ($this->first_url == '') ? $this->base_url : $this->first_url;
+            $pages_array[] = '<li class="hidden-xs"><a '.$this->anchor_class.'href="'.$first_url.'">1</a></li>';
+            $pages_array[] = '<li class="hidden-xs"><span>&hellip;</span></li>';
+        }
 
 		// Render the pages
 		if ($this->display_pages !== FALSE)
@@ -379,13 +387,12 @@ class Pagination {
 			for ($loop = $start -1; $loop <= $end; $loop++)
 			{
 				$i = ($loop * $this->per_page) - $this->per_page;
-                //print_r(' ' . $i . ' ');
 
 				if ($i >= 0)
 				{
                     if ($this->cur_page == $loop)
 					{
-						$pages_array[$i] = '<li class="active"><span> '.$loop. '</span></li>'; // Current page
+						$pages_array[] = '<li class="active"><span> '.$loop. '</span></li>'; // Current page
 					}
 					else
 					{
@@ -393,26 +400,34 @@ class Pagination {
 
 						if ($n == '' && $this->first_url != '')
 						{
-							$pages_array[$i] = '<li><a href="'.$this->first_url.'">'.$loop.'</a></li>';
+							$pages_array[] = '<li class="hidden-xs"><a href="'.$this->first_url.'">'.$loop.'</a></li>';
 						}
 						else
 						{
 							$n = ($n == '') ? '' : $this->prefix.$n.$this->suffix;
 
-							$pages_array[$i] = '<li><a href="'.$this->base_url.$n.'">'.$loop.'</a></li>';
+							$pages_array[] = '<li class="hidden-xs"><a href="'.$this->base_url.$n.'">'.$loop.'</a></li>';
 						}
 					}
 				}
 			}
 		}
 
-//        if ($this->next_link !== FALSE AND $this->cur_page < $num_pages)
-//        {
-//            print_r(' ' . count($pages_array) . ' ');
-//            $pages_array[count($pages_array)] = '<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.($this->cur_page * $this->per_page).$this->suffix.'">&raquo;</a></li>';
-//        }
+        // Render the "Last" link
+        // Render the "Last" link
+        if ($this->last_link !== FALSE AND ($this->cur_page + $this->num_links) < $num_pages)
+        {
+            $i = (($num_pages * $this->per_page) - $this->per_page);
+            $pages_array[] = '<li class="hidden-xs"><span>&hellip;</span></li>';
+            $pages_array[] = '<li class="hidden-xs"><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$num_pages .'</a></li>';
+        }
 
-		return $pages_array;
+        if ($this->next_link !== FALSE AND $this->cur_page < $num_pages)
+        {
+            $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.($this->cur_page * $this->per_page).$this->suffix.'">&raquo;</a></li>';
+        }
+
+        return $pages_array;
 	}
 
 }
