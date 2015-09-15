@@ -113,7 +113,7 @@ class Pagination {
 	 */
 	function create_links()
 	{
-		// If our item count or per-page total is zero there is no need to continue.
+        // If our item count or per-page total is zero there is no need to continue.
 		if ($this->total_rows == 0 OR $this->per_page == 0)
 		{
 			return '';
@@ -288,7 +288,7 @@ class Pagination {
 	function responsive_links()
 	{
 
-		$pages_array = array();
+        $pages_array = array();
 		// If our item count or per-page total is zero there is no need to continue.
 		if ($this->total_rows == 0 OR $this->per_page == 0) {
 			return '';
@@ -298,9 +298,9 @@ class Pagination {
 		$num_pages = ceil($this->total_rows / $this->per_page);
 
 		// Is there only one page? Hm... nothing more to do here then.
-		if ($num_pages == 1) {
-			return '';
-		}
+		//if ($num_pages == 1) {
+		//	return '';
+		//}
 		// Determine the current page number.
 		$CI =& get_instance();
 
@@ -427,7 +427,7 @@ class Pagination {
             $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.($this->cur_page * $this->per_page).$this->suffix.'">&raquo;</a></li>';
         }
 
-		return $pages_array;
+        return $pages_array;
 	}
 
 }
