@@ -156,6 +156,7 @@ class Search extends skylight {
         $this->pagination->initialize($config);
 
         $data['pagelinks'] = $this->pagination->create_links();
+        $data['paginationlinks'] = $this->pagination->responsive_links();
 
         $data['startrow'] = $offset + 1;
         if($data['startrow'] + ($rows - 1 )  > $result_count)
@@ -172,11 +173,7 @@ class Search extends skylight {
             $data['author_field'] = 'dccreator';
         }
 
-        //$data['title_field'] = $title;
         $data['fielddisplay'] = $this->config->item("skylight_searchresult_display");
-        // TODO: get rid of this, it's bad
-       // $data['author_field'] = $recorddisplay['Author'];
-       // $data['artist_field'] = array_key_exists('Artist',$recorddisplay) ? $recorddisplay['Artist'] : 'dccontributorillustratoren';
         $data['display_thumbnail'] = $display_thumbnail;
         $data['thumbnail_field'] = 'solr_'.str_replace('.','',$thumbnail_field);
 

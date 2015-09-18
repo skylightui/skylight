@@ -24,7 +24,7 @@
  * @author		ExpressionEngine Dev Team
  * @link		http://codeigniter.com/user_guide/libraries/pagination.html
  */
-class CI_Pagination {
+class Pagination {
 
 	var $base_url			= ''; // The page we are linking to
 	var $prefix				= ''; // A custom prefix added to the path.
@@ -46,7 +46,7 @@ class CI_Pagination {
 	var $last_tag_open		= '&nbsp;';
 	var $last_tag_close		= '';
 	var $first_url			= ''; // Alternative URL for the First Page.
-	var $cur_tag_open		= '&nbsp;<strong>';
+	var $cur_tag_open		= '&nbsp;<strong class="selected">';
 	var $cur_tag_close		= '</strong>';
 	var $next_tag_open		= '&nbsp;';
 	var $next_tag_close		= '&nbsp;';
@@ -113,7 +113,7 @@ class CI_Pagination {
 	 */
 	function create_links()
 	{
-		// If our item count or per-page total is zero there is no need to continue.
+        // If our item count or per-page total is zero there is no need to continue.
 		if ($this->total_rows == 0 OR $this->per_page == 0)
 		{
 			return '';
@@ -183,10 +183,10 @@ class CI_Pagination {
 		// string. If post, add a trailing slash to the base URL if needed
 		if ($CI->config->item('enable_query_strings') === TRUE OR $this->page_query_string === TRUE)
 		{
-            $querychar = '?';
-            if(preg_match('/\?/',$this->base_url)) {
-                $querychar = '&';
-            }
+			$querychar = '?';
+			if(preg_match('/\?/',$this->base_url)) {
+				$querychar = '&';
+			}
 			$this->base_url = rtrim($this->base_url).$querychar.$this->query_string_segment.'=';
 		}
 		else
@@ -195,7 +195,8 @@ class CI_Pagination {
 		}
 
 		// And here we go...
-		$output = '';
+		$output = "";
+
 
 		// Render the "First" link
 		if  ($this->first_link !== FALSE AND $this->cur_page > ($this->num_links + 1))
@@ -260,12 +261,12 @@ class CI_Pagination {
 			$output .= $this->next_tag_open.'<a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.($this->cur_page * $this->per_page).$this->suffix.'">'.$this->next_link.'</a>'.$this->next_tag_close;
 		}
 
-		// Render the "Last" link
-		if ($this->last_link !== FALSE AND ($this->cur_page + $this->num_links) < $num_pages)
-		{
-			$i = (($num_pages * $this->per_page) - $this->per_page);
-			$output .= $this->last_tag_open.'<a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$this->last_link.'</a>'.$this->last_tag_close;
-		}
+        // Render the "Last" link
+        if ($this->last_link !== FALSE AND ($this->cur_page + $this->num_links) < $num_pages)
+        {
+            $i = (($num_pages * $this->per_page) - $this->per_page);
+            $output .= $this->last_tag_open.'<a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$this->last_link.'</a>'.$this->last_tag_close;
+        }
 
 		// Kill double slashes.  Note: Sometimes we can end up with a double slash
 		// in the penultimate link so we'll kill all double slashes.
@@ -276,8 +277,157 @@ class CI_Pagination {
 
 		return $output;
 	}
-}
-// END Pagination Class
 
-/* End of file Pagination.php */
-/* Location: ./system/libraries/Pagination.php */
+
+	/**
+	 * Generate the pagination links for responsive sites
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	function responsive_links()
+	{
+
+        $pages_array = array();
+		// If our item count or per-page total is zero there is no need to continue.
+		if ($this->total_rows == 0 OR $this->per_page == 0) {
+			return '';
+		}
+
+		// Calculate the total number of pages
+		$num_pages = ceil($this->total_rows / $this->per_page);
+
+		// Is there only one page? Hm... nothing more to do here then.
+		//if ($num_pages == 1) {
+		//	return '';
+		//}
+		// Determine the current page number.
+		$CI =& get_instance();
+
+		if ($CI->config->item('enable_query_strings') === TRUE OR $this->page_query_string === TRUE) {
+			if ($CI->input->get($this->query_string_segment) != 0) {
+				$this->cur_page = $CI->input->get($this->query_string_segment);
+
+				// Prep the current page - no funny business!
+				$this->cur_page = (int)$this->cur_page;
+			}
+		} else {
+			if ($CI->uri->segment($this->uri_segment) != 0) {
+				$this->cur_page = $CI->uri->segment($this->uri_segment);
+
+				// Prep the current page - no funny business!
+				$this->cur_page = (int)$this->cur_page;
+			}
+		}
+
+		$this->num_links = (int)$this->num_links;
+
+		if ($this->num_links < 1) {
+			show_error('Your number of links must be a positive number.');
+		}
+
+		if (!is_numeric($this->cur_page)) {
+			$this->cur_page = 0;
+		}
+
+		// Is the page number beyond the result range?
+		// If so we show the last page
+		if ($this->cur_page > $this->total_rows) {
+			$this->cur_page = ($num_pages - 1) * $this->per_page;
+		}
+
+		$uri_page_number = $this->cur_page;
+		$this->cur_page = floor(($this->cur_page / $this->per_page) + 1);
+
+		// Calculate the start and end numbers. These determine
+		// which number to start and end the digit links with
+		$start = (($this->cur_page - $this->num_links) > 0) ? $this->cur_page - ($this->num_links - 1) : 1;
+		$end = (($this->cur_page + $this->num_links) < $num_pages) ? $this->cur_page + $this->num_links : $num_pages;
+
+		// Is pagination being used over GET or POST?  If get, add a per_page query
+		// string. If post, add a trailing slash to the base URL if needed
+		if ($CI->config->item('enable_query_strings') === TRUE OR $this->page_query_string === TRUE) {
+			$querychar = '?';
+			if (preg_match('/\?/', $this->base_url)) {
+				$querychar = '&';
+			}
+			$this->base_url = rtrim($this->base_url) . $querychar . $this->query_string_segment . '=';
+		} else {
+			$this->base_url = rtrim($this->base_url, '/') . '/';
+		}
+
+        if  ($this->prev_link !== FALSE AND $this->cur_page != 1)
+        {
+            $i = $uri_page_number - $this->per_page;
+
+            if ($i == 0 && $this->first_url != '')
+            {
+                $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$this->first_url.'">&laquo;</a></li>';
+            }
+            else
+            {
+                $i = ($i == 0) ? '' : $this->prefix.$i.$this->suffix;
+                $pages_array[] ='<li><a '.$this->anchor_class.'href="'.$this->base_url.$i.'">&laquo;</a></li>';
+            }
+
+        }
+
+        // Render the "First" link
+        if  ($this->first_link !== FALSE AND $this->cur_page > ($this->num_links + 1))
+        {
+             $first_url = ($this->first_url == '') ? $this->base_url : $this->first_url;
+            $pages_array[] = '<li class="hidden-xs"><a '.$this->anchor_class.'href="'.$first_url.'">1</a></li>';
+            $pages_array[] = '<li class="hidden-xs"><span>&hellip;</span></li>';
+        }
+
+		// Render the pages
+		if ($this->display_pages !== FALSE)
+		{
+			// Write the digit links
+			for ($loop = $start -1; $loop <= $end; $loop++)
+			{
+				$i = ($loop * $this->per_page) - $this->per_page;
+
+				if ($i >= 0)
+				{
+                    if ($this->cur_page == $loop)
+					{
+						$pages_array[] = '<li class="active"><span> '.$loop. '</span></li>'; // Current page
+					}
+					else
+					{
+						$n = ($i == 0) ? '' : $i;
+
+						if ($n == '' && $this->first_url != '')
+						{
+							$pages_array[] = '<li class="hidden-xs"><a href="'.$this->first_url.'">'.$loop.'</a></li>';
+						}
+						else
+						{
+							$n = ($n == '') ? '' : $this->prefix.$n.$this->suffix;
+
+							$pages_array[] = '<li class="hidden-xs"><a href="'.$this->base_url.$n.'">'.$loop.'</a></li>';
+						}
+					}
+				}
+			}
+		}
+
+        // Render the "Last" link
+        // Render the "Last" link
+        if ($this->last_link !== FALSE AND ($this->cur_page + $this->num_links) < $num_pages)
+        {
+            $i = (($num_pages * $this->per_page) - $this->per_page);
+            $pages_array[] = '<li class="hidden-xs"><span>&hellip;</span></li>';
+            $pages_array[] = '<li class="hidden-xs"><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$num_pages .'</a></li>';
+        }
+
+        if ($this->next_link !== FALSE AND $this->cur_page < $num_pages)
+        {
+            $pages_array[] = '<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.($this->cur_page * $this->per_page).$this->suffix.'">&raquo;</a></li>';
+        }
+
+        return $pages_array;
+	}
+
+}
