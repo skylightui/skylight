@@ -151,7 +151,20 @@ $("#main-image").load(function() {
         ga('send', 'event', 'Audio', 'play', $(this).attr('title'));
     });
 
+    // push the footer to the bottom for piccolo
+    var docHeight = $(window).height();
+    var footerHeight = $('.footer-piccolo').height();
+    var footerTop = $('.footer-piccolo').position().top + footerHeight;
+    var recaptchaHeight = 0;
 
+    if($('#recaptcha_widget_div').length != 0) {
+        recaptchaHeight = 112;
+    }
+    var footerMargin = docHeight - footerTop - recaptchaHeight;
+
+    if (footerTop < (docHeight)) {
+        $('.footer-margin').css('height', footerMargin + 'px');
+    }
 
 });
 
