@@ -189,10 +189,13 @@ class Solr_client_dspace_181
         return $data;
     }
 
-    function simpleSearch($q = '*:*', $offset = 1, $fq = array(), $operator = 'OR', $sort_by = 'score+desc')
+    function simpleSearch($q = '*:*', $offset = 1, $fq = array(), $operator = 'OR', $sort_by = 'score+desc', $num_results)
     {
 
         $sort_by = str_replace(' ', '+', $sort_by);
+        if($num_results != "") {
+            $this->rows = $num_results;
+        }
 
         // Returns $data containing search results and facets
         // See search.php controller for example of usage
@@ -207,18 +210,10 @@ class Solr_client_dspace_181
                 $url .= '&fq=' . $this->solrEscape($value) . '';
         }
 
-        /*
-$ranges = array();
-foreach($this->configured_date_filters as $filter_name => $filter) {
-array_push($ranges,$this->getDateRanges($filter));
-}
-
-*/
         if (isset($this->date_field))
         {
             $dates = $this->getDateRanges($this->date_field, $q, $fq);
             $ranges = $dates['ranges'];
-            $datefqs = $dates['fq'];
         }
         else
         {
@@ -231,7 +226,6 @@ array_push($ranges,$this->getDateRanges($filter));
         $url .= '&sort=' . $sort_by;
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
-        //$url .= '&rows=20&facet.mincount=1';
         $url .= '&facet=true&facet.limit=' . $this->facet_limit;
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
