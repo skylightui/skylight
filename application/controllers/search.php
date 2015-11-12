@@ -15,8 +15,9 @@ class Search extends skylight {
 
         // Perform content negotiation on the query
         //TODO change where content negotiation takes place add param type?
-
-        $query = $this->_conneg($query);
+        $format = $this->input->get('format');
+        $this->_conneg($format);
+        //$query = $this->_conneg($query);
 
         if (uri_string() == 'search/index') {
             $query = 'index';
@@ -83,6 +84,7 @@ class Search extends skylight {
         }
 
         $sort_by = $this->input->get('sort_by');
+
         $num_results = $this->input->get('num_results');
 
         if($num_results != "") {
@@ -99,7 +101,7 @@ class Search extends skylight {
             $base_search .= '/'.$url_filter;
             $event_search .= '/'.$url_filter;
         }
-        //print_r($url_filters);
+        print_r($url_filters);
 
         if($sort_by != "") {
             $base_parameters .= '?sort_by='.$sort_by;
