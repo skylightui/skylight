@@ -118,17 +118,25 @@ class skylight extends CI_Controller {
         $data['ga_code'] = $this->config->item('skylight_ga_code');
 
         // Which output type to use?
+        //print_r($this->output_type);
         switch ($this->output_type) {
+
             case 'json':
                 if (file_exists('./application/views/formats/json/' . $view . '.php')) {
                     $this->load->view('formats/json/' . $view, $data);
                 }
                 break;
             case 'csv':
+                //print_r('in csv ' . $view);
                 if (file_exists('./application/views/formats/csv/' . $view . '.php')) {
                     $this->load->view('formats/csv/' . $view, $data);
                 }
                 break;
+           // case 'xls':
+           //     if (file_exists('./application/views/formats/xls/' . $view . '.php')) {
+           //         $this->load->view('formats/xls/' . $view, $data);
+           //     }
+          //      break;
             case 'xml':
                 if (file_exists('./application/views/formats/xml/' . $view . '.php')) {
                     $this->load->view('formats/xml/' . $view, $data);
@@ -329,6 +337,9 @@ class skylight extends CI_Controller {
         } else if ($this->_endswith($in, '.csv')) {
             $this->output_type = 'csv';
             return substr($in, 0, strlen($in) - 4);
+      //  } else if ($this->_endswith($in, '.xls')) {
+      //      $this->output_type = 'xls';
+      //      return substr($in, 0, strlen($in) - 4);
         } else if ($this->_endswith($in, '.xml')) {
             $this->output_type = 'xml';
             return substr($in, 0, strlen($in) - 4);

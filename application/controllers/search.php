@@ -14,6 +14,8 @@ class Search extends skylight {
     function _remap($query, $params = array()) {
 
         // Perform content negotiation on the query
+        //TODO change where content negotiation takes place add param type?
+
         $query = $this->_conneg($query);
 
         if (uri_string() == 'search/index') {
@@ -81,6 +83,11 @@ class Search extends skylight {
         }
 
         $sort_by = $this->input->get('sort_by');
+        $num_results = $this->input->get('num_results');
+
+        if($num_results != "") {
+            $rows = $num_results;
+        }
 
         // Base search URL
         $base_search = './search/'.$query;
@@ -99,7 +106,7 @@ class Search extends skylight {
         }
 
         // Solr query business moved to solr_client library
-        $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', $sort_by);
+        $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', $sort_by, $rows);
 
         // Inject query back into results
         $data['search_url'] = uri_string();
