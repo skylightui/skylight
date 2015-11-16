@@ -231,14 +231,12 @@ class Solr_client_dspace_181
             $url .= '&facet.field=' . $filter;
         }
 
-
         foreach ($ranges as $range) {
             $url .= '&facet.query=' . $range;
         }
         $url .= '&q.op=' . $operator;
 
         // Set up highlighting
-        // SR 2/12/13 change *.en to $this->highlight_fields. Things like bitstream don't look good here!
         $url .= '&hl=true&hl.fl='.$this->highlight_fields.'&hl.simple.pre=<strong>&hl.simple.post=</strong>';
 
         // Set up spellcheck
@@ -262,14 +260,12 @@ class Solr_client_dspace_181
                 foreach ($multivalue_field->str as $value) {
                     $doc[str_replace('.', '', $key)][] = $value;
                 }
-
             }
 
             foreach ($result->str as $unique_field) {
                 $key = $unique_field['name'];
                 $value = $unique_field;
                 $doc[str_replace('.', '', $key)] = $value;
-
             }
 
             // Check for the existence of highlighted fields before trying to loop round them
@@ -281,7 +277,6 @@ class Solr_client_dspace_181
                $doc['highlights'][] = $highlight;
                }
             }
-
 
             $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
@@ -534,25 +529,20 @@ class Solr_client_dspace_181
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
         // TODO: Implement highlighting for record pages
-        // the below works but only with snippets, not in context
-        // of the whole returned doc. Going with javascript now.
-        //if($highlight == "") {
+
         $url .= 'handle:' . $handle;
-        //}
-        //else {
-        // $url .= $highlight;
-        //}
+
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
         $url .= '&fq=search.resourcetype:2';
         $url .= '&fq=handle:' . $handle;
-        /*if($highlight != "") {
-$url .= '&hl=true&hl.fl=*.en';
-}*/
-        //print_r($url);
+
+        print_r("getRECORD " . $url . " END ");
         $solr_xml = file_get_contents($url);
+
 
         // We would construct/pop a new skylight Record model here?
         $search_xml = @new SimpleXMLElement($solr_xml);
+
 
         $result_count = $search_xml->result['numFound'];
         $data['result_count'] = $result_count;
@@ -571,6 +561,7 @@ $url .= '&hl=true&hl.fl=*.en';
                 $solr[$key][] = $value;
             }
             foreach ($field->int as $value) {
+                //print_r($field);
                 $key = str_replace('.', '', $key);
                 $solr[$key][] = $value;
             }
@@ -578,17 +569,17 @@ $url .= '&hl=true&hl.fl=*.en';
                 $key = str_replace('.', '', $key);
                 $solr[$key][] = $value;
             }
+
             // Build highlight results from solr response
             // TODO: Implement this later. For now, highlighting in jquery
             // TODO: on record page because that way, we can do our html bitstreams
 
-            /*
-foreach ($search_xml->xpath("//lst[@name='highlighting']/lst/arr/str") as $highlight) {
-//echo $doc['handle'][0].': '.$highlight.'<br/>';
-$solr['highlights'][] = $highlight;
-}
-
-*/
+        }
+        foreach ($search_xml->result->doc[0]->int as $field) {
+            $key = $field['name'];
+            $value = $field;
+            $key = str_replace('.', '', $key);
+            $solr[$key][] = $value;
         }
         // Related Items
         $rels_solr = array();
@@ -647,7 +638,6 @@ $solr['highlights'][] = $highlight;
 
             }
 
-
             $handle = preg_split('/\//', $doc['handle']);
             $doc['id'] = $handle[1];
             if (!array_key_exists($title_field, $doc)) {
@@ -660,7 +650,6 @@ $solr['highlights'][] = $highlight;
         // End search result parse.
 
         $data['solr'] = $solr;
-
         // Set the page title to the record title
         if (!array_key_exists($title_field, $solr)) {
             $solr[$title_field][] = 'No title';
