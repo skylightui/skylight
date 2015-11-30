@@ -536,7 +536,7 @@ class Solr_client_dspace_181
         $url .= '&fq=search.resourcetype:2';
         $url .= '&fq=handle:' . $handle;
 
-        print_r("getRECORD " . $url . " END ");
+        //print_r("getRECORD " . $url . " END ");
         $solr_xml = file_get_contents($url);
 
 
