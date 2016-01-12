@@ -8,7 +8,8 @@ class solr_client_archivesspace_1
 {
     var $base_url = ''; /** Base URL. Typically not overridden in construct params. Get from config.*/
     var $max_rows = 100; /** Default to 100 rows maximum */
-    var $container = '*'; /** Default to all collections */
+    var $container_default = '*'; /** Default to all collections */
+    var $container = array(); /** Default to all collections */
     var $container_field = 'resource'; /** Default to discovery's DSpace collection field */
     var $handle_prefix = '';
     var $scope = '';
@@ -25,7 +26,8 @@ class solr_client_archivesspace_1
     var $link_bitstream = false;
     var $dictionary = 'default';
     var $fields = array(); //copied from uoa
-    var $solr_collection = "collection1"; //move to config
+    var $solr_collection = "collection1"; //TODO move to config
+    var $restriction = array();
 
     /**
      * Constructor
@@ -57,6 +59,7 @@ class solr_client_archivesspace_1
         $this->related_fields = $CI->config->item('skylight_related_fields');
         $this->num_related = $CI->config->item('skylight_related_number');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
+        $this->restriction =$CI->config->item('skylight_query_restriction');
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
@@ -112,14 +115,34 @@ class solr_client_archivesspace_1
         if ($q == '*' || $q == '') {
             $q = '*:*';
         }
-        $url = $this->base_url . "#/" . $this->solr_collection ."/query?q=" . $this->solrEscape($q);
+        $url = $this->base_url . "#/" . $this->solr_collection . "/query?q=" . $this->solrEscape($q);
         if (count($fq) > 0) {
             foreach ($fq as $value)
                 $url .= '&fq=' . $this->solrEscape($value) . '';
         }
 
         // Set up scope
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        //TODO if container is an array
+        //check if an empty array if true use default
+        //else loop through the array and add to fq with + between
+        if (empty($this->container)) {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        } else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id) {
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count) {
+                    $url .= '+';
+                }
+            }
+        }
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
 
         $url .= '&rows=' . $rows;
 
@@ -196,7 +219,6 @@ class solr_client_archivesspace_1
         if (isset($this->date_field)) {
             $dates = $this->getDateRanges($this->date_field, $q, $fq);
             $ranges = $dates['ranges'];
-            $datefqs = $dates['fq'];
         } else {
             $ranges = array();
         }
@@ -210,7 +232,24 @@ class solr_client_archivesspace_1
 
             $url .= 'q=*:*';
         }
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
+        //$url .= '&fq=' . $this->container_field . ':' . $this->container;
+        if (empty($this->container))
+        {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        }
+        else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id){
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count)
+                {
+                    $url .= '+';
+                }
+            }
+        }
         $url .= '&fq=types:"archival_object"+types:"resource"';
         if (count($fq) > 0) {
             foreach ($fq as $value)
@@ -219,6 +258,12 @@ class solr_client_archivesspace_1
         if ($sort_by == null) {
             $sort_by = "title_sort+asc";
         }
+
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&sort=' . $sort_by;
 
         $url .= '&rows=' . $this->rows . '&start=' . $offset . '&facet.mincount=1';
@@ -359,9 +404,31 @@ class solr_client_archivesspace_1
         {
             $ranges = array();
         }
-        
-        $url .= 'q=' . $this->container_field . ':' . $this->container;
+
+        $url .= 'q=*:*';
+        if (empty($this->container))
+        {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        }
+        else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id){
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count)
+                {
+                    $url .= '+';
+                }
+            }
+        }
         $url .= '&fq=types:"archival_object"+types:"resource"';
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&wt=xml';
         $url .= '&rows=0';
         $url .= '&facet.mincount=1';
@@ -484,8 +551,15 @@ class solr_client_archivesspace_1
 
         $url = $this->base_url . '' . $this->solr_collection .'/select?q=';
 
+        //TODO replace get Handle prefix as depends on collection
+
         $id = "\"". $this->handle_prefix . $type . "/" .$id . "\"";
         $url .= 'id:' . $id;
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&wt=xml';
 
         //print(" get record url "  . $url . " ");
@@ -711,9 +785,31 @@ class solr_client_archivesspace_1
 
         //print_r("related items query_string " . $query_string . " ");
         $url = $this->base_url . '' . $this->solr_collection .'/select?';
-        $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= 'q=*:*';
+        if (empty($this->container))
+        {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        }
+        else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id){
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count)
+                {
+                    $url .= '+';
+                }
+            }
+        }
         $url .= '&fq=' . $this->solrEscape($query_string) ;
         $url .= '&fq=-id:' .$id;
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&df=fullrecord';
         $url .= '&rows=' . $this->num_related;
         //print_r("related items url " . $url . " ");
@@ -749,8 +845,30 @@ class solr_client_archivesspace_1
     {
         $title = $this->recorddisplay[0]; //changed to index
         $url = $this->base_url . 'select?';
-        $url .= '&q=' . $this->container_field . ':' . $this->container;
+        $url .= 'q=*:*';
+        if (empty($this->container))
+        {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        }
+        else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id){
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count)
+                {
+                    $url .= '+';
+                }
+            }
+        }
         $url .= '&fq=types:"archival_object"+types:"resource"';
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
         $url .= '&rows=' . $rows;
         $url .= '&wt=xml';
@@ -768,7 +886,29 @@ class solr_client_archivesspace_1
         $prefix = $this->solrEscape(strtolower($prefix));
         $rows++;
         $url = $this->base_url . $this->solr_collection ."/select?";
-        $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= 'q=*:*';
+        if (empty($this->container))
+        {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        }
+        else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id){
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count)
+                {
+                    $url .= '+';
+                }
+            }
+        }
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&rows=0&facet.mincount=1';
         if (preg_match("/Date/", $field)) {
             $facetField = $this->configured_date_filters[$field];
@@ -831,7 +971,29 @@ class solr_client_archivesspace_1
         $prefix = $this->solrEscape(strtolower($prefix));
 
         $url = $this->base_url . $this->solr_collection ."/select?";
-        $url .= 'q=' . $this->container_field . ':' . $this->container;
+        $url .= 'q=*:*';
+        if (empty($this->container))
+        {
+            $url .= '&fq=' . $this->container_field . ':' . $this->container_default;
+        }
+        else {
+            $ind = 0;
+            $url .= '&fq=';
+            foreach ($this->container as $container_id){
+                $ind++;
+                $url .= $this->container_field . ':' . $container_id;
+                $count = count($this->container);
+                if ($count > 1 && $ind != $count)
+                {
+                    $url .= '+';
+                }
+            }
+        }
+        foreach ($this->restriction as $restrict_field => $restrict_by)
+        {
+            $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
+        }
+
         $url .= '&rows=0&facet.mincount=1';
         if (preg_match("/Date/", $field)) {
             $facetField = $this->configured_date_filters[$field];
