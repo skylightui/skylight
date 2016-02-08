@@ -28,6 +28,7 @@ class Solr_client_dspace_181
     var $display_thumbnail = false;
     var $link_bitstream = false;
     var $dictionary = 'default';
+    var $default_sort = '';
     var $fields = array(); //copied from uoa
 
     /**
@@ -61,6 +62,7 @@ class Solr_client_dspace_181
         $this->num_related = $CI->config->item('skylight_related_number');
         $this->fields = $CI->config->item('skylight_fields'); //copied from uoa
         $this->facet_limit = $CI->config->item('skylight_facet_limit');
+        $this->default_sort = $CI->config->item('skylight_default_sort');
         $date_fields = $this->configured_date_filters;
         if (count($date_fields) > 0) {
             $this->date_field = array_pop($date_fields);
@@ -193,6 +195,10 @@ class Solr_client_dspace_181
     {
 
         $sort_by = str_replace(' ', '+', $sort_by);
+        if ($sort_by == "")
+        {
+            $sort_by = $this->default_sort;
+        }
         if($num_results != "") {
             $this->rows = $num_results;
         }
