@@ -281,6 +281,7 @@ class Advanced extends skylight {
             $this->pagination->initialize($config);
 
             $data['pagelinks'] = $this->pagination->create_links();
+            $data['paginationlinks'] = $this->pagination->responsive_links();
 
             $data['startrow'] = $offset + 1;
             if($data['startrow'] + ($rows - 1 )  > $result_count)

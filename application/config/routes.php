@@ -46,11 +46,14 @@ $route['mimed/(:any)'] = "$1";
 $route['physics/(:any)'] = "$1";
 $route['calendars/(:any)'] = "$1";
 $route['cockburn/(:any)'] = "$1";
+$route['fairbairn/(:any)'] = "$1";
 $route['alumni/(:any)'] = "$1";
 $route['iconics/(:any)'] = "$1";
-$route['obooks/(:any)'] = "$1";
+$route['openbooks/(:any)'] = "$1";
 $route['anatomy/(:any)'] = "$1";
-
+$route['stcecilia/(:any)'] = "$1";
+$route['audio/(:any)'] = "$1";
+$route['dolly/(:any)'] = "$1";
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
 

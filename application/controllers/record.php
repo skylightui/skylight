@@ -25,6 +25,8 @@ class Record extends skylight {
         }
 
         $recorddisplay = $this->config->item('skylight_recorddisplay');
+        $descriptiondisplay = $this->config->item('skylight_descriptiondisplay');
+        $creatordisplay = $this->config->item('skylight_creatordisplay');
         $metafields = $this->config->item('skylight_meta_fields');
         $display_thumbnail = $this->config->item('skylight_display_thumbnail');
         $link_bitstream = $this->config->item('skylight_link_bitstream');
@@ -35,7 +37,8 @@ class Record extends skylight {
 
         // GET RECORD
         // Solr query business moved to solr_client library
-        $data = $this->solr_client->getRecord($id);
+        //todo this may break highlighting if implemented
+        $data = $this->solr_client->getRecord($id, $params);
 
         // Determine the page title and heading.
         $page_title_prefix = $this->config->item('skylight_page_title_prefix');
@@ -115,7 +118,6 @@ class Record extends skylight {
 
         $data['sharethis'] = $this->config->item('skylight_share_buttons');
 
-        //$data['page_title'] = $data['solr'][$title][0];
         $data['page_title'] = $page_title_prefix . '"'.$data['solr'][$title][0].'"';
         $data['record_title'] = $data['solr'][$title][0];
         $data['title_field'] = $title;
@@ -134,6 +136,8 @@ class Record extends skylight {
 
         // Send the display options config value for this collection
         $data['recorddisplay'] = $recorddisplay;
+        $data['descriptiondisplay'] = $descriptiondisplay;
+        $data['creatordisplay'] = $creatordisplay;
         $data['metafields'] = $metafields;
 
         // Currently only used to restrict access to Physics material, but available for use elsewhere.
