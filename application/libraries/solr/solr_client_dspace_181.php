@@ -191,9 +191,8 @@ class Solr_client_dspace_181
         return $data;
     }
 
-    function simpleSearch($q = '*:*', $offset = 1, $fq = array(), $operator = 'OR', $sort_by = 'score+desc', $num_results)
+    function simpleSearch($q = '*:*', $offset = 1, $fq = array(), $operator = 'OR', $sort_by = 'score+desc', $num_results = "")
     {
-
         $sort_by = str_replace(' ', '+', $sort_by);
         if ($sort_by == "")
         {
