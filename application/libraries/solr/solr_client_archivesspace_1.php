@@ -690,7 +690,7 @@ class solr_client_archivesspace_1
 
                     $json_obj = json_decode($unique_field, TRUE);
                     if(!empty($json_obj['dates'])) {
-                        $doc['dates'] = $json_obj['dates'][0]['expression'];
+                        $doc['dates'] = $json_obj['dates'][0];
                     }
 
                     if (!empty($json_obj['component_id'])) {
@@ -1157,7 +1157,7 @@ class solr_client_archivesspace_1
 
                     $json_obj = json_decode($unique_field, TRUE);
                     if(!empty($json_obj['dates'])) {
-                        $doc['dates'] = $json_obj['dates'][0]['expression'];
+                        $doc['dates'] = $json_obj['dates'][0];
                     }
 
                     if (!empty($json_obj['component_id'])) {
