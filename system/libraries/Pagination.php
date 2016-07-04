@@ -56,6 +56,7 @@ class Pagination {
 	var $num_tag_close		= '';
 	var $page_query_string	= FALSE;
 	var $query_string_segment = 'offset';
+	var $query_string_segment2 = 'num_results';
 	var $display_pages		= TRUE;
 	var $anchor_class		= '';
 
@@ -113,20 +114,6 @@ class Pagination {
 	 */
 	function create_links()
 	{
-        // If our item count or per-page total is zero there is no need to continue.
-		if ($this->total_rows == 0 OR $this->per_page == 0)
-		{
-			return '';
-		}
-
-		// Calculate the total number of pages
-		$num_pages = ceil($this->total_rows / $this->per_page);
-
-		// Is there only one page? Hm... nothing more to do here then.
-		if ($num_pages == 1)
-		{
-			return '';
-		}
 
 		// Determine the current page number.
 		$CI =& get_instance();
@@ -140,6 +127,13 @@ class Pagination {
 				// Prep the current page - no funny business!
 				$this->cur_page = (int) $this->cur_page;
 			}
+			if ($CI->input->get($this->query_string_segment2) != 0)
+			{
+				$this->per_page = $CI->input->get($this->query_string_segment2);
+
+				// Prep the current page - no funny business!
+				$this->per_page = (int) $this->per_page;
+			}
 		}
 		else
 		{
@@ -150,6 +144,21 @@ class Pagination {
 				// Prep the current page - no funny business!
 				$this->cur_page = (int) $this->cur_page;
 			}
+		}
+
+		// If our item count or per-page total is zero there is no need to continue.
+		if ($this->total_rows == 0 OR $this->per_page == 0)
+		{
+			return '';
+		}
+
+		// Calculate the total number of pages
+		$num_pages = ceil($this->total_rows / $this->per_page);
+
+		// Is there only one page? Hm... nothing more to do here then.
+		if ($num_pages == 1)
+		{
+			return '';
 		}
 
 		$this->num_links = (int)$this->num_links;
@@ -187,7 +196,14 @@ class Pagination {
 			if(preg_match('/\?/',$this->base_url)) {
 				$querychar = '&';
 			}
-			$this->base_url = rtrim($this->base_url).$querychar.$this->query_string_segment.'=';
+			if ($CI->input->get($this->query_string_segment2) != 0)
+			{
+				$this->base_url = rtrim($this->base_url) . $querychar . $this->query_string_segment2 . '=' . $this->per_page . '&' . $this->query_string_segment . '=';
+			}
+			else
+			{
+				$this->base_url = rtrim($this->base_url) . $querychar . $this->query_string_segment . '=';
+			}
 		}
 		else
 		{

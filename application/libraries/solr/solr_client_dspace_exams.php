@@ -190,7 +190,7 @@ class Solr_client_dspace_exams
         return $data;
     }
 
-    function simpleSearch($q = '*:*', $offset = 1, $fq = array(), $operator = 'OR', $sort_by = 'score+desc')
+    function simpleSearch($q = '*:*', $offset = 1, $fq = array(), $operator = 'OR', $sort_by = 'score+desc', $num_results = "")
     {
 
         if($sort_by == "score+desc" || $sort_by == "" || !isset($sort_by)) {
@@ -200,7 +200,10 @@ class Solr_client_dspace_exams
             $sort_by = str_replace(' ', '+', $sort_by);
             $sort_by .= ',dc.coverage.temporal_sort+desc';
         }
-
+        
+        if($num_results != "") {
+            $this->rows = $num_results;
+        }
 
         // Returns $data containing search results and facets
         // See search.php controller for example of usage

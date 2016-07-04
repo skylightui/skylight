@@ -32,7 +32,6 @@ class Search extends skylight {
 
         }
 
-
         $configured_fields = $this->config->item('skylight_fields');
         $configured_filters = $this->config->item('skylight_filters');
         $configured_additional_fields = $this->config->item('skylight_filters_additional');
@@ -173,6 +172,8 @@ class Search extends skylight {
             $data['endrow'] = $data['startrow'] + ($rows - 1);
 
         $data['sort_options'] = $sort_options;
+
+        $data['num_results'] = $rows;
 
         if(array_key_exists('Author', $recorddisplay)) {
             $data['author_field'] = $recorddisplay['Author'];
