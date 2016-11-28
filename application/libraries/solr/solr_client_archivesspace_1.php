@@ -687,10 +687,9 @@ class solr_client_archivesspace_1
                 //print_r(" " . $key . "  ");
 
                 if ($key == 'json') {
-
                     $json_obj = json_decode($unique_field, TRUE);
                     if(!empty($json_obj['dates'])) {
-                        $doc['dates'] = $json_obj['dates'][0];
+                        $doc['dates'] = $json_obj['dates'][0]['expression'];
                     }
 
                     if (!empty($json_obj['component_id'])) {
