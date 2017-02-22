@@ -81,6 +81,9 @@ var events = function () {
 
 $(document).ready(function(){
 
+
+
+
 $("#main-image").load(function() {
 
         // set metadata width according to main-image width
@@ -165,6 +168,15 @@ $("#main-image").load(function() {
     if (footerTop < (docHeight)) {
         $('.footer-margin').css('height', footerMargin + 'px');
     }
+
+    var offset = $(':target').offset();
+    var scrollto = offset.top - 100; // minus fixed header height
+    $('html, body').animate({scrollTop:scrollto}, 0);
+
+    var shiftWindow = function() { scrollBy(0, -500) };
+    if (location.hash) shiftWindow();
+    window.addEventListener("hashchange", shiftWindow);
+
 
 });
 
