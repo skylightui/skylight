@@ -54,7 +54,8 @@ $route['anatomy/(:any)'] = "$1";
 $route['stcecilia/(:any)'] = "$1";
 $route['audio/(:any)'] = "$1";
 $route['towardsdolly/(:any)'] = "$1";
-$route['dott/(:any)'] = "$1";
+$route['lhsacasenotes/(:any)'] = "$1";
+$route['coimbra/(:any)'] = "$1";
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
 
