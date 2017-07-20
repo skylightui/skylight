@@ -914,7 +914,9 @@ class solr_client_archivesspace_1
         } else {
             $facetField = $this->configured_filters[$field];
         }
-        $url .= '&facet=true&facet.sort=index&facet.field=' . $facetField . '&facet.limit=' . $rows . '&facet.offset=' . $offset;
+        //$url .= '&facet=true&facet.sort=index&facet.field=' . $facetField . '&facet.limit=' . $rows . '&facet.offset=' . $offset;
+        $url .= '&facet=true&facet.sort=index&facet.field=' . $facetField;
+
 
         if ($prefix !== '') {
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
