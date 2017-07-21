@@ -881,7 +881,6 @@ class solr_client_archivesspace_1
 
     function browseTerms($field = 'Subject', $rows = 10, $offset = 0, $prefix = '')
     {
-
         $prefix = $this->solrEscape(strtolower($prefix));
         $rows++;
         $url = $this->base_url . $this->solr_collection ."/select?";
@@ -915,8 +914,10 @@ class solr_client_archivesspace_1
             $facetField = $this->configured_filters[$field];
         }
         //$url .= '&facet=true&facet.sort=index&facet.field=' . $facetField . '&facet.limit=' . $rows . '&facet.offset=' . $offset;
-        $url .= '&facet=true&facet.sort=index&facet.field=' . $facetField;
-
+        $url .= '&facet=true&facet.sort=index&facet.field=' . $facetField . '&facet.limit=' . $rows;
+        if (isset($offset) && $offset > 0) {
+            $url .= '&facet.offset=' . $offset;
+        }
 
         if ($prefix !== '') {
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
