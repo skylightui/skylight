@@ -66,7 +66,9 @@ class Search extends skylight {
                 $filter_segments[0] = urldecode($filter_segments[0]);
 
                 if(array_key_exists($filter_segments[0], $configured_filters)) {
-                    $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$filter_segments[1];
+                    $corrected_filter = str_replace("%2B", "+", $filter_segments[1]);
+                    $corrected_filter = str_replace("|", "%7C", $corrected_filter);
+                    $saved_filters[] = $configured_filters[$filter_segments[0]].$delimiter.$corrected_filter;
                 } else if(array_key_exists($filter_segments[0], $configured_additional_fields)) {
                     $saved_filters[] = $configured_additional_fields[$filter_segments[0]].$delimiter.$filter_segments[1];
 		        }
@@ -109,7 +111,7 @@ class Search extends skylight {
         $data = $this->solr_client->simpleSearch($query, $offset, $saved_filters, 'AND', $sort_by, $rows);
 
         // Inject query back into results
-        $data['search_url'] = uri_string();
+        $data['search_url'] = str_replace("%2B", "+", uri_string());
         $data['query'] = $query;
         $data['base_search'] = $base_search;
         $data['event_search'] = $event_search;

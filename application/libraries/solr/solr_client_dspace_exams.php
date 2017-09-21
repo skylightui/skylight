@@ -105,6 +105,7 @@ class Solr_client_dspace_exams
 
         $in = preg_replace('# #', '+', $in);
         $in = preg_replace('#%20#', '+', $in);
+        $in = preg_replace('#%2B#', '+', $in);
 
         return $in;
     }
