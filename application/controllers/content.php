@@ -11,7 +11,7 @@ class content extends skylight {
 
     function index() {
         // Get the URL actually requested
-        $url = uri_string();
+        $url = str_replace("%2B", "+", uri_string());
 
         // If we are using prefixed URLs then strip off the prefixes.
         $url_prefix = $this->config->item('skylight_url_prefix');
