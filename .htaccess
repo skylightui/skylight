@@ -4,3 +4,4 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/cosign/
 RewriteRule ^(.*)$ index.php/$1 [L]
+Header set Access-Control-Allow-Origin "*"
