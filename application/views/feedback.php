@@ -1,40 +1,12 @@
+<?php
+$email_address = $this->config->item('skylight_adminemail');
+?>
 <div class="feedback_form">
 
     <h1>Feedback</h1>
 
-    <p>Please contact us with your suggestions or questions below.</p>
-    <?php echo validation_errors(); ?>
+    <p>Please contact us with your suggestions or questions at <a href="mailto:<?php echo $email_address ?>"><?php echo $email_address ?></a>.</p>
 
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-    <form>
-        <?php echo form_open($form_prefix.'feedback'); ?>
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" value="<?php echo set_value('name'); ?>">
-        </div>
-        <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" class="form-control" id="email" value="<?php echo set_value('email'); ?>">
-        </div>
-        <div class="form-group">
-            <label for="feedback">Message:</label>
-            <textarea type="text" id="feedback" name="feedback" rows="15" cols="80" /><?php echo set_value('feedback'); ?></textarea>
-        </div>
-
-        <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="6Lftij0UAAAAAKGve8mTK0JDHl5jnazeBYlEc8Sx"></div>
-            <!--<div class="g-recaptcha" data-sitekey="6LdICVoUAAAAAJJHzP3XW7Y7yc9PtjeD5IcCUPC_"></div>-->
-            <div id="html_element"></div>
-
-            <button type="submit" class="btn btn-custom">Submit</button>
-            <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-                    async defer>
-            </script>
-        </div>
-    </form>
-    <br>
-    <br>
 
     <h3>Privacy Statement </h3>
     <p>Information about you: how we use it and with whom we share it
@@ -50,9 +22,9 @@
         We will hold the personal data you provided us for 6 years. We do not use profiling or automated decision-making processes.
     </p>
     <p>
-        If you have any questions, please contact: CRC Services Manager is-crc@ed.ac.uk
+        If you have any questions, please contact: <a href="mailto:<?php echo $email_address ?>"><?php echo $email_address ?></a>
     </p>
-    <p><a href="https://www.ed.ac.uk/records-management/notice" target="_blank">Continued privacy statement</a></p>
+    <p><a href="https://www.ed.ac.uk/records-management/notice" target="_blank">University privacy statement</a></p>
 
 
 </div>
