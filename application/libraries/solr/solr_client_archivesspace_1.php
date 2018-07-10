@@ -250,6 +250,9 @@ class solr_client_archivesspace_1
                 }
             }
         }
+        //-id:*pui
+        $url .= '&fq=-id:*pui';
+
         $url .= '&fq=types:"archival_object"+types:"resource"';
         if (count($fq) > 0) {
             foreach ($fq as $value)
@@ -278,7 +281,7 @@ class solr_client_archivesspace_1
 
         $url .= '&spellcheck=true&spellcheck.collate=true&spellcheck.onlyMorePopular=false&spellcheck.count=5';
         $url .= '&spellcheck.dictionary=' . $this->dictionary;
-       // print_r('simple search '. $url);
+        //print_r('simple search '. $url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -1191,6 +1194,3 @@ class solr_client_archivesspace_1
 
 
 }
-
-
-
