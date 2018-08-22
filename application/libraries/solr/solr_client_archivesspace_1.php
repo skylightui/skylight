@@ -393,7 +393,10 @@ class solr_client_archivesspace_1
         $url = $this->base_url . $this->solr_collection ."/select?";
         if (count($fq) > 0) {
             foreach ($fq as $value)
-                $url .= '&fq=' . $value . '';
+            {
+               $url .= '&fq=' . $value . '';
+            }
+
         }
 
 
@@ -426,7 +429,7 @@ class solr_client_archivesspace_1
                 }
             }
         }
-        $url .= '&fq=types:"archival_object"+types:"resource"';
+        $url .= '&fq=-id:*pui&fq=types:"archival_object"+types:"resource"';
         foreach ($this->restriction as $restrict_field => $restrict_by)
         {
             $url .= '&fq=' . $restrict_field. ':' . $restrict_by;
@@ -807,6 +810,7 @@ class solr_client_archivesspace_1
         }
         $url .= '&fq=' . $this->solrEscape($query_string) ;
         $url .= '&fq=-id:' .$id;
+        $url .= '&fq=-id:*pui';
         foreach ($this->restriction as $restrict_field => $restrict_by)
         {
             $url .= '&fq=' . $restrict_field. ':' . $restrict_by;

@@ -57,6 +57,11 @@ $route['towardsdolly/(:any)'] = "$1";
 $route['coimbra/(:any)'] = "$1";
 $route['lhsacasenotes/(:any)'] = "$1";
 $route['guardbook/(:any)'] = "$1";
+$route['archivemedia/(:any)'] = "$1";
+$route['speccoll/(:any)'] = "$1";
+$route['geddes/(:any)'] = "$1";
+
+
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
 
