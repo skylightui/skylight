@@ -60,7 +60,7 @@ $route['guardbook/(:any)'] = "$1";
 $route['archivemedia/(:any)'] = "$1";
 $route['speccoll/(:any)'] = "$1";
 $route['geddes/(:any)'] = "$1";
-
+$route['public-art/(:any)'] = "$1";
 
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
