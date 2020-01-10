@@ -583,15 +583,22 @@ class Solr_client_dspace_6 {
             $url .= '&facet.field='.$filter;
         }
 
-        foreach($ranges as $range) {
-            $url .= '&facet.query='.$range;
+        //SR commenting this out- it does not seem to help our case
+      /*  foreach($ranges as $range) {
+           echo $range;
+            //SR trying things
+            // $url .= '&facet.query='.$range;
         }
+*/
 
-        //print_r($url);
+        $file = fopen("/home/lacddt/logging/log.txt","w");
+        echo fwrite($file,"'<!-- THIS IS MY URL'.$url.'-->'");
+        fclose($file);
+        print_r('<!-- THIS IS MY URL'.$url.'-->');
 
         $solr_xml = file_get_contents($url);
 
-        //print_r($solr_xml);
+        print_r('<!--THIS IS MY SOLR XML'.$solr_xml.'-->');
 
         // Base search URL
         $base_search = './search/'.$query;
@@ -605,7 +612,7 @@ class Solr_client_dspace_6 {
 
         $facets = array();
 
-        //print_r($facets);
+      //  print_r($facets);
 
         // Hard coded until I do something better
         foreach($this->configured_filters as $filter_name => $filter) {
@@ -638,23 +645,30 @@ class Solr_client_dspace_6 {
             $facet['terms'] = $terms;
             $facet['queries'] = array();
             $facets[] = $facet;
+
+            //print_r($facets);
         }
 
         foreach($this->configured_date_filters as $filter_name => $filter) {
             // Date.. needs facet query, not field, since
             // we're on solr 1.4 and can't do nice easy integer ranges
-            $facet_xml = $search_xml->xpath("//lst[@name='facet_queries']/int");
+            //SR fix- this works
+            //$facet_xml = $search_xml->xpath("//lst[@name='facet_queries']/int");
+            $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='".$filter."']/int");
             $facet['name'] = $filter_name;
             $queries = array();
             $terms = array();
             foreach($facet_xml as $facet_query) {
                 $query_name = $facet_query->attributes();
+                print_r($query_name);
                 $query_norm_name = $query_name;
                 $query_display_name = $query_name;
                 preg_match_all('#\d{4}#',$query_name, $matches);
                 if(count($matches) > 0) {
                     if(count($matches[0]) > 0) {
-                        if($matches[0][0] == $matches[0][1]) {
+                        //SR fix- this works
+                        //if($matches[0][0] == $matches[0][1]) {
+                        if($matches[0] == $matches[0]) {
                             $query_display_name = $matches[0][0];
                         }
                         else {
@@ -670,6 +684,7 @@ class Solr_client_dspace_6 {
                 $fquery['display_name'] = $query_display_name;
                 $fquery['norm_name'] = $query_norm_name;
                 $fquery['count'] = $facet_query;
+                print_r($fquery['count']);
                 $active_test = $filter.$this->delimiter.$query_norm_name;
                 if(in_array($active_test, $fq)) {
                     $fquery['active'] = true;
@@ -682,6 +697,8 @@ class Solr_client_dspace_6 {
             $facet['queries'] = $queries;
             $facet['terms'] = array();
             $facets[] = $facet;
+
+            //print_r($facets);
         }
 
         $data['facets'] = $facets;
@@ -1193,121 +1210,7 @@ class Solr_client_dspace_6 {
     }
 
 
-    function getRandomItems($rows = 12)
-    {
-        $title_field = $this->searchresultdisplay[0]; //'Title'];
-        $author_field = $this->searchresultdisplay[1]; //'Author'];
-        $subject_field = $this->searchresultdisplay[2]; //'Subject'];
-        $description_field = $this->searchresultdisplay[4]; //'Abstract'];
 
-        $url = $this->base_url . 'select?q=*:*';
-        $url .= '&fq=' . $this->container_field . ':' . $this->container;
-        $url .= '&fq=search.resourcetype:2';
-        $url .= '&sort=random_'. mt_rand(1, 10000).'%20desc'; //change
-        $url .= '&rows=' . $rows;
-        //print_r($url);
-        $solr_xml = file_get_contents($url);
-
-        $recent_xml = @new SimpleXMLElement($solr_xml);
-        $random_items = array();
-        foreach ($recent_xml->result->doc as $result) {
-            $doc = array();
-            foreach ($result->arr as $multivalue_field) {
-                $key = $multivalue_field['name'];
-                foreach ($multivalue_field->str as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-                foreach ($multivalue_field->int as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-                foreach ($multivalue_field->date as $value) {
-                    $doc[str_replace('.', '', $key)][] = $value;
-                }
-            }
-
-            foreach ($result->str as $unique_field) {
-                $key = $unique_field['name'];
-                $value = $unique_field;
-                $doc[str_replace('.', '', $key)] = $value;
-            }
-
-            $handle = preg_split('/\//', $doc['handle']);
-            $doc['id'] = $handle[1];
-            if (!array_key_exists($title_field, $doc)) {
-                $doc[$title_field][] = 'No title';
-            }
-
-            $random_items[] = $doc;
-        }
-
-        $data['title_field'] = $title_field;
-        $data['author_field'] = $author_field;
-        $data['subject_field'] = $subject_field;
-        $data['description_field'] = $description_field;
-
-        $data['random_items'] = $random_items;
-
-        return $data;
-    }
-
-    // get ids of prev and next
-    function getNavigation($id, $q, $container)
-    {
-        $ids = $this->getItems($q, $container);
-
-        $size = count($ids) - 1;
-
-        // find the position of $id in the array
-        $i = array_search($id, $ids);
-
-        if($i == 0) {
-            $prev = $ids[$size];
-            $next = $ids[$i + 1];
-        }
-        else if($i === $size) {
-            $prev = $ids[$i - 1];
-            $next = $ids[0];
-        }
-        else {
-            $prev = $ids[$i - 1];
-            $next = $ids[$i + 1];
-        }
-
-        return array('prev' => $prev, 'next' => $next);
-
-    }
-
-    // function to fetch an array of ids to be used
-    // by getNext and getPrev
-    function getItems($q, $container)
-    {
-        $url = $this->base_url . "select?indent=on&version=2.2&q=";
-        $url .= $q . "&fq=&start=0&rows=10000&fl=" . $container . "%2Chandle&qt=&wt=&explainOther=&hl.fl=f";
-
-        $solr_xml = file_get_contents($url);
-        $result_xml = @new SimpleXMLElement($solr_xml);
-
-        $ids = array();
-
-        foreach ($result_xml->result->doc as $result) {
-
-            foreach ($result->str as $unique_field) {
-                $key = $unique_field['name'];
-                $value = $unique_field;
-
-                //echo "Key: " . $key . " Value: " . $value . "</br>";
-
-                if($key = "handle") {
-                    $ids[] = preg_replace('/^.*\//', '',$value);
-                }
-
-            }
-
-        }
-
-        return $ids;
-
-    }
 }
 
 
