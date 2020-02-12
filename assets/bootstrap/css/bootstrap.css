@@ -4,6 +4,12 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -11,6 +17,7 @@ html {
 }
 body {
   margin: 0;
+  margin: 0; height: 100%; overflow: hidden
 }
 article,
 aside,

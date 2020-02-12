@@ -321,8 +321,9 @@ class Solr_client_dspace_181
                 }
                 $term['norm_name'] = urlencode($names[0]);
                 $term['count'] = $facet_term;
-                $active_test = $filter . $this->delimiter . '%22' . $term['name'] . '%22';
+                $active_test = $filter . $this->delimiter; //. '%22' . $term['name'] . '%22';
 
+                // Display facet as clickable ("X" button)
                 if (in_array($active_test, $fq)) {
                     $term['active'] = true;
                 } else {
@@ -414,6 +415,7 @@ class Solr_client_dspace_181
         else
         {
             $ranges = array();
+            //print_r("TEST". $ranges);
         }
         
         $url .= '&fq=' . $this->container_field . ':' . $this->container;
@@ -423,7 +425,7 @@ class Solr_client_dspace_181
         foreach ($this->configured_filters as $filter_name => $filter) {
             $url .= '&facet.field=' . $filter;
         }
-
+        
         foreach ($ranges as $range) {
             $url .= '&facet.query=' . $range;
         }

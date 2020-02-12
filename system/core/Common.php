@@ -176,7 +176,9 @@
 * @access	public
 * @return	array
 */
-	function is_loaded($class = '')
+   //SR May 19
+    //function is_loaded($class = '')
+	function &is_loaded($class = '')
 	{
 		static $_is_loaded = array();
 
@@ -239,8 +241,10 @@
 				}
 			}
 		}
-
-		return $_config[0] =& $config;
+		//SR May 19
+		//return $_config[0] =& $config;
+		$_config[0] =& $config;
+		return $_config[0];
 	}
 
 // ------------------------------------------------------------------------

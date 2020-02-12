@@ -154,25 +154,43 @@ class content extends skylight {
             $this->view('header', $data);
             $this->view('div_main', $data);
             $this->view('theme/' . $this->config->item('skylight_appname') . '/404');
-            $this->view('div_main_end');
-            $this->view('div_sidebar');
-            $this->view('div_sidebar_end');
+            
+            if ($this->config->item('skylight_facets_in_main')) {
+                $this->view('div_sidebar');
+                $this->view('div_sidebar_end');
+                $this->view('div_main_end');
+            }
+            else {
+                $this->view('div_main_end');
+                $this->view('div_sidebar');
+                $this->view('div_sidebar_end');
+            }
+
             $this->view('footer');
-        } else {
+        } 
+        else {
             // Show a normal 404
             $this->output->set_status_header('404');
             $data['page_title'] = $this->uilang['skylight_content_notfound'];
             $this->view('header', $data);
             $this->view('div_main', $data);
             $this->view('404');
-            $this->view('div_main_end');
-            $this->view('div_sidebar');
 
-            // Get the facet data
-            $facet_data = $this->solr_client->getFacets();
+            if ($this->config->item('skylight_facets_in_main')) {
+                $this->view('div_sidebar');
+                $facet_data = $this->solr_client->getFacets();
+                $this->view('search_facets', $data);
+                $this->view('div_sidebar_end');
+                $this->view('div_main_end');
+            }
+            else {
+                $this->view('div_main_end');
+                $this->view('div_sidebar');
+                $facet_data = $this->solr_client->getFacets();
+                $this->view('search_facets', $data);
+                $this->view('div_sidebar_end');
+            }
 
-            $this->view('search_facets', $facet_data);
-            $this->view('div_sidebar_end');
             $this->view('footer');
         }
     }

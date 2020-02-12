@@ -67,9 +67,18 @@ class Browse extends skylight {
 	        $this->view('header', $data);
             $this->view('div_main');
             $this->view('search_noresults');
-            $this->view('div_main_end');
-            $this->view('div_sidebar');
-            $this->view('div_sidebar_end');
+
+            if ($this->config->item('skylight_facets_in_main')) {
+                $this->view('div_sidebar');
+                $this->view('div_sidebar_end');
+                $this->view('div_main_end');
+            }
+            else {
+                $this->view('div_main_end');
+                $this->view('div_sidebar');
+                $this->view('div_sidebar_end');
+            }
+    
             $this->view('footer');
             return;
         }
@@ -114,10 +123,20 @@ class Browse extends skylight {
         $this->view('header', $data);
         $this->view('div_main');
         $this->view('browse_facets', $data);
-        $this->view('div_main_end');
-        $this->view('div_sidebar');
-        $this->view('search_facets', $data);
-        $this->view('div_sidebar_end');
+        
+        if ($this->config->item('skylight_facets_in_main')) {
+            $this->view('div_sidebar');
+            $this->view('search_facets', $data);
+            $this->view('div_sidebar_end');
+            $this->view('div_main_end');
+        }
+        else {
+            $this->view('div_main_end');
+            $this->view('div_sidebar');
+            $this->view('search_facets', $data);
+            $this->view('div_sidebar_end');
+        }
+
         $this->view('footer');
     }
 }

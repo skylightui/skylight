@@ -146,9 +146,18 @@ class Search extends skylight {
             $this->view('div_main');
             $this->view('search_suggestions', $data);
             $this->view('search_noresults');
-            $this->view('div_main_end');
-            $this->view('div_sidebar');
-            $this->view('div_sidebar_end');
+
+            if ($this->config->item('skylight_facets_in_main')) {
+                $this->view('div_sidebar');
+                $this->view('div_sidebar_end');
+                $this->view('div_main_end');
+            }
+            else {
+                $this->view('div_main_end');
+                $this->view('div_sidebar');
+                $this->view('div_sidebar_end');
+            }
+
             $this->view('footer');
             return;
         }
@@ -203,10 +212,20 @@ class Search extends skylight {
 
         }
         $this->view('search_results', $data);
-        $this->view('div_main_end');
-        $this->view('div_sidebar');
-        $this->view('search_facets', $data);
-        $this->view('div_sidebar_end');
+
+        if ($this->config->item('skylight_facets_in_main')) {
+            $this->view('div_sidebar');
+            $this->view('search_facets', $data);
+            $this->view('div_sidebar_end');
+            $this->view('div_main_end');
+        }
+        else {
+            $this->view('div_main_end');
+            $this->view('div_sidebar');
+            $this->view('search_facets', $data);
+            $this->view('div_sidebar_end');
+        }
+
         $this->view('footer');
     }
 
