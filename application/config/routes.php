@@ -61,6 +61,7 @@ $route['archivemedia/(:any)'] = "$1";
 $route['speccoll/(:any)'] = "$1";
 $route['geddes/(:any)'] = "$1";
 $route['public-art/(:any)'] = "$1";
+$route['eerc/(:any)'] = "$1";
 
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
