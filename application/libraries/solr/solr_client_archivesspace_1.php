@@ -550,6 +550,10 @@ class solr_client_archivesspace_1
 
     function getRecord($id = NULL, $params)
     {
+        // Prevent exception if a nonexistent record is requested
+        if(!count($params))
+            return NULL;
+
         //TODO remove hardcoding
         $title_field = 'title';
         //todo better way to pass on type to query - hacktastic
