@@ -58,7 +58,7 @@
             $url_display = preg_split('/\|\|\|/',$term['display_name'][0]);
             ?>
                 <li>
-                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:"<?php echo $url_term; ?>"<?php echo $base_parameters ?>'><?php echo $url_display[1];?> (<?php echo $term['count']; ?>)
+                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:"<?php echo $url_term; ?>"<?php echo $base_parameters ?>'><?php echo $url_display[1];?> (<?php echo $term['count']; ?>) !
                     </a>
                 </li>
             <?php
