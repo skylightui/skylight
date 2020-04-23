@@ -41,9 +41,8 @@
             <?php foreach($active_terms as $term) {
                $pattern =  '#\/'.rawurlencode($facet['name']).':%22'.preg_quote($term['name'],-1).'%22#';
                $remove = preg_replace($pattern,'',$base_search, -1);
-                $url_display = preg_split('/\|\|\|/',$term['display_name'][0]);
             ?>
-            <li><?php echo $url_display[1];?> (<?php echo $term['count']; ?>) <a class="deselect" href='<?php echo $remove;?>'></a></li>
+            <li><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>) <a class="deselect" href='<?php echo $remove;?>'></a></li>
         <?php
             }
         ?> </ul> <?php
@@ -51,14 +50,10 @@
         ?>
         <ul>
         <?php foreach($inactive_terms as $term) {
-            //$url_term = urlencode($term['name']);
-            $url_term = str_replace('&','%26', $term['name']);
-            $url_term = str_replace('\'','%27', $url_term);
-
-            $url_display = preg_split('/\|\|\|/',$term['display_name'][0]);
+            $url_term = urlencode('"'.$term['name'].'"');
             ?>
                 <li>
-                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:"<?php echo $url_term; ?>"<?php echo $base_parameters ?>'><?php echo $url_display[1];?> (<?php echo $term['count']; ?>) !
+                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:<?php echo $url_term; ?><?php echo $base_parameters ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
                     </a>
                 </li>
             <?php
