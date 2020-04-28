@@ -50,10 +50,9 @@
         ?>
         <ul>
         <?php foreach($inactive_terms as $term) {
-            $url_term = urlencode('"'.$term['name'].'"');
             ?>
                 <li>
-                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:<?php echo $url_term; ?><?php echo $base_parameters ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
+                    <a href='<?php echo $base_search; ?>/<?php echo $facet['name']; ?>:<?php echo '%22'.$term['name'].'%22' ?><?php echo $base_parameters ?>'><?php echo $term['display_name'];?> (<?php echo $term['count']; ?>)
                     </a>
                 </li>
             <?php
