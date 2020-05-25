@@ -33,7 +33,7 @@ class content extends skylight {
 
         // Is this the home page?
         if ($url == '') {
-            if($this->config->item('homepage_title') !== '') {
+            if($this->config->item('homepage_title') != '') {
                 $data['page_title'] = $this->config->item('skylight_homepage_title');
             }
             else {

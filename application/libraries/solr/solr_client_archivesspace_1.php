@@ -550,6 +550,10 @@ class solr_client_archivesspace_1
 
     function getRecord($id = NULL, $params)
     {
+        // Prevent exception if a nonexistent record is requested
+        if(!count($params))
+            return NULL;
+
         //TODO remove hardcoding
         $title_field = 'title';
         //todo better way to pass on type to query - hacktastic
@@ -616,16 +620,21 @@ class solr_client_archivesspace_1
 
                 $json_obj = json_decode($field, TRUE);
                 if(!empty($json_obj['dates'])) {
-                    $solr['dates'][] = $json_obj['dates'][0]['expression'];
+                    $solr['dates'] = $json_obj['dates'];
+
                 }
                 if (!empty($json_obj['extents'])) {
-                    $solr['extents'][] = $json_obj['extents'][0]['number'] . " " . $json_obj['extents'][0]['extent_type'];
+                    $solr['extents'] = $json_obj['extents'];
+
+
                 }
 
-                //todo multipart notes
                 foreach ($json_obj['notes'] as $note) {
                     if ($note['jsonmodel_type'] == 'note_multipart') {
-                        $solr[$note['type']][] = $note['subnotes'][0]['content'];
+                        foreach($note['subnotes'] as $subnote) {
+                            $solr[$note['type']][] = $subnote['content'];
+                        }
+
                     }
                     elseif($note['jsonmodel_type'] == 'note_bibliography')
                     {
@@ -1171,6 +1180,11 @@ class solr_client_archivesspace_1
 
                     if (!empty($json_obj['component_id'])) {
                         $doc['component_id'] = $json_obj['component_id'];
+                    }
+
+                    // EERC addition
+                    if (!empty($json_obj['notes'][1]['subnotes'][0]['content'])) {
+                        $doc['interview_summary'] = trim($json_obj['notes'][1]['subnotes'][0]['content']);
                     }
 
                 }
