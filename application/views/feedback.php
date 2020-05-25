@@ -5,7 +5,7 @@ $email_address = $this->config->item('skylight_adminemail');
 
     <h1>Feedback</h1>
 
-    <p>Please contact us with your suggestions or questions at <a href="mailto:<?php echo $email_address ?>"><?php echo $email_address ?></a>.</p>
+    <p>Please contact us with your suggestions or questions at <a class="para-link" href="mailto:<?php echo $email_address ?>"><?php echo $email_address ?></a>.</p>
 
 
     <h3>Privacy Statement </h3>
@@ -22,9 +22,9 @@ $email_address = $this->config->item('skylight_adminemail');
         We will hold the personal data you provided us for 6 years. We do not use profiling or automated decision-making processes.
     </p>
     <p>
-        If you have any questions, please contact: <a href="mailto:<?php echo $email_address ?>"><?php echo $email_address ?></a>
+        If you have any questions, please contact: <a class="para-link" href="mailto:<?php echo $email_address ?>"><?php echo $email_address ?></a>
     </p>
-    <p><a href="https://www.ed.ac.uk/records-management/notice" target="_blank">University privacy statement</a></p>
+    <p><a class="para-link" href="https://www.ed.ac.uk/records-management/notice" target="_blank">University privacy statement</a></p>
 
 
 </div>

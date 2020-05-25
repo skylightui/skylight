@@ -62,6 +62,7 @@ $route['speccoll/(:any)'] = "$1";
 $route['geddes/(:any)'] = "$1";
 $route['public-art/(:any)'] = "$1";
 $route['jlss/(:any)'] = "$1";
+$route['bodylanguage/(:any)'] = "$1";
 
 
 $route['sitemap\.xml'] = "sitemap/sitemap";
