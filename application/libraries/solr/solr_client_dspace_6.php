@@ -20,6 +20,7 @@ class Solr_client_dspace_6 {
     var $searchresultdisplay = array();
     var $configured_filters = array();
     var $configured_date_filters = array();
+    //SR- 10/12/19-  unsetting
     //var $date_field = 'dc.date.year';
     var $delimiter      = '';
     var $thumbnail_field = '';
@@ -61,10 +62,7 @@ class Solr_client_dspace_6 {
         $this->fields = $CI->config->item('skylight_fields');
         $this->facet_limit = $CI->config->item('skylight_facet_limit');
         $date_fields = $this->configured_date_filters;
-        //print_r($date_fields);
-        //print_r(count($date_fields));
         if(count($date_fields) > 0) {
-            //echo 'in here';
             $this->date_field = array_pop($date_fields);
         }
 
@@ -95,8 +93,8 @@ class Solr_client_dspace_6 {
     }
 
     function solrEscape($in) {
-        //$in = urldecode($in);
-
+    	//SR - this "comment out" comes directly from v5 library.
+    	//Shows that an overall urldecode or encode is often not suitable.
         //$in = urldecode($in);
         $in = preg_replace('/#([^0-9])/',"$1",$in);
         $in = preg_replace('/\(/',"\\\(",$in);
@@ -128,10 +126,7 @@ class Solr_client_dspace_6 {
         // Set up scope
         $url .= '&fq='.$this->container_field.':'.$this->container;
         $url .= '&fq=search.resourcetype:2';
-
         $url .= '&rows='.$rows;
-
-        // print_r($url);
 
         $solr_xml = file_get_contents($url);
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -222,7 +217,7 @@ class Solr_client_dspace_6 {
 
         if(count($fq) > 0) {
             foreach($fq as $value) {
-                //SR change to append a * to filter- obviously this causes problems if there is a colon in the value
+                //SR 10/12/2019 change to append a * to filter- obviously this causes problems if there is a colon in the value
                 $value = str_replace(":",":*", $this->solrEscape($value));
                 $value = str_replace('\(', '%28', $value);
                 $value = str_replace('\)', '%29', $value);
@@ -230,7 +225,8 @@ class Solr_client_dspace_6 {
             }
         }
 
-        /*This has come back in
+        //Date range processing slightly different in DSpace 6.
+        /*SR 15/12/2019 - removed.
         $ranges = array();
         if (isset($this->configured_date_filters))
         {
@@ -240,17 +236,11 @@ class Solr_client_dspace_6 {
         }
         */
 
-
-
-        //SR - this is copied in
-        //Here to
+        //SR - 15/12/2019 - added from here to...
         foreach($this->configured_date_filters as $filter_name => $filter)
         {
             if (strpos($filter_name, $fq[0]) !== false)
             {
-                //echo "Date field" . $this->date_field;
-                //echo "q" . $q;
-                //echo "fq" . $fq;
                 //$dates = $this->getDateRanges($this->date_field, $q, $fq);
                 $dates = $this->getDateRanges($filter_name, $q, $fq);
                 $ranges = $dates['ranges'];
@@ -265,11 +255,9 @@ class Solr_client_dspace_6 {
         //{
         $ranges = array();
         //}
+        //...here.
 
-
-        //Here.
-
-        //This is what has been replaced
+        //SR- 15/12/2019 the above replaces this.
         /*
         $dates = $this->getDateRanges($this->date_field, $q, $fq);
         $ranges = $dates['ranges'];
@@ -277,9 +265,7 @@ class Solr_client_dspace_6 {
 
         foreach($datefqs as $datefq) {
             // $url .= '&fq='.$datefq;
-        }
-
-        */
+        }*/
 
        // Set up scope
 
@@ -288,9 +274,8 @@ class Solr_client_dspace_6 {
        $url .= '&fq=search.resourcetype:2';
        $url .= '&sort='.$sort_by;
 
-
-
-//        $url .= '&rows='.$this->rows.'&start='.$offset.'&facet.mincount=1';
+       //Commented out in v5
+       //$url .= '&rows='.$this->rows.'&start='.$offset.'&facet.mincount=1';
        //kshe085 - configurable rows for record searching thingy as per ian 2015-01-23
 
 
@@ -300,17 +285,15 @@ class Solr_client_dspace_6 {
            $url .= '&facet.field='.$filter;
        }
 
-
-
        foreach($ranges as $range) {
            $url .= '&facet.query='.$range;
        }
        $url .= '&q.op='.$operator;
 
-       // Set up highlighting
-        //SR CHANGE
+       //Set up highlighting
+       //SR CHANGE to get working (was causing encoding issues)- should reinstate <strong> aspect
        //$url .= '&hl=true&hl.fl=*.en&hl.simple.pre=<strong>&hl.simple.post=</strong>';
-        $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=&hl.simple.post=';
+       $url .= '&hl=true&hl.fl=*.en&hl.simple.pre=&hl.simple.post=';
 
 
        // Set up spellcheck
@@ -323,16 +306,16 @@ class Solr_client_dspace_6 {
            $url .= '&spellcheck=false';
        }
 
+       //SR- 10/12/2019 - more decoding
        $url = str_replace('+%7C%7C%7C+','%0A%7C%7C%7C%0A', $url);
        $url = str_replace('+', '%20', $url);
 
        $url = str_replace('dc.date.issued.year:[0%20TO%200]', 'dc.date.issued.year:[0+TO+0]', $url);
 
        //function url_encode($string){
-        //   return urlencode(utf8_encode($string));
-      // }
+       //   return urlencode(utf8_encode($string));
+       // }
 
-        //print_r($url);
         $vars = '';
         $con = curl_init($url);
         curl_setopt($con, CURLOPT_POST, 1);
@@ -345,7 +328,7 @@ class Solr_client_dspace_6 {
 
         //$solr_xml = file_get_contents($url);
 
-       // $url_encoded = urlencode(utf8_encode($url));
+        //$url_encoded = urlencode(utf8_encode($url));
         //$solr_xml = file_get_contents($url_encoded);
 
         $search_xml = @new SimpleXMLElement($solr_xml);
@@ -431,7 +414,7 @@ class Solr_client_dspace_6 {
             // Build facets from solr response
             foreach ($facet_xml as $facet_term) {
 
-
+                //v5 change
                 //$names = preg_split('/\|\|\|/',$facet_term->attributes());
 
                 $term['name'] = urlencode($facet_term->attributes());
@@ -441,16 +424,7 @@ class Solr_client_dspace_6 {
                 $term['display_name'] = $facet_term->attributes();
                 //$term['norm_name'] = urlencode($names[0]);
                 $term['count'] = $facet_term;
-                //more attempts
-                //$term['name'] = substr($term['name'], '%7C');
-                //echo $term['name'];
-
                 $active_test = $filter.$this->delimiter.'%22'.$term['name'].'%22';
-                //ADDING *
-                //$active_test = $filter.$this->delimiter.'%22*'.$term['name'].'*%22';
-
-                //print_r($term['name']);
-                //print_r($fq);
 
                 if (in_array($active_test, $fq)) {
                     $term['active'] = true;
@@ -490,6 +464,7 @@ class Solr_client_dspace_6 {
                         $query_norm_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','[\1+TO+\2]',$query_name);
                     }
                 }
+                //v5 commment outs
                 //$query_display_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','\1 - \2',$query_name);
                 //$query_norm_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','[\1%20TO%20\2]',$query_name);
                 $query['name'] = $query_norm_name;
@@ -532,29 +507,20 @@ class Solr_client_dspace_6 {
                 $url .= '&fq='.$value.'';
         }
 
-        //print_r($url);
-
-        /*
+        /* v5 comment outs
         $ranges = array();
         foreach($this->configured_date_filters as $filter_name => $filter) {
             array_push($ranges,$this->getDateRanges($filter));
         }
 
          */
-        //SR - this is copied in
-        //Here to
-
-
+        //SR - 15/12/2019 -more date range changes
+        //New from here to...
         if (isset($this->date_field))
         {
-            //echo "Date field".$this->date_field;
-            //echo "q".$q;
-            //echo "fq".$fq;
             $dates = $this->getDateRanges($this->date_field, $q, $fq);
-            //print_r($dates);
             $ranges = $dates['ranges'];
             $datefqs = $dates['fq'];
-            //print_r($datefqs);
             //this was not in 181- the if statement was
             foreach($datefqs as $datefq) {
                 $url .= '&fq='.$datefq;
@@ -565,7 +531,7 @@ class Solr_client_dspace_6 {
             $ranges = array();
         }
 
-        //Here.
+        //...Here.
 
 
         //SR- commenting this out and replacing with procedure above
@@ -583,22 +549,20 @@ class Solr_client_dspace_6 {
             $url .= '&facet.field='.$filter;
         }
 
-        //SR commenting this out- it does not seem to help our case
-      /*  foreach($ranges as $range) {
-           echo $range;
-            //SR trying things
+        //SR commenting this out- it does not work with the v6 solr
+        /*foreach($ranges as $range) {
             // $url .= '&facet.query='.$range;
         }
 */
-
+        //SR - some file logging as this cannot appear onscreen
+        /*
         $file = fopen("/home/lacddt/logging/log.txt","w");
         echo fwrite($file,"'<!-- THIS IS MY URL'.$url.'-->'");
         fclose($file);
         print_r('<!-- THIS IS MY URL'.$url.'-->');
+        */
 
         $solr_xml = file_get_contents($url);
-
-        print_r('<!--THIS IS MY SOLR XML'.$solr_xml.'-->');
 
         // Base search URL
         $base_search = './search/'.$query;
@@ -612,8 +576,6 @@ class Solr_client_dspace_6 {
 
         $facets = array();
 
-      //  print_r($facets);
-
         // Hard coded until I do something better
         foreach($this->configured_filters as $filter_name => $filter) {
             $facet = array();
@@ -622,7 +584,7 @@ class Solr_client_dspace_6 {
             $terms = array();
             // Build facets from solr response
             foreach ($facet_xml as $facet_term) {
-
+                //v5 comments
                 //$names = preg_split('/\|\|\|/',$facet_term->attributes());
 
                 //$term['name'] = urlencode($facet_term->attributes());
@@ -645,14 +607,12 @@ class Solr_client_dspace_6 {
             $facet['terms'] = $terms;
             $facet['queries'] = array();
             $facets[] = $facet;
-
-            //print_r($facets);
         }
 
         foreach($this->configured_date_filters as $filter_name => $filter) {
             // Date.. needs facet query, not field, since
             // we're on solr 1.4 and can't do nice easy integer ranges
-            //SR fix- this works
+            //SR 15/12/2019 change for v6
             //$facet_xml = $search_xml->xpath("//lst[@name='facet_queries']/int");
             $facet_xml = $search_xml->xpath("//lst[@name='facet_fields']/lst[@name='".$filter."']/int");
             $facet['name'] = $filter_name;
@@ -666,7 +626,7 @@ class Solr_client_dspace_6 {
                 preg_match_all('#\d{4}#',$query_name, $matches);
                 if(count($matches) > 0) {
                     if(count($matches[0]) > 0) {
-                        //SR fix- this works
+                        //SR 15/12/2019 change for v6
                         //if($matches[0][0] == $matches[0][1]) {
                         if($matches[0] == $matches[0]) {
                             $query_display_name = $matches[0][0];
@@ -678,6 +638,7 @@ class Solr_client_dspace_6 {
 
                     }
                 }
+                //v5 comment outs
                 //$query_display_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','\1 - \2',$query_name);
                 //$query_norm_name = preg_replace('#^.*\[(\d+) TO (\d+).*$#','[\1%20TO%20\2]',$query_name);
                 $fquery['name'] = $query_norm_name;
@@ -697,8 +658,6 @@ class Solr_client_dspace_6 {
             $facet['queries'] = $queries;
             $facet['terms'] = array();
             $facets[] = $facet;
-
-            //print_r($facets);
         }
 
         $data['facets'] = $facets;
@@ -713,6 +672,7 @@ class Solr_client_dspace_6 {
         $subject_field = 'subject';
         $handle = $this->handle_prefix . '/' . $id;
         $url = $this->base_url . 'select?q=';
+        // all comments in this function inherited v5
         // TODO: Implement highlighting for record pages
         // the below works but only with snippets, not in context
         // of the whole returned doc. Going with javascript now.
@@ -772,32 +732,7 @@ class Solr_client_dspace_6 {
 
              */
         }
-        /*
-        if(array_key_exists($title_field, $solr))
-        {
-            print_r($solr[$title_field]);
-        }
 
-        if(array_key_exists($subject_field, $solr))
-        {
-            print_r($solr[$subject_field]);
-        }
-        */
-        // Related Items
-        /*
-        if(array_key_exists($title_field, $solr) && array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems(array_merge($solr[$subject_field], $solr[$title_field]), $id);
-            print_r("1");
-        }
-        elseif(array_key_exists($subject_field, $solr)) {
-            $rels_xml = $this->getRelatedItems($solr[$subject_field], $id);
-            print_r("2");
-        }
-        else {
-            $rels_xml = $this->getRelatedItems(array_values($solr), $id);
-            print_r("3");
-        }
-        */
         // Related Items
         $rels_solr = array();
 
@@ -890,12 +825,14 @@ class Solr_client_dspace_6 {
             $metadatavalue = preg_replace('/:/','',-1);
             */
             //CHANGE LINE -SR to deal if it is an array
-            //print_r($metadatavalue);
+
             if (is_array($metadatavalue))
             {
                 $metadatavalue = $metadatavalue[0];
             }
             /*
+            SR 19/12/19 simplify- can go to a urlencode in this case
+
             $metadatavalue = preg_replace('/:/','',$metadatavalue,-1);
             $metadatavalue = preg_replace('/\[/','\\[',$metadatavalue,-1);
             $metadatavalue = preg_replace('/\]/','\\]',$metadatavalue,-1);
@@ -925,13 +862,13 @@ class Solr_client_dspace_6 {
         $query_string = str_replace('"', '%22', $query_string);
 
         //$query_string .= ' -handle:\"'.$handle.'\"';
-        //SR slashes don't work in this version
+        //SR 16/12/19 slashes don't work in this version- some fairly horrible encoding follows
         $query_string .= ' -handle:%22'.$handle.'%22';
 
         $query_string = str_replace('(', '%28', $query_string);
         $query_string = str_replace(')', '%29', $query_string);
 
-        //SR - and this- getting a null query string and it messes things up elsewhere
+        //SR 16/12/19 - and this- otherwise gives null string query
         if ($query_string == '')
         {
             $query_string="*:*";
@@ -945,7 +882,6 @@ class Solr_client_dspace_6 {
         $url .= '&rows=5';
 
         $solr_xml = file_get_contents($url);
-        //print_r($solr_xml);
         return $solr_xml;
     }
 
@@ -1094,8 +1030,6 @@ class Solr_client_dspace_6 {
             $url .= '&facet.prefix=' . $this->solrEscape($prefix);
         }
 
-        //print_r($url);
-
         $solr_xml = file_get_contents($url);
 
         // We would construct/pop a new skylight Record model here?
@@ -1108,16 +1042,12 @@ class Solr_client_dspace_6 {
 
     function getDateRanges($field, $q, $fq) {
 
-        //echo "field".$field;
-        //echo "q".$q;
-        //echo "fq".$fq;
         $dates = array();
 
         $lowest_year = $this->getLowerBound($field, $q, $fq);
 
-        //SR - put in this if statement and put all within
+        //SR 17/12/19  put in this if statement based on relevance
         if ($lowest_year !== '') {
-            //echo('LOWEST YEAR' . $lowest_year."END OF ECHO");
             $lowest_year = floor($lowest_year / 10) * 10;
 
             $highest_year = $this->getUpperBound($field, $q, $fq);
@@ -1156,20 +1086,13 @@ class Solr_client_dspace_6 {
         }
     }
 
-
-
     function getLowerBound($field, $q, $fq) {
-
-        //echo "FIELD".$field;
-        //echo "q....".$q;
-        //echo "fq....".$fq;
 
         $value = 1000; // Stupid default to catch problems
 
         $url = $this->base_url . "select?q=" . $this->solrEscape($q);
         if(count($fq) > 0) {
             foreach($fq as $value)
-                //echo "VALUE".$value;
                 $value = urlencode($value);
                 $url .= '&fq='.$this->solrEscape($value).'';
         }
@@ -1209,8 +1132,4 @@ class Solr_client_dspace_6 {
         return $value;
     }
 
-
-
 }
-
-
